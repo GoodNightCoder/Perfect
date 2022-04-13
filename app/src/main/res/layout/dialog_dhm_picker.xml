@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_dialog_rc_30"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/dialog_dhm_picker_indicator_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="10dp"
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.Perfect.DialogTitle" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal">
+
+        <com.cyberlight.perfect.widget.DateWheelPicker
+            android:id="@+id/dhm_date_picker"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5" />
+
+        <com.cyberlight.perfect.widget.IntegerWheelPicker
+            android:id="@+id/dhm_hour_picker"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:digitsEnable="true"
+            app:digits="2"
+            app:maxValue="23"
+            app:minValue="0" />
+
+        <com.cyberlight.perfect.widget.IntegerWheelPicker
+            android:id="@+id/dhm_minute_picker"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:digitsEnable="true"
+            app:digits="2"
+            app:maxValue="59"
+            app:minValue="0"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/dialog_dhm_picker_cancel_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_btn_rc_100"
+            android:gravity="center"
+            android:paddingVertical="6dp"
+            android:text="@string/dialog_btn_cancel"
+            android:textAppearance="@style/TextAppearance.Perfect.DialogButton" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:layout_marginVertical="5dp"
+            android:background="@color/gray" />
+
+        <TextView
+            android:id="@+id/dialog_dhm_picker_confirm_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_btn_rc_100"
+            android:gravity="center"
+            android:paddingVertical="6dp"
+            android:text="@string/dialog_btn_confirm"
+            android:textAppearance="@style/TextAppearance.Perfect.DialogButton" />
+
+    </LinearLayout>
+</LinearLayout>

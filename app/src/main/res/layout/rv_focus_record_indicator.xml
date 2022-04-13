@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/rv_focus_record_indicator_completion_time_tv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:text="@string/main_rv_completion_time_indicator"
+        android:textAppearance="@style/TextAppearance.Perfect.HomepageTitle"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/rv_focus_record_indicator_focus_duration_tv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:layout_marginBottom="5dp"
+        android:text="@string/main_rv_focus_duration_indicator"
+        android:textAppearance="@style/TextAppearance.Perfect.HomepageTitle"
+        android:gravity="center" />
+
+</LinearLayout>

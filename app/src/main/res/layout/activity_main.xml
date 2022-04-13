@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.MainActivity">
+
+    <!-- 主界面顶部导航栏 -->
+    <RelativeLayout
+        android:id="@+id/main_nav_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:paddingHorizontal="36dp"
+        android:paddingVertical="5dp"
+        android:background="?attr/colorBackgroundFloating"
+        android:elevation="10dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/main_focus_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:background="@drawable/bg_btn_rc_8"
+            android:contentDescription="@string/main_focus_img_desc"
+            android:padding="8dp"
+            android:src="@drawable/ic_baseline_trip_origin_24"
+            app:tint="?attr/colorOnSurface" />
+
+        <TextView
+            android:id="@+id/main_date_tv"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_toStartOf="@id/main_settings_img"
+            android:layout_toEndOf="@id/main_focus_img"
+            android:layout_alignTop="@id/main_focus_img"
+            android:layout_alignBottom="@+id/main_focus_img"
+            android:background="@drawable/bg_btn_rc_8"
+            android:gravity="center"
+            android:paddingHorizontal="10dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="6dp"
+            android:textAppearance="@style/TextAppearance.Perfect.HomepageDate"/>
+
+        <ImageView
+            android:id="@+id/main_settings_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/bg_btn_rc_8"
+            android:contentDescription="@string/main_settings_img_desc"
+            android:padding="8dp"
+            android:src="@drawable/ic_baseline_settings_24"
+            app:tint="?attr/colorOnSurface" />
+
+    </RelativeLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/main_pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="?attr/colorHomepageBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_nav_bar" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/main_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="40dp"
+        android:backgroundTint="?attr/colorBackgroundFloating"
+        android:clickable="true"
+        android:contentDescription="@string/main_fab_desc"
+        android:visibility="invisible"
+        app:backgroundTint="?attr/colorBackgroundFloating"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_outline_today_24"
+        app:tint="?attr/colorOnSurface" />
+</androidx.constraintlayout.widget.ConstraintLayout>

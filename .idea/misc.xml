@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable-v24/bg_dialog_rc_30.xml" value="0.1" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/bg_btn_rc_8.xml" value="0.1" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/bg_finished_event_btn.xml" value="0.1" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/bg_unfinished_event_btn.xml" value="0.1" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/ic_baseline_add_22.xml" value="0.1" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/ic_baseline_arrow_back_ios_19.xml" value="0.1" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/ic_baseline_check_24.xml" value="0.1" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/ic_baseline_close_24.xml" value="0.1" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/ic_baseline_my_location_24.xml" value="0.1" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/ic_baseline_remove_24.xml" value="0.1" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.1" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/ic_baseline_thumb_up_24.xml" value="0.1" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.1" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/layout/activity_focus.xml" value="0.2" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/layout/dialog_dhm_picker.xml" value="0.8657074340527577" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/layout/dialog_hm_picker.xml" value="0.7397540983606558" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/layout/dialog_pt_picker.xml" value="0.37063655030800824" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/layout/dialog_tu_picker.xml" value="0.7397540983606558" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/layout/rv_plan.xml" value="0.5614307931570762" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/xml/root_preferences.xml" value="0.27803521779425394" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

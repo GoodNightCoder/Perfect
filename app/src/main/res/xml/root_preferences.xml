@@ -1,0 +1,66 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/settings_focus_mode_header">
+
+        <ListPreference
+            app:defaultValue="25min"
+            app:entries="@array/settings_focus_duration_entries"
+            app:entryValues="@array/settings_focus_duration_values"
+            app:key="focus_duration"
+            app:negativeButtonText="@string/dialog_btn_cancel"
+            app:title="@string/settings_focus_duration_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="sound"
+            app:title="@string/settings_sound_title" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="vibration"
+            app:title="@string/settings_vibration_title" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="flashlight"
+            app:title="@string/settings_flashlight_title" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="strict_time"
+            app:title="@string/settings_strict_time_title" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="keep_screen_on"
+            app:title="@string/settings_keep_screen_on_title" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/settings_reset_header">
+
+        <Preference
+            app:key="clear_all_data"
+            app:title="@string/settings_clear_all_data_title" />
+
+        <Preference
+            app:key="reset_all_settings"
+            app:title="@string/settings_reset_all_settings_title" />
+
+    </PreferenceCategory>
+    <PreferenceCategory app:title="@string/settings_help_header">
+
+        <Preference
+            app:key="ignore_battery_optimization"
+            app:title="@string/settings_ignore_battery_optimization_title" />
+
+        <Preference
+            app:key="manage_startup_apps"
+            app:summary="@string/settings_manage_startup_apps_summary"
+            app:title="@string/settings_manage_startup_apps_title" />
+
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="colorHomepageBackground" format="color" />
+
+    <attr name="antiAlias" format="boolean" />
+    <attr name="textColor" format="color" />
+    <attr name="textSize" format="dimension" />
+
+    <declare-styleable name="WheelPicker">
+        <attr name="itemTextSize" format="dimension" />
+        <attr name="itemTextColor" format="color" />
+        <attr name="selectedItemTextSize" format="dimension" />
+        <attr name="selectedItemTextColor" format="color" />
+        <attr name="indicatorTextSize" format="dimension" />
+        <attr name="indicatorTextColor" format="color" />
+        <attr name="indicatorText" format="string" />
+        <attr name="maxWidthText" format="string" />
+        <attr name="itemWidthSpace" format="dimension" />
+        <attr name="itemHeightSpace" format="dimension" />
+        <attr name="halfVisibleItemCount" format="integer" />
+        <attr name="textSizeGradual" format="boolean" />
+        <attr name="textColorGradual" format="boolean" />
+        <attr name="textAlphaGradual" format="boolean" />
+        <attr name="showCurtain" format="boolean" />
+        <attr name="curtainColor" format="color" />
+        <attr name="showSelectedItemDivider" format="boolean" />
+        <attr name="selectedItemDividerColor" format="color" />
+        <attr name="cyclic" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="IntegerWheelPicker">
+        <attr name="maxValue" format="integer"/>
+        <attr name="minValue" format="integer"/>
+        <attr name="digits" format="integer"/>
+        <attr name="digitsEnable" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="ScheduleLayout">
+        <attr name="antiAlias" />
+        <attr name="fgColor" format="color" />
+        <attr name="curTimeLineColor" format="color" />
+        <attr name="curTimeLineWidth" format="integer" />
+        <attr name="lineWidth" format="integer" />
+        <attr name="timeTextSize" format="integer" />
+        <attr name="remainTop" format="integer" />
+        <attr name="remainBottom" format="integer" />
+        <attr name="remainLeft" format="integer" />
+        <attr name="remainRight" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="CircularProgressView">
+        <attr name="antiAlias" />
+        <attr name="showProgress" format="boolean" />
+        <attr name="showText" format="boolean" />
+        <attr name="startAngle" format="float" />
+        <attr name="sweepAngle" format="float" />
+        <attr name="textColor" />
+        <attr name="textSize" />
+        <attr name="fgArcColor" format="color" />
+        <attr name="fgArcWidth" format="dimension" />
+        <attr name="bgArcColor" format="color" />
+        <attr name="bgArcWidth" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="CountableRadioButton">
+        <attr name="antiAlias" />
+        <attr name="textColor" />
+        <attr name="textSize" />
+        <attr name="hollowCircleColor" format="color" />
+        <attr name="hollowCircleArcWidth" format="dimension" />
+        <attr name="solidCircleColor" format="color" />
+    </declare-styleable>
+</resources>

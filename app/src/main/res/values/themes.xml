@@ -1,0 +1,36 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.Perfect" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/purple</item>
+        <item name="colorPrimaryVariant">@color/dark_purple</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/purple</item>
+        <item name="colorSecondaryVariant">@color/dark_purple</item>
+        <item name="colorOnSecondary">@color/black</item><!-- 该颜色影响FloatingActionButton的ripple -->
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?android:attr/colorBackground</item>
+        <!-- Customize your theme here. -->
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="colorHomepageBackground">@color/color_homepage_bg_light</item>
+    </style>
+
+    <style name="Theme.Perfect.MainActivity" parent="Theme.Perfect">
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorBackgroundFloating</item>
+    </style>
+
+    <style name="Theme.Perfect.FocusActivity" parent="Theme.Perfect">
+        <!-- 支持刘海屏，始终让内容显示到刘海区域 -->
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+        <!-- 透明导航栏 -->
+        <item name="android:windowTranslucentNavigation">true</item>
+        <!-- 透明状态栏 -->
+        <item name="android:windowTranslucentStatus">true</item>
+        <!-- 全屏 -->
+        <item name="android:windowFullscreen">true</item>
+        <!-- Activity进出动画 -->
+        <item name="android:windowAnimationStyle">@style/Animation_ActivityFade</item>
+    </style>
+
+</resources>

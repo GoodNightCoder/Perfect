@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 专注模式中使用的颜色在此指定 -->
+    <color name="focus_bg_arc_color">@color/dark_gray</color>
+    <color name="focus_fg_arc_color">@color/purple</color>
+    <color name="focus_state_text_color">@color/white</color>
+    <color name="focus_time_text_color">@color/white</color>
+    <color name="focus_exit_btn_color">@color/purple</color>
+    <color name="focus_bg_color">@color/black</color>
+    <!-- 深色模式下的卡片背景、自定义对话框背景 -->
+    <color name="color_bg_floating_dark">@color/dark_gray</color>
+    <!-- 浅色模式下主页背景色 -->
+    <color name="color_homepage_bg_light">@color/light_gray</color>
+
+    <!-- 非常接近白色，浅色模式下主页背景色 -->
+    <color name="light_gray">#F2F2F6</color>
+    <!-- 对话框按钮分隔线，滚轮选择器选中项分隔线 -->
+    <color name="gray">#9A9A9A</color>
+    <!-- Summary卡片内、SummaryActivity内分隔线，灰色大拇指 -->
+    <color name="gray_a50">#809A9A9A</color>
+    <!-- 非常接近黑色，专注圆弧背景用，深色模式卡片、对话框背景用 -->
+    <color name="dark_gray">#1C1C1D</color>
+
+    <!-- 深色模式下的colorPrimary和colorSecondary -->
+    <color name="light_purple">#B388FF</color>
+    <!-- 全局使用广泛的紫色 -->
+    <color name="purple">#7C4DFF</color>
+    <!-- 紫色大拇指用，计数radioButton用 -->
+    <color name="purple_a50">#997C4DFF</color>
+    <!-- colorPrimaryVariant，colorSecondaryVariant -->
+    <color name="dark_purple">#3F1DCB</color>
+
+    <!-- FocusActivity背景色，colorOnPrimary(深色模式)，colorOnSecondary -->
+    <color name="black">#000000</color>
+    <!-- FocusActivity文字色，colorOnPrimary -->
+    <color name="white">#FFFFFF</color>
+</resources>
