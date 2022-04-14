@@ -76,33 +76,33 @@ public class DateHourMinutePickerDialogFragment extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_dhm_picker, null);
         // 将初始时间赋给日期指示textView
-        TextView mDateHourMinutePickerIndicatorTv =
-                view.findViewById(R.id.dialog_dhm_picker_indicator_tv);
-        mDateHourMinutePickerIndicatorTv.setText(DateTimeFormatUtil
+        TextView mIndicatorTv =
+                view.findViewById(R.id.dialog_dhm_indicator_tv);
+        mIndicatorTv.setText(DateTimeFormatUtil
                 .getReadableDateAndDayOfWeek(mSelectedYear, mSelectedMonth, mSelectedDayOfMonth));
         // 获取三个选择器
-        DateWheelPicker mDateWheelPicker = view.findViewById(R.id.dhm_date_picker);
-        IntegerWheelPicker mHourPicker = view.findViewById(R.id.dhm_hour_picker);
-        IntegerWheelPicker mMinutePicker = view.findViewById(R.id.dhm_minute_picker);
+        DateWheelPicker mDateWp = view.findViewById(R.id.dialog_dhm_date_wp);
+        IntegerWheelPicker mHourWp = view.findViewById(R.id.dialog_dhm_hour_wp);
+        IntegerWheelPicker mMinuteWp = view.findViewById(R.id.dialog_dhm_minute_wp);
         // 初始化三个选择器的选中项
-        mDateWheelPicker.setSelectedDate(mSelectedYear, mSelectedMonth, mSelectedDayOfMonth, false);
-        mHourPicker.setSelectedValue(mSelectedHour, false);
-        mMinutePicker.setSelectedValue(mSelectedMinute, false);
+        mDateWp.setSelectedDate(mSelectedYear, mSelectedMonth, mSelectedDayOfMonth, false);
+        mHourWp.setSelectedValue(mSelectedHour, false);
+        mMinuteWp.setSelectedValue(mSelectedMinute, false);
         // 对三个选择器设置选中监听
-        mDateWheelPicker.setOnDateSelectedListener((year, month, dayOfMonth) -> {
+        mDateWp.setOnDateSelectedListener((year, month, dayOfMonth) -> {
             mSelectedYear = year;
             mSelectedMonth = month;
             mSelectedDayOfMonth = dayOfMonth;
-            mDateHourMinutePickerIndicatorTv.setText(DateTimeFormatUtil
+            mIndicatorTv.setText(DateTimeFormatUtil
                     .getReadableDateAndDayOfWeek(mSelectedYear, mSelectedMonth, mSelectedDayOfMonth));
         });
-        mHourPicker.setOnValueSelectedListener(value -> mSelectedHour = value);
-        mMinutePicker.setOnValueSelectedListener(value -> mSelectedMinute = value);
+        mHourWp.setOnValueSelectedListener(value -> mSelectedHour = value);
+        mMinuteWp.setOnValueSelectedListener(value -> mSelectedMinute = value);
         // 设置取消和确认按钮
-        TextView mCancelBtnTv = view.findViewById(R.id.dialog_dhm_picker_cancel_tv);
-        TextView mConfirmBtnTv = view.findViewById(R.id.dialog_dhm_picker_confirm_tv);
-        mCancelBtnTv.setOnClickListener(v -> dismiss());
-        mConfirmBtnTv.setOnClickListener(v -> {
+        TextView mCancelTv = view.findViewById(R.id.dialog_dhm_cancel_tv);
+        TextView mConfirmTv = view.findViewById(R.id.dialog_dhm_confirm_tv);
+        mCancelTv.setOnClickListener(v -> dismiss());
+        mConfirmTv.setOnClickListener(v -> {
             // 将对话框选择的时间通过setFragmentResult返回给Activity
             Bundle result = new Bundle();
             result.putInt(DHM_YEAR_KEY, mSelectedYear);

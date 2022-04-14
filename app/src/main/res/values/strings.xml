@@ -22,37 +22,37 @@
     <string name="settings_reset_header">Reset</string>
     <string name="settings_reset_all_settings_title">Reset All Settings</string>
     <string name="settings_reset_confirm_dialog_title">Warning</string>
-    <string name="settings_reset_confirm_dialog_message">Are you sure you want to reset all settings?</string>
+    <string name="settings_reset_confirm_dialog_content">Are you sure you want to reset all settings?</string>
     <string name="settings_help_header">Help</string>
     <string name="settings_ignore_battery_optimization_title">Ignore Battery Optimization</string>
     <string name="settings_manage_startup_apps_title">Manage Startup Apps</string>
     <string name="settings_manage_startup_apps_summary"><![CDATA[App & services -> App launch -> Manage Perfect manually -> Check the "Auto-launch" and the "Run in background" options]]></string>
     <string name="settings_clear_all_data_title">Clear All Data</string>
     <string name="settings_clear_all_data_confirm_dialog_title">Warning</string>
-    <string name="settings_clear_all_data_confirm_dialog_msg">Are you sure you want to clear all data?</string>
+    <string name="settings_clear_all_data_confirm_dialog_content">Are you sure you want to clear all data?</string>
     <string name="settings_flashlight_title">Flashlight</string>
 
     <!--  MainActivity  -->
     <string name="main_event_header">Events</string>
     <string name="main_focus_header">Focus</string>
-    <string name="main_rv_focus_duration_indicator">Focus duration</string>
-    <string name="main_rv_completion_time_indicator">Completion time</string>
-    <string name="main_plans_header">Plans</string>
-    <string name="main_summary_header">Summary</string>
-    <string name="main_rv_no_focus_record">No record</string>
-    <string name="main_rv_no_plan">No plan</string>
-    <string name="main_review_title">Review</string>
-    <string name="main_rating_title">Rating</string>
-    <string name="main_rv_focus_duration">%1$dmin</string>
-    <string name="main_memo_title">Memo</string>
-    <string name="main_fab_desc">Position today</string>
     <string name="main_focus_img_desc">Focus</string>
-    <string name="main_settings_img_desc">Settings</string>
+    <string name="main_no_focus_record">No record</string>
+    <string name="main_focus_duration_indicator">Focus duration</string>
+    <string name="main_completion_time_indicator">Completion time</string>
+    <string name="main_focus_duration">%1$dmin</string>
+    <string name="main_plans_header">Plans</string>
+    <string name="main_no_plan">No plan</string>
+    <string name="main_summary_header">Summary</string>
+    <string name="main_rating_title">Rating</string>
+    <string name="main_review_title">Review</string>
+    <string name="main_memo_title">Memo</string>
     <string name="main_no_summary_tv_text">No summary</string>
     <string name="main_have_sum_toast">You\'ve already summarized this day</string>
     <string name="main_sum_not_today_toast">The day you summarize is not today</string>
+    <string name="main_fab_desc">Position today</string>
+    <string name="main_settings_img_desc">Settings</string>
 
-    <!--  EventActivity  -->
+    <!--  EventDialogFragment  -->
     <string name="event_dialog_title">New Event</string>
     <string name="event_time_conflict_toast">Time conflict</string>
     <string name="event_title">Title</string>
@@ -66,8 +66,8 @@
     <string name="event_start_time_invalid_toast">Invalid start time</string>
     <string name="event_interval_less_than_duration_toast">Repeat interval must be greater than or equal to duration</string>
 
-    <!--  SummaryActivity  -->
-    <string name="summary_activity_title">Summary</string>
+    <!--  SummaryDialogFragment  -->
+    <string name="summary_dialog_title">Summary</string>
     <string name="summary_memo_hint">Tomorrow\'s memo</string>
     <string name="summary_rating_tip">Click the thumbs to rate</string>
     <string name="summary_review_hint">Review today\'s life</string>
@@ -76,8 +76,8 @@
     <string name="summary_no_text_toast">You haven\'t written review text yet</string>
     <string name="summary_no_rating_toast">You haven\'t rated yet</string>
 
-    <!--  PlanActivity  -->
-    <string name="plan_activity_title">New Plan</string>
+    <!--  PlanDialogFragment  -->
+    <string name="plan_dialog_title">New Plan</string>
     <string name="plan_incomplete_toast">Incomplete info</string>
     <string name="plan_content_hint">Content</string>
     <string name="plan_target_num">Target</string>
@@ -90,6 +90,7 @@
     <string name="focus_relaxing_state">Relaxing</string>
     <string name="focus_exit_btn_text">Exit</string>
 
+    <!--  HourMinuteDialogFragment  -->
     <string name="hm_picker_minute_indicator">m</string>
     <string name="hm_picker_hour_indicator">h</string>
 

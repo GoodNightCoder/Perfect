@@ -53,11 +53,11 @@ public class FocusRecordRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
         if (holder instanceof RecordViewHolder) {
             RecordViewHolder recordViewHolder = (RecordViewHolder) holder;
             FocusRecord focusRecord = mFocusRecords.get(position - 1);
-            recordViewHolder.completionTimeTv.setText(
+            recordViewHolder.mCompletionTimeTv.setText(
                     DateTimeFormatUtil.getNeatDateTime(focusRecord.completionTime)
             );
-            recordViewHolder.focusDurationTv.setText(
-                    mContext.getString(R.string.main_rv_focus_duration,
+            recordViewHolder.mFocusDurationTv.setText(
+                    mContext.getString(R.string.main_focus_duration,
                             focusRecord.focusDuration / 60000)
             );
         }
@@ -77,13 +77,13 @@ public class FocusRecordRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
     private static class RecordViewHolder extends RecyclerView.ViewHolder {
-        private final TextView completionTimeTv;
-        private final TextView focusDurationTv;
+        private final TextView mCompletionTimeTv;
+        private final TextView mFocusDurationTv;
 
         public RecordViewHolder(View v) {
             super(v);
-            completionTimeTv = v.findViewById(R.id.rv_focus_record_completion_time_tv);
-            focusDurationTv = v.findViewById(R.id.rv_focus_record_focus_duration_tv);
+            mCompletionTimeTv = v.findViewById(R.id.rv_focus_record_completion_time_tv);
+            mFocusDurationTv = v.findViewById(R.id.rv_focus_record_focus_duration_tv);
         }
     }
 

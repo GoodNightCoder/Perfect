@@ -1,6 +1,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main_scroll_view"
+    android:id="@+id/main_sv"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -40,7 +40,7 @@
                         android:textAppearance="@style/TextAppearance.Perfect.HomepageHeader" />
 
                     <ImageView
-                        android:id="@+id/main_add_event_img"
+                        android:id="@+id/main_add_event_iv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
@@ -94,7 +94,7 @@
                         android:textAppearance="@style/TextAppearance.Perfect.HomepageHeader" />
 
                     <ImageView
-                        android:id="@+id/main_add_focus_record_img"
+                        android:id="@+id/main_add_focus_record_iv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
@@ -145,7 +145,7 @@
                         android:textAppearance="@style/TextAppearance.Perfect.HomepageHeader" />
 
                     <ImageView
-                        android:id="@+id/main_add_plan_img"
+                        android:id="@+id/main_add_plan_iv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
@@ -196,7 +196,7 @@
                         android:textAppearance="@style/TextAppearance.Perfect.HomepageHeader" />
 
                     <ImageView
-                        android:id="@+id/main_add_summary_img"
+                        android:id="@+id/main_add_summary_iv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
@@ -208,7 +208,7 @@
 
                 <!--Summary卡片的内容-->
                 <RelativeLayout
-                    android:id="@+id/main_summary_content"
+                    android:id="@+id/main_summary_content_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
@@ -228,7 +228,7 @@
                         android:textAppearance="@style/TextAppearance.Perfect.HomepageTitle" />
 
                     <ImageView
-                        android:id="@+id/main_thumb_up_img1"
+                        android:id="@+id/main_thumb_up_iv1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/main_rating_title_tv"
@@ -236,42 +236,42 @@
                         android:src="@drawable/ic_baseline_thumb_up_24" />
 
                     <ImageView
-                        android:id="@+id/main_thumb_up_img2"
+                        android:id="@+id/main_thumb_up_iv2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignBottom="@id/main_thumb_up_img1"
-                        android:layout_toEndOf="@id/main_thumb_up_img1"
+                        android:layout_alignBottom="@id/main_thumb_up_iv1"
+                        android:layout_toEndOf="@id/main_thumb_up_iv1"
                         android:src="@drawable/ic_baseline_thumb_up_24" />
 
                     <ImageView
-                        android:id="@+id/main_thumb_up_img3"
+                        android:id="@+id/main_thumb_up_iv3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignBottom="@id/main_thumb_up_img1"
-                        android:layout_toEndOf="@id/main_thumb_up_img2"
+                        android:layout_alignBottom="@id/main_thumb_up_iv1"
+                        android:layout_toEndOf="@id/main_thumb_up_iv2"
                         android:src="@drawable/ic_baseline_thumb_up_24" />
 
                     <ImageView
-                        android:id="@+id/main_thumb_up_img4"
+                        android:id="@+id/main_thumb_up_iv4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignBottom="@id/main_thumb_up_img1"
-                        android:layout_toEndOf="@id/main_thumb_up_img3"
+                        android:layout_alignBottom="@id/main_thumb_up_iv1"
+                        android:layout_toEndOf="@id/main_thumb_up_iv3"
                         android:src="@drawable/ic_baseline_thumb_up_24" />
 
                     <ImageView
-                        android:id="@+id/main_thumb_up_img5"
+                        android:id="@+id/main_thumb_up_iv5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignBottom="@id/main_thumb_up_img1"
-                        android:layout_toEndOf="@id/main_thumb_up_img4"
+                        android:layout_alignBottom="@id/main_thumb_up_iv1"
+                        android:layout_toEndOf="@id/main_thumb_up_iv4"
                         android:src="@drawable/ic_baseline_thumb_up_24" />
 
                     <View
                         android:id="@+id/main_rating_comment_divider"
                         android:layout_width="match_parent"
                         android:layout_height="1px"
-                        android:layout_below="@id/main_thumb_up_img1"
+                        android:layout_below="@id/main_thumb_up_iv1"
                         android:layout_marginVertical="8dp"
                         android:background="@color/gray_a50" />
 

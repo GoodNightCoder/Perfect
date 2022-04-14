@@ -15,7 +15,7 @@
 
 
         <com.cyberlight.perfect.widget.IntegerWheelPicker
-            android:id="@+id/hm_hour_picker"
+            android:id="@+id/dialog_hm_hour_wp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -25,7 +25,7 @@
             app:indicatorText="@string/hm_picker_hour_indicator"/>
 
         <com.cyberlight.perfect.widget.IntegerWheelPicker
-            android:id="@+id/hm_minute_picker"
+            android:id="@+id/dialog_hm_minute_wp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -43,7 +43,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/dialog_hm_picker_cancel_tv"
+            android:id="@+id/dialog_hm_cancel_tv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="15dp"
@@ -61,7 +61,7 @@
             android:background="@color/gray" />
 
         <TextView
-            android:id="@+id/dialog_hm_picker_confirm_tv"
+            android:id="@+id/dialog_hm_confirm_tv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="15dp"

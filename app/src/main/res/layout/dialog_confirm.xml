@@ -14,7 +14,7 @@
         android:textAppearance="@style/TextAppearance.Perfect.DialogTitle"/>
 
     <TextView
-        android:id="@+id/dialog_confirm_msg_tv"
+        android:id="@+id/dialog_confirm_content_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="15dp"

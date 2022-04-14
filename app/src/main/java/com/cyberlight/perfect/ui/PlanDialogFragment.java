@@ -29,7 +29,7 @@ public class PlanDialogFragment extends DialogFragment {
 
     private int mTarget;
 
-    private TextView mTargetTv;
+    private TextView mStepperValueTv;
 
     public PlanDialogFragment() {
     }
@@ -54,39 +54,41 @@ public class PlanDialogFragment extends DialogFragment {
         } else {
             mTarget = 1;
         }
-        mTargetTv = view.findViewById(R.id.plan_target_stepper_value_tv);
-        mTargetTv.setText(String.valueOf(mTarget));
-        mTargetTv.setOnClickListener(v -> {
-            PlanTargetPickerDialogFragment planTargetPickerDialogFragment =
-                    PlanTargetPickerDialogFragment.newInstance(mTarget);
-            planTargetPickerDialogFragment.show(fragmentManager,
-                    PlanTargetPickerDialogFragment.TAG);
-        });
-        ImageView stepperPlusImg = view.findViewById(R.id.plan_stepper_plus_img);
-        stepperPlusImg.setOnClickListener(v -> {
-            if (mTarget < 99) {
-                mTarget++;
-                mTargetTv.setText(String.valueOf(mTarget));
+        mStepperValueTv = view.findViewById(R.id.dialog_plan_stepper_value_tv);
+        mStepperValueTv.setText(String.valueOf(mTarget));
+        mStepperValueTv.setOnClickListener(v -> {
+            if (fragmentManager.findFragmentByTag(PlanTargetPickerDialogFragment.TAG) == null) {
+                DialogFragment planTargetPickerDialogFragment =
+                        PlanTargetPickerDialogFragment.newInstance(mTarget);
+                planTargetPickerDialogFragment.show(fragmentManager,
+                        PlanTargetPickerDialogFragment.TAG);
             }
         });
-        ImageView stepperMinusImg = view.findViewById(R.id.plan_stepper_minus_img);
-        stepperMinusImg.setOnClickListener(v -> {
+        ImageView mStepperPlusIv = view.findViewById(R.id.dialog_plan_stepper_plus_iv);
+        mStepperPlusIv.setOnClickListener(v -> {
+            if (mTarget < 99) {
+                mTarget++;
+                mStepperValueTv.setText(String.valueOf(mTarget));
+            }
+        });
+        ImageView mStepperMinusIv = view.findViewById(R.id.dialog_plan_stepper_minus_iv);
+        mStepperMinusIv.setOnClickListener(v -> {
             if (mTarget > 1) {
                 mTarget--;
-                mTargetTv.setText(String.valueOf(mTarget));
+                mStepperValueTv.setText(String.valueOf(mTarget));
             }
         });
         fragmentManager.setFragmentResultListener(PlanTargetPickerDialogFragment.PT_REQUEST_KEY,
                 this, (requestKey, result) -> {
-                    mTarget = result.getInt(PlanTargetPickerDialogFragment.PT_NUM_KEY);
-                    mTargetTv.setText(String.valueOf(mTarget));
+                    mTarget = result.getInt(PlanTargetPickerDialogFragment.PT_TARGET_KEY);
+                    mStepperValueTv.setText(String.valueOf(mTarget));
                 });
-        ImageView cancelImg = view.findViewById(R.id.plan_cancel_img);
-        cancelImg.setOnClickListener(v -> dismiss());
-        ImageView confirmImg = view.findViewById(R.id.plan_confirm_img);
-        confirmImg.setOnClickListener(v -> {
-            EditText contentEt = view.findViewById(R.id.plan_content_et);
-            String planContent = contentEt.getText().toString();
+        ImageView mCancelIv = view.findViewById(R.id.dialog_plan_cancel_iv);
+        mCancelIv.setOnClickListener(v -> dismiss());
+        ImageView mConfirmIv = view.findViewById(R.id.dialog_plan_confirm_iv);
+        mConfirmIv.setOnClickListener(v -> {
+            EditText mContentEt = view.findViewById(R.id.dialog_plan_content_et);
+            String planContent = mContentEt.getText().toString();
             if (planContent.equals("")) {
                 ToastUtil.showToast(
                         context,

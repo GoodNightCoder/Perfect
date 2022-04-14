@@ -64,29 +64,29 @@ public class TimeOfUnitPickerDialogFragment extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_tu_picker, null);
         //初始化两个选择器
-        IntegerWheelPicker mIntegerWheelPicker = view.findViewById(R.id.tu_value_picker);
-        UnitWheelPicker mUnitWheelPicker = view.findViewById(R.id.tu_unit_picker);
+        IntegerWheelPicker mValueWp = view.findViewById(R.id.dialog_tu_value_wp);
+        UnitWheelPicker mUnitWp = view.findViewById(R.id.dialog_tu_unit_wp);
         //将初始时间赋给两个选择器
-        mIntegerWheelPicker.setSelectedValue(mSelectedValue, false);
-        mUnitWheelPicker.setSelectedUnit(mSelectedUnit, false);
+        mValueWp.setSelectedValue(mSelectedValue, false);
+        mUnitWp.setSelectedUnit(mSelectedUnit, false);
         //对两个选择器设置选中监听
-        mIntegerWheelPicker.setOnValueSelectedListener(value -> {
+        mValueWp.setOnValueSelectedListener(value -> {
             //只有在系统为英语并且原来选中1或即将选中1，才更新UnitPicker数据集
             if (!mLanguage.equals(zhLanguage) && (value == 1 || mSelectedValue == 1)) {
-                mUnitWheelPicker.updateDataList(value);
+                mUnitWp.updateDataList(value);
             }
             mSelectedValue = value;
         });
-        mUnitWheelPicker.setOnUnitSelectedListener(unit -> mSelectedUnit = unit);
+        mUnitWp.setOnUnitSelectedListener(unit -> mSelectedUnit = unit);
         //把初始值告知UnitPicker，以保证复数等语法规则一开始就正确生效
         if (!mLanguage.equals(zhLanguage)) {
-            mUnitWheelPicker.updateDataList(mSelectedValue);
+            mUnitWp.updateDataList(mSelectedValue);
         }
         //获取取消和确认按钮
-        TextView mCancelBtnTv = view.findViewById(R.id.dialog_tu_picker_cancel_btn_tv);
-        TextView mConfirmBtnTv = view.findViewById(R.id.dialog_tu_picker_confirm_btn_tv);
-        mCancelBtnTv.setOnClickListener(v -> dismiss());
-        mConfirmBtnTv.setOnClickListener(v -> {
+        TextView mCancelTv = view.findViewById(R.id.dialog_tu_cancel_tv);
+        TextView mConfirmTv = view.findViewById(R.id.dialog_tu_confirm_tv);
+        mCancelTv.setOnClickListener(v -> dismiss());
+        mConfirmTv.setOnClickListener(v -> {
             //将对话框选择的时间返回给Activity
             Bundle result = new Bundle();
             result.putInt(TU_VALUE_KEY, mSelectedValue);

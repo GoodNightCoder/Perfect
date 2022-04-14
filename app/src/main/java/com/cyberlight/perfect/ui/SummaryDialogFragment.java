@@ -30,11 +30,11 @@ public class SummaryDialogFragment extends DialogFragment {
     private static final String SUMMARY_DATE_KEY = "summary_date_key";
     private static final String SUMMARY_RATING_KEY = "summary_rating_key";
 
-    private ImageView thumbUpImg1;
-    private ImageView thumbUpImg2;
-    private ImageView thumbUpImg3;
-    private ImageView thumbUpImg4;
-    private ImageView thumbUpImg5;
+    private ImageView mThumbUpIv1;
+    private ImageView mThumbUpIv2;
+    private ImageView mThumbUpIv3;
+    private ImageView mThumbUpIv4;
+    private ImageView mThumbUpIv5;
 
     private LocalDate date;
     private int rating;
@@ -62,27 +62,27 @@ public class SummaryDialogFragment extends DialogFragment {
             date = LocalDate.now();
         }
         //为关闭图片添加点击监听
-        ImageView cancelImg = view.findViewById(R.id.summary_cancel_img);
-        cancelImg.setOnClickListener(v -> dismiss());
+        ImageView mCancelIv = view.findViewById(R.id.summary_cancel_iv);
+        mCancelIv.setOnClickListener(v -> dismiss());
         //初始化5个评分图片
-        thumbUpImg1 = view.findViewById(R.id.summary_thumb_up_img1);
-        thumbUpImg2 = view.findViewById(R.id.summary_thumb_up_img2);
-        thumbUpImg3 = view.findViewById(R.id.summary_thumb_up_img3);
-        thumbUpImg4 = view.findViewById(R.id.summary_thumb_up_img4);
-        thumbUpImg5 = view.findViewById(R.id.summary_thumb_up_img5);
+        mThumbUpIv1 = view.findViewById(R.id.summary_thumb_up_iv1);
+        mThumbUpIv2 = view.findViewById(R.id.summary_thumb_up_iv2);
+        mThumbUpIv3 = view.findViewById(R.id.summary_thumb_up_iv3);
+        mThumbUpIv4 = view.findViewById(R.id.summary_thumb_up_iv4);
+        mThumbUpIv5 = view.findViewById(R.id.summary_thumb_up_iv5);
         setRating(rating);
-        thumbUpImg1.setOnClickListener(v -> setRating(1));
-        thumbUpImg2.setOnClickListener(v -> setRating(2));
-        thumbUpImg3.setOnClickListener(v -> setRating(3));
-        thumbUpImg4.setOnClickListener(v -> setRating(4));
-        thumbUpImg5.setOnClickListener(v -> setRating(5));
-        ImageView confirmImg = view.findViewById(R.id.summary_confirm_img);
-        confirmImg.setOnClickListener(v -> {
-            EditText summaryTextEt = view.findViewById(R.id.summary_text_et);
-            EditText summaryMemoEt = view.findViewById(R.id.summary_memo_et);
-            String summaryText = summaryTextEt.getText().toString();
-            String summaryMemo = summaryMemoEt.getText().toString();
-            if (summaryText.equals("")) {
+        mThumbUpIv1.setOnClickListener(v -> setRating(1));
+        mThumbUpIv2.setOnClickListener(v -> setRating(2));
+        mThumbUpIv3.setOnClickListener(v -> setRating(3));
+        mThumbUpIv4.setOnClickListener(v -> setRating(4));
+        mThumbUpIv5.setOnClickListener(v -> setRating(5));
+        ImageView mConfirmIv = view.findViewById(R.id.summary_confirm_iv);
+        mConfirmIv.setOnClickListener(v -> {
+            EditText mReviewEt = view.findViewById(R.id.summary_review_et);
+            EditText mMemoEt = view.findViewById(R.id.summary_memo_et);
+            String review = mReviewEt.getText().toString();
+            String memo = mMemoEt.getText().toString();
+            if (review.equals("")) {
                 ToastUtil.showToast(
                         context,
                         getString(R.string.summary_no_text_toast),
@@ -96,7 +96,7 @@ public class SummaryDialogFragment extends DialogFragment {
                         Toast.LENGTH_SHORT);
                 return;
             }
-            if (DbUtil.addSummary(context, rating, summaryText, summaryMemo,
+            if (DbUtil.addSummary(context, rating, review, memo,
                     DateTimeFormatUtil.getNeatDate(date))) {
                 ToastUtil.showToast(
                         context,
@@ -136,7 +136,7 @@ public class SummaryDialogFragment extends DialogFragment {
         Context context = requireContext();
         int purpleA50 = ContextCompat.getColor(context, R.color.purple_a50);
         int grayA50 = ContextCompat.getColor(context, R.color.gray_a50);
-        ImageView[] imageViews = {thumbUpImg1, thumbUpImg2, thumbUpImg3, thumbUpImg4, thumbUpImg5};
+        ImageView[] imageViews = {mThumbUpIv1, mThumbUpIv2, mThumbUpIv3, mThumbUpIv4, mThumbUpIv5};
         for (int i = 0; i < imageViews.length; i++) {
             imageViews[i].setColorFilter(i < rating ? purpleA50 : grayA50);
         }

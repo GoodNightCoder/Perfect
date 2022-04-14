@@ -6,7 +6,7 @@
     android:orientation="horizontal">
 
     <com.cyberlight.perfect.widget.CountableRadioButton
-        android:id="@+id/rv_plan_completion_count_crbtn"
+        android:id="@+id/rv_plan_crbtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

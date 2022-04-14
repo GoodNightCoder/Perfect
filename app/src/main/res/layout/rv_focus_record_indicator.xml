@@ -9,7 +9,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="3"
-        android:text="@string/main_rv_completion_time_indicator"
+        android:text="@string/main_completion_time_indicator"
         android:textAppearance="@style/TextAppearance.Perfect.HomepageTitle"
         android:gravity="center" />
 
@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="2"
         android:layout_marginBottom="5dp"
-        android:text="@string/main_rv_focus_duration_indicator"
+        android:text="@string/main_focus_duration_indicator"
         android:textAppearance="@style/TextAppearance.Perfect.HomepageTitle"
         android:gravity="center" />
 

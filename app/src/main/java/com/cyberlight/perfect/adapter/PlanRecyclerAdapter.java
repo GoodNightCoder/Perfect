@@ -25,13 +25,13 @@ public class PlanRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private final List<SpecPlan> specPlans;
 
     private static class PlanViewHolder extends RecyclerView.ViewHolder {
-        private final TextView planContentTv;
-        private final CountableRadioButton planCountableBtn;
+        private final TextView mContentTv;
+        private final CountableRadioButton mCrbtn;
 
         public PlanViewHolder(View v) {
             super(v);
-            planContentTv = v.findViewById(R.id.rv_plan_content_tv);
-            planCountableBtn = v.findViewById(R.id.rv_plan_completion_count_crbtn);
+            mContentTv = v.findViewById(R.id.rv_plan_content_tv);
+            mCrbtn = v.findViewById(R.id.rv_plan_crbtn);
         }
     }
 
@@ -64,9 +64,9 @@ public class PlanRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         if (holder instanceof PlanViewHolder) {
             PlanViewHolder planViewHolder = (PlanViewHolder) holder;
             SpecPlan specPlan = specPlans.get(position);
-            planViewHolder.planContentTv.setText(specPlan.planContent);
-            planViewHolder.planCountableBtn.initCountAndMaxCount(specPlan.completionCount, specPlan.targetNum);
-            planViewHolder.planCountableBtn.setOnCountListener(count -> {
+            planViewHolder.mContentTv.setText(specPlan.planContent);
+            planViewHolder.mCrbtn.initCountAndMaxCount(specPlan.completionCount, specPlan.targetNum);
+            planViewHolder.mCrbtn.setOnCountListener(count -> {
                 if (DbUtil.getPlanCompletionCountByDate(mContext, specPlan.dateStr, specPlan.planId) != -1) {
                     DbUtil.updatePlanRecord(mContext, specPlan.dateStr, specPlan.planId, count);
                 } else {

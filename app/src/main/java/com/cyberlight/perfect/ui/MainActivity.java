@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
@@ -46,8 +46,6 @@ import java.util.List;
 
 @SuppressLint({"NotifyDataSetChanged", "UnspecifiedImmutableFlag"})
 public class MainActivity extends AppCompatActivity {
-
-    private static final String TAG = "MainActivity";
 
     // 主页日期选择器
     private static final String D_REQUEST_KEY = "pick_date";
@@ -85,9 +83,9 @@ public class MainActivity extends AppCompatActivity {
      */
     private final LocalDate[] pageDates = new LocalDate[PAGES_COUNT];
 
-    private TextView timeTv;
-    private ViewPager2 viewPager;
-    private FloatingActionButton fab;
+    private TextView mDateTv;
+    private ViewPager2 mPager;
+    private FloatingActionButton mFab;
     private PagerAdapter pagerAdapter;
 
     @Override
@@ -109,43 +107,46 @@ public class MainActivity extends AppCompatActivity {
         }
         updatePageDates(curPosition, curDate);
 
+        FragmentManager fragmentManager = getSupportFragmentManager();
         // 初始化控件
-        timeTv = findViewById(R.id.main_date_tv);
-        viewPager = findViewById(R.id.main_pager);
-        fab = findViewById(R.id.main_fab);
-        ImageView focusImg = findViewById(R.id.main_focus_img);
-        ImageView settingsImg = findViewById(R.id.main_settings_img);
+        mDateTv = findViewById(R.id.main_date_tv);
+        mPager = findViewById(R.id.main_pager);
+        mFab = findViewById(R.id.main_fab);
+        ImageView mFocusIv = findViewById(R.id.main_focus_iv);
+        ImageView mSettingsIv = findViewById(R.id.main_settings_iv);
         // 设置fab
-        fab.setOnClickListener(v -> {
-            fab.setVisibility(View.INVISIBLE);
+        mFab.setOnClickListener(v -> {
+            mFab.setVisibility(View.INVISIBLE);
             curDate = LocalDate.now();
             onDateChanged();
             updatePageDates(curPosition, curDate);
             pagerAdapter.notifyDataSetChanged();
         });
         // 对专注模式图片添加点击监听
-        focusImg.setOnClickListener(v -> {
+        mFocusIv.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, FocusActivity.class);
             startActivity(intent);
         });
         // 对设置图片添加点击监听
-        settingsImg.setOnClickListener(v -> {
+        mSettingsIv.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(intent);
         });
         // 设置timeTv
-        timeTv.setOnClickListener(v -> {
+        mDateTv.setOnClickListener(v -> {
             int initYear = curDate.getYear();
             int initMonth = curDate.getMonthValue();
             int initDayOfMonth = curDate.getDayOfMonth();
-            DialogFragment dialogFragment = DatePickerFragment.newInstance(initYear, initMonth, initDayOfMonth);
-            dialogFragment.show(getSupportFragmentManager(), DatePickerFragment.DATE_PICKER_TAG);
+            if (fragmentManager.findFragmentByTag(DatePickerFragment.TAG) == null) {
+                DialogFragment dialogFragment = DatePickerFragment.newInstance(initYear, initMonth, initDayOfMonth);
+                dialogFragment.show(fragmentManager, DatePickerFragment.TAG);
+            }
         });
         // 获取并设置viewPager
         pagerAdapter = new PagerAdapter();
-        viewPager.setAdapter(pagerAdapter);
-        viewPager.setCurrentItem(curPosition, false);
-        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+        mPager.setAdapter(pagerAdapter);
+        mPager.setCurrentItem(curPosition, false);
+        mPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
@@ -154,13 +155,13 @@ public class MainActivity extends AppCompatActivity {
                 curDate = LocalDate.ofEpochDay(pageDates[position].toEpochDay());
                 onDateChanged();
                 if (position == 0) {
-                    viewPager.setUserInputEnabled(false);
+                    mPager.setUserInputEnabled(false);
                     updatePageDates(PAGES_COUNT - 2, curDate);
                     // 此处无需pagerAdapter.notifyDataSetChanged();
                     // 因为从第0页跳转到倒数第二页时，倒数第二页是还没有加载的
                     // 所以跳转后倒数第二页加载的就已经是新数据了，不必通知数据有更新
                 } else if (position == PAGES_COUNT - 1) {
-                    viewPager.setUserInputEnabled(false);
+                    mPager.setUserInputEnabled(false);
                     updatePageDates(1, curDate);
                     // 理由同上，无需pagerAdapter.notifyDataSetChanged();
                 }
@@ -171,17 +172,17 @@ public class MainActivity extends AppCompatActivity {
                 super.onPageScrollStateChanged(state);
                 if (state == ViewPager2.SCROLL_STATE_IDLE) {
                     if (curPosition == 0) {
-                        viewPager.setCurrentItem(PAGES_COUNT - 2, false);
-                        viewPager.setUserInputEnabled(true);
+                        mPager.setCurrentItem(PAGES_COUNT - 2, false);
+                        mPager.setUserInputEnabled(true);
                     } else if (curPosition == PAGES_COUNT - 1) {
-                        viewPager.setCurrentItem(1, false);
-                        viewPager.setUserInputEnabled(true);
+                        mPager.setCurrentItem(1, false);
+                        mPager.setUserInputEnabled(true);
                     }
                 }
             }
         });
         // 监听日期选择对话框结果
-        getSupportFragmentManager().setFragmentResultListener(D_REQUEST_KEY,
+        fragmentManager.setFragmentResultListener(D_REQUEST_KEY,
                 MainActivity.this, (requestKey, result) -> {
                     int year = result.getInt(D_YEAR_KEY);
                     int month = result.getInt(D_MONTH_KEY);
@@ -223,10 +224,7 @@ public class MainActivity extends AppCompatActivity {
                 nextAlarmIntent,
                 PendingIntent.FLAG_NO_CREATE);
         if (pendingIntent == null) {
-            Log.d(TAG, "事件提醒未启动");
             sendBroadcast(nextAlarmIntent);
-        } else {
-            Log.d(TAG, "事件提醒已启动");
         }
     }
 
@@ -234,14 +232,14 @@ public class MainActivity extends AppCompatActivity {
      * 当当前页日期改变时调用此方法
      */
     private void onDateChanged() {
-        timeTv.setText(DateTimeFormatUtil.getReadableDate(curDate));
+        mDateTv.setText(DateTimeFormatUtil.getReadableDate(curDate));
         LocalDate today = LocalDate.now();
         boolean isToday = today.equals(curDate);
-        if (fab.getVisibility() == View.VISIBLE && isToday) {
-            fab.setVisibility(View.INVISIBLE);
+        if (mFab.getVisibility() == View.VISIBLE && isToday) {
+            mFab.setVisibility(View.INVISIBLE);
         }
-        if (fab.getVisibility() == View.INVISIBLE && !isToday) {
-            fab.setVisibility(View.VISIBLE);
+        if (mFab.getVisibility() == View.INVISIBLE && !isToday) {
+            mFab.setVisibility(View.VISIBLE);
         }
     }
 
@@ -265,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
     public static class DatePickerFragment extends DialogFragment
             implements DatePickerDialog.OnDateSetListener {
 
-        public static final String DATE_PICKER_TAG = "DatePickerFragment";
+        public static final String TAG = "DatePickerFragment";
 
 
         public DatePickerFragment() {
@@ -319,55 +317,61 @@ public class MainActivity extends AppCompatActivity {
             private final FocusRecordRecyclerAdapter focusRecordRecyclerAdapter;
             private final PlanRecyclerAdapter planRecyclerAdapter;
 
-            private final ScheduleLayout scheduleLayout;
-            private final RelativeLayout contentLayout;
-            private final ImageView thumbUpImg1;
-            private final ImageView thumbUpImg2;
-            private final ImageView thumbUpImg3;
-            private final ImageView thumbUpImg4;
-            private final ImageView thumbUpImg5;
-            private final TextView commentTv;
-            private final TextView memoTv;
-            private final TextView noSummaryTv;
-            private final ScrollView scrollView;
+            private final ScheduleLayout mScheduleLayout;
+            private final RelativeLayout mSummaryContentLayout;
+            private final ImageView mThumbUpIv1;
+            private final ImageView mThumbUpIv2;
+            private final ImageView mThumbUpIv3;
+            private final ImageView mThumbUpIv4;
+            private final ImageView mThumbUpIv5;
+            private final TextView mCommentTv;
+            private final TextView mMemoTv;
+            private final TextView mNoSummaryTv;
+            private final ScrollView mSv;
 
             public PageViewHolder(View v) {
                 super(v);
                 // 获取控件
-                scheduleLayout = v.findViewById(R.id.main_schedule_layout);
-                contentLayout = v.findViewById(R.id.main_summary_content);
-                thumbUpImg1 = v.findViewById(R.id.main_thumb_up_img1);
-                thumbUpImg2 = v.findViewById(R.id.main_thumb_up_img2);
-                thumbUpImg3 = v.findViewById(R.id.main_thumb_up_img3);
-                thumbUpImg4 = v.findViewById(R.id.main_thumb_up_img4);
-                thumbUpImg5 = v.findViewById(R.id.main_thumb_up_img5);
-                commentTv = v.findViewById(R.id.main_comment_tv);
-                memoTv = v.findViewById(R.id.main_memo_tv);
-                noSummaryTv = v.findViewById(R.id.main_no_summary_tv);
-                scrollView = v.findViewById(R.id.main_scroll_view);
-                ImageView addEventImg = v.findViewById(R.id.main_add_event_img);
-                ImageView addFocusRecordImg = v.findViewById(R.id.main_add_focus_record_img);
-                ImageView addPlanImg = v.findViewById(R.id.main_add_plan_img);
-                ImageView addSummaryImg = v.findViewById(R.id.main_add_summary_img);
-                RecyclerView focusRecordsRv = v.findViewById(R.id.main_focus_records_rv);
-                RecyclerView plansRv = v.findViewById(R.id.main_plans_rv);
+                mScheduleLayout = v.findViewById(R.id.main_schedule_layout);
+                mSummaryContentLayout = v.findViewById(R.id.main_summary_content_layout);
+                mThumbUpIv1 = v.findViewById(R.id.main_thumb_up_iv1);
+                mThumbUpIv2 = v.findViewById(R.id.main_thumb_up_iv2);
+                mThumbUpIv3 = v.findViewById(R.id.main_thumb_up_iv3);
+                mThumbUpIv4 = v.findViewById(R.id.main_thumb_up_iv4);
+                mThumbUpIv5 = v.findViewById(R.id.main_thumb_up_iv5);
+                mCommentTv = v.findViewById(R.id.main_comment_tv);
+                mMemoTv = v.findViewById(R.id.main_memo_tv);
+                mNoSummaryTv = v.findViewById(R.id.main_no_summary_tv);
+                mSv = v.findViewById(R.id.main_sv);
+                ImageView mAddEventIv = v.findViewById(R.id.main_add_event_iv);
+                ImageView mAddFocusRecordIv = v.findViewById(R.id.main_add_focus_record_iv);
+                ImageView mAddPlanIv = v.findViewById(R.id.main_add_plan_iv);
+                ImageView mAddSummaryIv = v.findViewById(R.id.main_add_summary_iv);
+                RecyclerView mFocusRecordsRv = v.findViewById(R.id.main_focus_records_rv);
+                RecyclerView mPlansRv = v.findViewById(R.id.main_plans_rv);
+
+                FragmentManager fragmentManager = getSupportFragmentManager();
                 // 对添加事件按钮设置监听
-                addEventImg.setOnClickListener(v13 -> {
-                    EventDialogFragment dialogFragment = EventDialogFragment.newInstance();
-                    dialogFragment.show(getSupportFragmentManager(), EventDialogFragment.TAG);
+                mAddEventIv.setOnClickListener(v13 -> {
+                    if (fragmentManager.findFragmentByTag(EventDialogFragment.TAG) == null) {
+                        DialogFragment dialogFragment = EventDialogFragment.newInstance();
+                        dialogFragment.show(fragmentManager, EventDialogFragment.TAG);
+                    }
                 });
                 // 对添加专注按钮设置监听
-                addFocusRecordImg.setOnClickListener(v14 -> {
+                mAddFocusRecordIv.setOnClickListener(v14 -> {
                     Intent intent = new Intent(MainActivity.this, FocusActivity.class);
                     startActivity(intent);
                 });
                 // 对添加计划按钮设置监听
-                addPlanImg.setOnClickListener(v12 -> {
-                    PlanDialogFragment dialogFragment = PlanDialogFragment.newInstance();
-                    dialogFragment.show(getSupportFragmentManager(), PlanDialogFragment.TAG);
+                mAddPlanIv.setOnClickListener(v12 -> {
+                    if (fragmentManager.findFragmentByTag(PlanDialogFragment.TAG) == null) {
+                        DialogFragment dialogFragment = PlanDialogFragment.newInstance();
+                        dialogFragment.show(fragmentManager, PlanDialogFragment.TAG);
+                    }
                 });
                 // 对添加总结按钮设置监听
-                addSummaryImg.setOnClickListener(v1 -> {
+                mAddSummaryIv.setOnClickListener(v1 -> {
                     if (hasSummarized) {
                         ToastUtil.showToast(
                                 MainActivity.this,
@@ -380,8 +384,10 @@ public class MainActivity extends AppCompatActivity {
                                 getString(R.string.main_sum_not_today_toast),
                                 Toast.LENGTH_SHORT);
                     } else {
-                        SummaryDialogFragment dialogFragment = SummaryDialogFragment.newInstance();
-                        dialogFragment.show(getSupportFragmentManager(), SummaryDialogFragment.TAG);
+                        if (fragmentManager.findFragmentByTag(SummaryDialogFragment.TAG) == null) {
+                            DialogFragment dialogFragment = SummaryDialogFragment.newInstance();
+                            dialogFragment.show(fragmentManager, SummaryDialogFragment.TAG);
+                        }
                     }
                 });
                 // 初始化FocusRecordsRv，通过LayoutManager禁止其滚动
@@ -391,9 +397,9 @@ public class MainActivity extends AppCompatActivity {
                         return false;
                     }
                 };
-                focusRecordsRv.setLayoutManager(focusRecordsRvLayoutManager);
+                mFocusRecordsRv.setLayoutManager(focusRecordsRvLayoutManager);
                 focusRecordRecyclerAdapter = new FocusRecordRecyclerAdapter(MainActivity.this, focusRecords);
-                focusRecordsRv.setAdapter(focusRecordRecyclerAdapter);
+                mFocusRecordsRv.setAdapter(focusRecordRecyclerAdapter);
                 // 初始化PlansRv，通过LayoutManager禁止其滚动
                 RecyclerView.LayoutManager plansRvLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false) {
                     @Override
@@ -401,17 +407,17 @@ public class MainActivity extends AppCompatActivity {
                         return false;
                     }
                 };
-                plansRv.setLayoutManager(plansRvLayoutManager);
+                mPlansRv.setLayoutManager(plansRvLayoutManager);
                 planRecyclerAdapter = new PlanRecyclerAdapter(MainActivity.this, specPlans);
-                plansRv.setAdapter(planRecyclerAdapter);
+                mPlansRv.setAdapter(planRecyclerAdapter);
                 // scrollView监听
-                scrollView.setOnScrollChangeListener((v15, scrollX, scrollY, oldScrollX, oldScrollY) -> curScrollY = scrollY);
+                mSv.setOnScrollChangeListener((v15, scrollX, scrollY, oldScrollX, oldScrollY) -> curScrollY = scrollY);
             }
 
             private void setRating(int rating) {
                 int purpleA50 = ContextCompat.getColor(MainActivity.this, R.color.purple_a50);
                 int grayA50 = ContextCompat.getColor(MainActivity.this, R.color.gray_a50);
-                ImageView[] imageViews = {thumbUpImg1, thumbUpImg2, thumbUpImg3, thumbUpImg4, thumbUpImg5};
+                ImageView[] imageViews = {mThumbUpIv1, mThumbUpIv2, mThumbUpIv3, mThumbUpIv4, mThumbUpIv5};
                 for (int i = 0; i < imageViews.length; i++) {
                     imageViews[i].setColorFilter(i < rating ? purpleA50 : grayA50);
                 }
@@ -425,9 +431,9 @@ public class MainActivity extends AppCompatActivity {
             }
 
             private void refreshSchedule() {
-                scheduleLayout.setEvents(DbUtil.getDbEvents(MainActivity.this));
-                scheduleLayout.setDate(date);
-                scheduleLayout.refresh();
+                mScheduleLayout.setEvents(DbUtil.getDbEvents(MainActivity.this));
+                mScheduleLayout.setDate(date);
+                mScheduleLayout.refresh();
             }
 
             private void refreshFocusRecords() {
@@ -462,16 +468,16 @@ public class MainActivity extends AppCompatActivity {
                         DateTimeFormatUtil.getNeatDate(date));
                 if (summary != null) {
                     hasSummarized = true;
-                    contentLayout.setVisibility(View.VISIBLE);
-                    noSummaryTv.setVisibility(View.GONE);
+                    mSummaryContentLayout.setVisibility(View.VISIBLE);
+                    mNoSummaryTv.setVisibility(View.GONE);
                     // 将Summary的内容应用到界面上
                     setRating(summary.rating);
-                    commentTv.setText(summary.comment);
-                    memoTv.setText(summary.memo);
+                    mCommentTv.setText(summary.comment);
+                    mMemoTv.setText(summary.memo);
                 } else {
                     hasSummarized = false;
-                    contentLayout.setVisibility(View.GONE);
-                    noSummaryTv.setVisibility(View.VISIBLE);
+                    mSummaryContentLayout.setVisibility(View.GONE);
+                    mNoSummaryTv.setVisibility(View.VISIBLE);
                 }
             }
         }
@@ -500,9 +506,9 @@ public class MainActivity extends AppCompatActivity {
             // 页面可见时才刷新数据，是为了在跨天事件完成状态改变时，相邻页该事件的完成状态也能及时改变
             holder.refreshData();
             // scrollView绘制完后scrollTo到当前viewPager滚动到的位置
-            holder.scrollView.post(() -> {
-                holder.scrollView.scrollTo(0, curScrollY);
-                curScrollY = holder.scrollView.getScrollY();
+            holder.mSv.post(() -> {
+                holder.mSv.scrollTo(0, curScrollY);
+                curScrollY = holder.mSv.getScrollY();
             });
         }
 

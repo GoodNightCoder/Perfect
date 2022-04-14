@@ -48,10 +48,10 @@ public class EventDialogFragment extends DialogFragment {
     private int mIntervalValue;
     private int mIntervalUnit;
 
-    private EditText mTitleEt;
-    private TextView mStartTv;
-    private TextView mDurationTv;
-    private TextView mIntervalTv;
+    private EditText mTitleContentEt;
+    private TextView mStartContentTv;
+    private TextView mDurationContentTv;
+    private TextView mRepeatContentTv;
 
     public EventDialogFragment() {
     }
@@ -89,51 +89,57 @@ public class EventDialogFragment extends DialogFragment {
             mIntervalUnit = UnitWheelPicker.UNIT_DAY;
         }
         // 设置返回按钮
-        ImageView backImg = view.findViewById(R.id.event_cancel_img);
-        backImg.setOnClickListener(v -> dismiss());
+        ImageView mCancelIv = view.findViewById(R.id.dialog_event_cancel_iv);
+        mCancelIv.setOnClickListener(v -> dismiss());
         // 获取title输入框
-        mTitleEt = view.findViewById(R.id.event_title_content_et);
+        mTitleContentEt = view.findViewById(R.id.dialog_event_title_content_et);
         // 获取并设置start输入框
-        mStartTv = view.findViewById(R.id.event_start_content_tv);
-        mStartTv.setText(DateTimeFormatUtil.getReadableDateHourMinute(mStartDateTime));
+        mStartContentTv = view.findViewById(R.id.dialog_event_start_content_tv);
+        mStartContentTv.setText(DateTimeFormatUtil.getReadableDateHourMinute(mStartDateTime));
         // Material Design输入框设置点击监听不明原因无效，只能设置触摸监听
-        mStartTv.setOnClickListener(v -> {
+        mStartContentTv.setOnClickListener(v -> {
             int initYear = mStartDateTime.getYear();
             int initMonth = mStartDateTime.getMonthValue();
             int initDayOfMonth = mStartDateTime.getDayOfMonth();
             int initHour = mStartDateTime.getHour();
             int initMinute = mStartDateTime.getMinute();
-            DateHourMinutePickerDialogFragment dateHourMinutePickerDialogFragment =
-                    DateHourMinutePickerDialogFragment.newInstance(initYear, initMonth,
-                            initDayOfMonth, initHour, initMinute);
-            dateHourMinutePickerDialogFragment.show(fragmentManager,
-                    DateHourMinutePickerDialogFragment.TAG);
+            if (fragmentManager.findFragmentByTag(DateHourMinutePickerDialogFragment.TAG) == null) {
+                DialogFragment dateHourMinutePickerDialogFragment =
+                        DateHourMinutePickerDialogFragment.newInstance(initYear, initMonth,
+                                initDayOfMonth, initHour, initMinute);
+                dateHourMinutePickerDialogFragment.show(fragmentManager,
+                        DateHourMinutePickerDialogFragment.TAG);
+            }
         });
         // 获取并设置duration输入框
-        mDurationTv = view.findViewById(R.id.event_duration_content_tv);
-        mDurationTv.setText(getDurationStr());
-        mDurationTv.setOnClickListener(v -> {
+        mDurationContentTv = view.findViewById(R.id.dialog_event_duration_content_tv);
+        mDurationContentTv.setText(getDurationStr());
+        mDurationContentTv.setOnClickListener(v -> {
             int min = (int) (mDuration / 60000);// 计算mDuration共有多少分钟
             int initHour = min / 60;
             int initMinute = min % 60;
-            HourMinutePickerDialogFragment hourMinutePickerDialogFragment =
-                    HourMinutePickerDialogFragment.newInstance(initHour, initMinute);
-            hourMinutePickerDialogFragment.show(fragmentManager,
-                    HourMinutePickerDialogFragment.TAG);
+            if (fragmentManager.findFragmentByTag(HourMinutePickerDialogFragment.TAG) == null) {
+                DialogFragment hourMinutePickerDialogFragment =
+                        HourMinutePickerDialogFragment.newInstance(initHour, initMinute);
+                hourMinutePickerDialogFragment.show(fragmentManager,
+                        HourMinutePickerDialogFragment.TAG);
+            }
         });
         // 获取并设置interval输入框
-        mIntervalTv = view.findViewById(R.id.event_repeat_content_tv);
-        mIntervalTv.setText(getIntervalStr());
-        mIntervalTv.setOnClickListener(v -> {
-            TimeOfUnitPickerDialogFragment timeOfUnitPickerDialogFragment =
-                    TimeOfUnitPickerDialogFragment.newInstance(mIntervalValue, mIntervalUnit);
-            timeOfUnitPickerDialogFragment.show(fragmentManager,
-                    TimeOfUnitPickerDialogFragment.TAG);
+        mRepeatContentTv = view.findViewById(R.id.dialog_event_repeat_content_tv);
+        mRepeatContentTv.setText(getIntervalStr());
+        mRepeatContentTv.setOnClickListener(v -> {
+            if (fragmentManager.findFragmentByTag(TimeOfUnitPickerDialogFragment.TAG) == null) {
+                DialogFragment timeOfUnitPickerDialogFragment =
+                        TimeOfUnitPickerDialogFragment.newInstance(mIntervalValue, mIntervalUnit);
+                timeOfUnitPickerDialogFragment.show(fragmentManager,
+                        TimeOfUnitPickerDialogFragment.TAG);
+            }
         });
         // 设置确定按钮监听
-        ImageView confirmImg = view.findViewById(R.id.event_confirm_img);
-        confirmImg.setOnClickListener(v -> {
-            String mTitle = mTitleEt != null ? mTitleEt.getText().toString() : "";
+        ImageView mConfirmIv = view.findViewById(R.id.dialog_event_confirm_iv);
+        mConfirmIv.setOnClickListener(v -> {
+            String mTitle = mTitleContentEt != null ? mTitleContentEt.getText().toString() : "";
             long mStart = mStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
             long mInterval = getInterval();
             // title不能为空
@@ -198,7 +204,7 @@ public class EventDialogFragment extends DialogFragment {
                     int hour = result.getInt(DateHourMinutePickerDialogFragment.DHM_HOUR_KEY);
                     int minute = result.getInt(DateHourMinutePickerDialogFragment.DHM_MINUTE_KEY);
                     mStartDateTime = LocalDateTime.of(year, month, dayOfMonth, hour, minute);
-                    mStartTv.setText(DateTimeFormatUtil.getReadableDateHourMinute(mStartDateTime));
+                    mStartContentTv.setText(DateTimeFormatUtil.getReadableDateHourMinute(mStartDateTime));
                 }
         );
         fragmentManager.setFragmentResultListener(HourMinutePickerDialogFragment.HM_REQUEST_KEY,
@@ -206,13 +212,13 @@ public class EventDialogFragment extends DialogFragment {
                     int hour = result.getInt(HourMinutePickerDialogFragment.HM_HOUR_KEY);
                     int minute = result.getInt(HourMinutePickerDialogFragment.HM_MINUTE_KEY);
                     mDuration = (hour * 60L + minute) * 60000;
-                    mDurationTv.setText(getDurationStr());
+                    mDurationContentTv.setText(getDurationStr());
                 });
         fragmentManager.setFragmentResultListener(TimeOfUnitPickerDialogFragment.TU_REQUEST_KEY,
                 this, (requestKey, result) -> {
                     mIntervalValue = result.getInt(TimeOfUnitPickerDialogFragment.TU_VALUE_KEY);
                     mIntervalUnit = result.getInt(TimeOfUnitPickerDialogFragment.TU_UNIT_KEY);
-                    mIntervalTv.setText(getIntervalStr());
+                    mRepeatContentTv.setText(getIntervalStr());
                 });
         // 设置对话框
         Dialog dialog = new Dialog(context, R.style.SlideBottomAnimDialog);

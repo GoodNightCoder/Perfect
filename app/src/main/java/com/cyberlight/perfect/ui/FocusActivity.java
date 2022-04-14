@@ -68,10 +68,10 @@ public class FocusActivity extends AppCompatActivity {
      */
     private int displayMode = SHOW_TIME_PROGRESS_STATE_EXIT;
 
-    private CircularProgressView cpv;
-    private TextView exitBtn;
-    private TextView timeTv;
-    private TextView stateTv;
+    private CircularProgressView mCpv;
+    private TextView mExitBtn;
+    private TextView mTimeTv;
+    private TextView mStateTv;
 
     private FocusService mService;
     private final ServiceConnection mConnection = new ServiceConnection() {
@@ -82,9 +82,9 @@ public class FocusActivity extends AppCompatActivity {
             mService = binder.getService();
             mService.setOnUpdateListener((delayMillis, progress, remainTimeStr, focusStateStr) ->
                     mHandler.post(() -> {
-                        cpv.setProgress(progress, isFirstUpdate ? delayMillis / 2 : delayMillis);
-                        timeTv.setText(remainTimeStr);
-                        stateTv.setText(focusStateStr);
+                        mCpv.setProgress(progress, isFirstUpdate ? delayMillis / 2 : delayMillis);
+                        mTimeTv.setText(remainTimeStr);
+                        mStateTv.setText(focusStateStr);
                         if (isFirstUpdate) {
                             isFirstUpdate = false;
                         }
@@ -107,14 +107,14 @@ public class FocusActivity extends AppCompatActivity {
         // activity不会销毁重建，所以必须主动地更新界面布局(用上layout-land)、重新设置各个控件
         setContentView(R.layout.activity_focus);
         // 获取并设置控件
-        timeTv = findViewById(R.id.focus_time_tv);
-        cpv = findViewById(R.id.focus_cpv);
-        stateTv = findViewById(R.id.focus_state_tv);
-        exitBtn = findViewById(R.id.focus_exit_btn);
-        exitBtn.setOnClickListener(v -> exitFocus());
-        ViewGroup layout = findViewById(R.id.focus_layout);
+        mTimeTv = findViewById(R.id.focus_time_tv);
+        mCpv = findViewById(R.id.focus_cpv);
+        mStateTv = findViewById(R.id.focus_state_tv);
+        mExitBtn = findViewById(R.id.focus_exit_btn);
+        mExitBtn.setOnClickListener(v -> exitFocus());
+        ViewGroup mFocusLayout = findViewById(R.id.focus_layout);
         // 为布局添加长按监听
-        layout.setOnTouchListener(new View.OnTouchListener() {
+        mFocusLayout.setOnTouchListener(new View.OnTouchListener() {
             int mDownX;
             int mDownY;
             final int mTouchSlop = ViewConfiguration.get(FocusActivity.this).getScaledTouchSlop();
@@ -153,14 +153,14 @@ public class FocusActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_focus);
         // 获取并设置控件
-        timeTv = findViewById(R.id.focus_time_tv);
-        cpv = findViewById(R.id.focus_cpv);
-        stateTv = findViewById(R.id.focus_state_tv);
-        exitBtn = findViewById(R.id.focus_exit_btn);
-        exitBtn.setOnClickListener(v -> exitFocus());
-        ViewGroup layout = findViewById(R.id.focus_layout);
+        mTimeTv = findViewById(R.id.focus_time_tv);
+        mCpv = findViewById(R.id.focus_cpv);
+        mStateTv = findViewById(R.id.focus_state_tv);
+        mExitBtn = findViewById(R.id.focus_exit_btn);
+        mExitBtn.setOnClickListener(v -> exitFocus());
+        ViewGroup mFocusLayout = findViewById(R.id.focus_layout);
         // 为布局添加长按监听
-        layout.setOnTouchListener(new View.OnTouchListener() {
+        mFocusLayout.setOnTouchListener(new View.OnTouchListener() {
             int mDownX;
             int mDownY;
             final int mTouchSlop = ViewConfiguration.get(FocusActivity.this).getScaledTouchSlop();
@@ -282,15 +282,15 @@ public class FocusActivity extends AppCompatActivity {
         if (!disallowAnim) {
             displayMode = (displayMode + 1) % DISPLAY_MODES_COUNT;
             if (displayMode == SHOW_TIME_PROGRESS_STATE_EXIT) {
-                fadeInViews(new View[]{timeTv, cpv, stateTv, exitBtn});
+                fadeInViews(new View[]{mTimeTv, mCpv, mStateTv, mExitBtn});
             } else if (displayMode == SHOW_TIME_PROGRESS_STATE) {
-                fadeOutView(exitBtn);
+                fadeOutView(mExitBtn);
             } else if (displayMode == SHOW_TIME_PROGRESS) {
-                fadeOutView(stateTv);
+                fadeOutView(mStateTv);
             } else if (displayMode == SHOW_TIME) {
-                fadeOutView(cpv);
+                fadeOutView(mCpv);
             } else if (displayMode == SHOW_NONE) {
-                fadeOutView(timeTv);
+                fadeOutView(mTimeTv);
             }
         }
     }

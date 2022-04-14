@@ -11,6 +11,7 @@ import android.provider.Settings;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -38,8 +39,8 @@ public class SettingsActivity extends AppCompatActivity {
                     .commit();
         }
         //对自定义返回键设置监听
-        ImageView backImg = findViewById(R.id.settings_back_img);
-        backImg.setOnClickListener(v -> finish());
+        ImageView mBackIv = findViewById(R.id.settings_back_iv);
+        mBackIv.setOnClickListener(v -> finish());
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
@@ -75,25 +76,29 @@ public class SettingsActivity extends AppCompatActivity {
             // 设置几个自定义Preference的点击监听
             FragmentManager fragmentManager = getChildFragmentManager();
             clearAllDataPref.setOnPreferenceClickListener(preference -> {
-                ConfirmDialogFragment confirmDialogFragment = ConfirmDialogFragment.newInstance(
-                        getString(R.string.settings_clear_all_data_confirm_dialog_title),
-                        getString(R.string.settings_clear_all_data_confirm_dialog_msg),
-                        getString(R.string.dialog_btn_yes),
-                        getString(R.string.dialog_btn_no),
-                        CLEAR_ALL_DATA_REQUEST_KEY
-                );
-                confirmDialogFragment.show(fragmentManager, ConfirmDialogFragment.TAG);
+                if (fragmentManager.findFragmentByTag(ConfirmDialogFragment.TAG) == null) {
+                    DialogFragment confirmDialogFragment = ConfirmDialogFragment.newInstance(
+                            getString(R.string.settings_clear_all_data_confirm_dialog_title),
+                            getString(R.string.settings_clear_all_data_confirm_dialog_content),
+                            getString(R.string.dialog_btn_yes),
+                            getString(R.string.dialog_btn_no),
+                            CLEAR_ALL_DATA_REQUEST_KEY
+                    );
+                    confirmDialogFragment.show(fragmentManager, ConfirmDialogFragment.TAG);
+                }
                 return false;
             });
             resetPref.setOnPreferenceClickListener(preference -> {
-                ConfirmDialogFragment confirmDialogFragment = ConfirmDialogFragment.newInstance(
-                        getString(R.string.settings_reset_confirm_dialog_title),
-                        getString(R.string.settings_reset_confirm_dialog_message),
-                        getString(R.string.dialog_btn_yes),
-                        getString(R.string.dialog_btn_no),
-                        RESET_ALL_SETTINGS_REQUEST_KEY
-                );
-                confirmDialogFragment.show(fragmentManager, ConfirmDialogFragment.TAG);
+                if (fragmentManager.findFragmentByTag(ConfirmDialogFragment.TAG) == null) {
+                    DialogFragment confirmDialogFragment = ConfirmDialogFragment.newInstance(
+                            getString(R.string.settings_reset_confirm_dialog_title),
+                            getString(R.string.settings_reset_confirm_dialog_content),
+                            getString(R.string.dialog_btn_yes),
+                            getString(R.string.dialog_btn_no),
+                            RESET_ALL_SETTINGS_REQUEST_KEY
+                    );
+                    confirmDialogFragment.show(fragmentManager, ConfirmDialogFragment.TAG);
+                }
                 return false;
             });
             ignoreBatteryOptimizationPref.setOnPreferenceClickListener(preference -> {

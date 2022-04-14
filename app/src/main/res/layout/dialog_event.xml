@@ -15,7 +15,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/event_cancel_img"
+            android:id="@+id/dialog_event_cancel_iv"
             android:layout_width="44dp"
             android:layout_height="44dp"
             android:layout_alignParentStart="true"
@@ -28,16 +28,16 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_alignTop="@+id/event_cancel_img"
-            android:layout_alignBottom="@+id/event_cancel_img"
-            android:layout_toStartOf="@id/event_confirm_img"
-            android:layout_toEndOf="@id/event_cancel_img"
+            android:layout_alignTop="@+id/dialog_event_cancel_iv"
+            android:layout_alignBottom="@+id/dialog_event_cancel_iv"
+            android:layout_toStartOf="@id/dialog_event_confirm_iv"
+            android:layout_toEndOf="@id/dialog_event_cancel_iv"
             android:gravity="center"
             android:text="@string/event_dialog_title"
             android:textAppearance="@style/TextAppearance.Perfect.DialogTitle" />
 
         <ImageView
-            android:id="@+id/event_confirm_img"
+            android:id="@+id/dialog_event_confirm_iv"
             android:layout_width="44dp"
             android:layout_height="44dp"
             android:layout_alignParentEnd="true"
@@ -61,7 +61,7 @@
             android:layout_height="wrap_content">
 
             <EditText
-                android:id="@+id/event_title_content_et"
+                android:id="@+id/dialog_event_title_content_et"
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
                 android:layout_alignParentTop="true"
@@ -74,7 +74,7 @@
                 android:id="@+id/event_title_start_divider"
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:layout_below="@id/event_title_content_et"
+                android:layout_below="@id/dialog_event_title_content_et"
                 android:background="@color/gray" />
 
             <TextView
@@ -88,7 +88,7 @@
                 android:textAppearance="@style/TextAppearance.Perfect.DialogContent" />
 
             <TextView
-                android:id="@+id/event_start_content_tv"
+                android:id="@+id/dialog_event_start_content_tv"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_alignTop="@id/event_start_title_tv"
@@ -119,7 +119,7 @@
                 android:textAppearance="@style/TextAppearance.Perfect.DialogContent" />
 
             <TextView
-                android:id="@+id/event_duration_content_tv"
+                android:id="@+id/dialog_event_duration_content_tv"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_alignTop="@id/event_duration_title_tv"
@@ -150,7 +150,7 @@
                 android:textAppearance="@style/TextAppearance.Perfect.DialogContent" />
 
             <TextView
-                android:id="@+id/event_repeat_content_tv"
+                android:id="@+id/dialog_event_repeat_content_tv"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_alignTop="@id/event_repeat_title_tv"
