@@ -2,6 +2,7 @@ package com.cyberlight.perfect.ui;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -26,16 +27,31 @@ public class PlanDialogFragment extends DialogFragment {
     public static final String TAG = "PlanDialogFragment";
 
     private static final String TARGET_KEY = "target_key";
+    private static final String PICK_PT_REQUEST_KEY = "pick_pt_request_key";
 
     private int mTarget;
-
     private TextView mStepperValueTv;
 
     public PlanDialogFragment() {
     }
 
-    public static PlanDialogFragment newInstance() {
-        return new PlanDialogFragment();
+    private DialogInterface.OnDismissListener mOnDismissListener;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            mOnDismissListener = (DialogInterface.OnDismissListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(requireActivity()
+                    + " must implement DialogInterface.OnDismissListener");
+        }
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        mOnDismissListener.onDismiss(dialog);
+        super.onDismiss(dialog);
     }
 
     @NonNull
@@ -59,7 +75,7 @@ public class PlanDialogFragment extends DialogFragment {
         mStepperValueTv.setOnClickListener(v -> {
             if (fragmentManager.findFragmentByTag(PlanTargetPickerDialogFragment.TAG) == null) {
                 DialogFragment planTargetPickerDialogFragment =
-                        PlanTargetPickerDialogFragment.newInstance(mTarget);
+                        PlanTargetPickerDialogFragment.newInstance(PICK_PT_REQUEST_KEY, mTarget);
                 planTargetPickerDialogFragment.show(fragmentManager,
                         PlanTargetPickerDialogFragment.TAG);
             }
@@ -78,7 +94,7 @@ public class PlanDialogFragment extends DialogFragment {
                 mStepperValueTv.setText(String.valueOf(mTarget));
             }
         });
-        fragmentManager.setFragmentResultListener(PlanTargetPickerDialogFragment.PT_REQUEST_KEY,
+        fragmentManager.setFragmentResultListener(PICK_PT_REQUEST_KEY,
                 this, (requestKey, result) -> {
                     mTarget = result.getInt(PlanTargetPickerDialogFragment.PT_TARGET_KEY);
                     mStepperValueTv.setText(String.valueOf(mTarget));

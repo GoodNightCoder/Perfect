@@ -20,10 +20,12 @@ import java.util.Locale;
 
 public class TimeOfUnitPickerDialogFragment extends DialogFragment {
     public static final String TAG = "TimeOfUnitPickerDialogFragment";
-    public static final String TU_REQUEST_KEY = "tu_request_key";
+    private static final String TU_REQUEST_KEY = "tu_request_key";
     public static final String TU_VALUE_KEY = "tu_value_key";
     public static final String TU_UNIT_KEY = "tu_unit_key";
 
+
+    private String mRequestKey;
     private int mSelectedValue;
     private int mSelectedUnit;
 
@@ -34,9 +36,10 @@ public class TimeOfUnitPickerDialogFragment extends DialogFragment {
     public TimeOfUnitPickerDialogFragment() {
     }
 
-    public static TimeOfUnitPickerDialogFragment newInstance(int initValue, int initUnit) {
+    public static TimeOfUnitPickerDialogFragment newInstance(String requestKey, int initValue, int initUnit) {
         TimeOfUnitPickerDialogFragment fragment = new TimeOfUnitPickerDialogFragment();
         Bundle bundle = new Bundle();
+        bundle.putString(TU_REQUEST_KEY, requestKey);
         bundle.putInt(TU_VALUE_KEY, initValue);
         bundle.putInt(TU_UNIT_KEY, initUnit);
         fragment.setArguments(bundle);
@@ -49,11 +52,13 @@ public class TimeOfUnitPickerDialogFragment extends DialogFragment {
         //获取并设置初始时间
         Bundle bundle = getArguments();
         if (bundle != null) {
+            mRequestKey = bundle.getString(TU_REQUEST_KEY);
             mSelectedValue = bundle.getInt(TU_VALUE_KEY);
             mSelectedUnit = bundle.getInt(TU_UNIT_KEY);
         }
         //恢复对话框状态
         if (savedInstanceState != null) {
+            mRequestKey = savedInstanceState.getString(TU_REQUEST_KEY);
             mSelectedValue = savedInstanceState.getInt(TU_VALUE_KEY);
             mSelectedUnit = savedInstanceState.getInt(TU_UNIT_KEY);
         }
@@ -91,7 +96,7 @@ public class TimeOfUnitPickerDialogFragment extends DialogFragment {
             Bundle result = new Bundle();
             result.putInt(TU_VALUE_KEY, mSelectedValue);
             result.putInt(TU_UNIT_KEY, mSelectedUnit);
-            getParentFragmentManager().setFragmentResult(TU_REQUEST_KEY, result);
+            getParentFragmentManager().setFragmentResult(mRequestKey, result);
             dismiss();
         });
         //设置对话框
@@ -111,6 +116,7 @@ public class TimeOfUnitPickerDialogFragment extends DialogFragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         //保存对话框状态
+        outState.putString(TU_REQUEST_KEY, mRequestKey);
         outState.putInt(TU_VALUE_KEY, mSelectedValue);
         outState.putInt(TU_UNIT_KEY, mSelectedUnit);
         super.onSaveInstanceState(outState);

@@ -24,10 +24,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:background="@drawable/bg_btn_rc_8"
-            android:contentDescription="@string/main_focus_img_desc"
             android:padding="8dp"
             android:src="@drawable/ic_baseline_trip_origin_24"
-            app:tint="?attr/colorOnSurface" />
+            app:tint="?attr/colorOnSurface"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/main_date_tv"
@@ -51,7 +51,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:background="@drawable/bg_btn_rc_8"
-            android:contentDescription="@string/main_settings_img_desc"
             android:padding="8dp"
             android:src="@drawable/ic_baseline_settings_24"
             app:tint="?attr/colorOnSurface" />
@@ -74,7 +73,6 @@
         android:layout_marginBottom="40dp"
         android:backgroundTint="?attr/colorBackgroundFloating"
         android:clickable="true"
-        android:contentDescription="@string/main_fab_desc"
         android:visibility="invisible"
         app:backgroundTint="?attr/colorBackgroundFloating"
         app:layout_constraintBottom_toBottomOf="parent"

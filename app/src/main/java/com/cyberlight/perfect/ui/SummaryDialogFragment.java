@@ -2,6 +2,7 @@ package com.cyberlight.perfect.ui;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -42,8 +43,23 @@ public class SummaryDialogFragment extends DialogFragment {
     public SummaryDialogFragment() {
     }
 
-    public static SummaryDialogFragment newInstance() {
-        return new SummaryDialogFragment();
+    private DialogInterface.OnDismissListener mOnDismissListener;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            mOnDismissListener = (DialogInterface.OnDismissListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(requireActivity()
+                    + " must implement DialogInterface.OnDismissListener");
+        }
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        mOnDismissListener.onDismiss(dialog);
+        super.onDismiss(dialog);
     }
 
     @NonNull

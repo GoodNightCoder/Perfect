@@ -26,16 +26,15 @@
     <string name="settings_help_header">Help</string>
     <string name="settings_ignore_battery_optimization_title">Ignore Battery Optimization</string>
     <string name="settings_manage_startup_apps_title">Manage Startup Apps</string>
-    <string name="settings_manage_startup_apps_summary"><![CDATA[App & services -> App launch -> Manage Perfect manually -> Check the "Auto-launch" and the "Run in background" options]]></string>
-    <string name="settings_clear_all_data_title">Clear All Data</string>
-    <string name="settings_clear_all_data_confirm_dialog_title">Warning</string>
-    <string name="settings_clear_all_data_confirm_dialog_content">Are you sure you want to clear all data?</string>
+    <string name="settings_manage_startup_apps_summary"><![CDATA[Settings -> App & services -> App launch -> Manage Perfect manually -> Check the "Auto-launch" and the "Run in background" options]]></string>
+    <string name="settings_clear_title">Clear Data</string>
+    <string name="settings_clear_confirm_dialog_title">The following data will be deleted: </string>
     <string name="settings_flashlight_title">Flashlight</string>
+    <string name="settings_manage_bedtime_title">Manage Bedtime</string>
 
     <!--  MainActivity  -->
     <string name="main_event_header">Events</string>
     <string name="main_focus_header">Focus</string>
-    <string name="main_focus_img_desc">Focus</string>
     <string name="main_no_focus_record">No record</string>
     <string name="main_focus_duration_indicator">Focus duration</string>
     <string name="main_completion_time_indicator">Completion time</string>
@@ -49,8 +48,6 @@
     <string name="main_no_summary_tv_text">No summary</string>
     <string name="main_have_sum_toast">You\'ve already summarized this day</string>
     <string name="main_sum_not_today_toast">The day you summarize is not today</string>
-    <string name="main_fab_desc">Position today</string>
-    <string name="main_settings_img_desc">Settings</string>
 
     <!--  EventDialogFragment  -->
     <string name="event_dialog_title">New Event</string>
@@ -94,11 +91,15 @@
     <string name="hm_picker_minute_indicator">m</string>
     <string name="hm_picker_hour_indicator">h</string>
 
+    <!--  ClearDialogFragment  -->
+    <string name="clear_dialog_title">Clear Data</string>
+    <string name="clear_events_option">Events</string>
+    <string name="clear_focus_records_option">Focus records</string>
+    <string name="clear_plans_option">Plans</string>
+    <string name="clear_summary_option">Summary</string>
+
     <string name="event_reminder_activated_text">Event reminder activated</string>
     <string name="event_reminder_activated_title">Event Reminder</string>
-
-    <string name="cancel_img_desc">Cancel</string>
-    <string name="confirm_img_desc">Confirm</string>
 
     <plurals name="interval_day_format">
         <item quantity="one">Every %d day</item>

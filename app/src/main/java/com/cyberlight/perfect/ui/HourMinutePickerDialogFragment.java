@@ -17,20 +17,22 @@ import com.cyberlight.perfect.widget.IntegerWheelPicker;
 
 public class HourMinutePickerDialogFragment extends DialogFragment {
     public static final String TAG = "HourMinutePickerDialogFragment";
-    public static final String HM_REQUEST_KEY = "hm_request_key";
+    private static final String HM_REQUEST_KEY = "hm_request_key";
 
     public static final String HM_HOUR_KEY = "hm_hour_key";
     public static final String HM_MINUTE_KEY = "hm_minute_key";
 
+    private String mRequestKey;
     private int mSelectedHour;
     private int mSelectedMinute;
 
     public HourMinutePickerDialogFragment() {
     }
 
-    public static HourMinutePickerDialogFragment newInstance(int hour, int minute) {
+    public static HourMinutePickerDialogFragment newInstance(String requestKey, int hour, int minute) {
         HourMinutePickerDialogFragment fragment = new HourMinutePickerDialogFragment();
         Bundle bundle = new Bundle();
+        bundle.putString(HM_REQUEST_KEY, requestKey);
         bundle.putInt(HM_HOUR_KEY, hour);
         bundle.putInt(HM_MINUTE_KEY, minute);
         fragment.setArguments(bundle);
@@ -42,10 +44,12 @@ public class HourMinutePickerDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Bundle bundle = getArguments();
         if (bundle != null) {
+            mRequestKey = bundle.getString(HM_REQUEST_KEY);
             mSelectedHour = bundle.getInt(HM_HOUR_KEY);
             mSelectedMinute = bundle.getInt(HM_MINUTE_KEY);
         }
         if (savedInstanceState != null) {
+            mRequestKey = savedInstanceState.getString(HM_REQUEST_KEY);
             mSelectedHour = savedInstanceState.getInt(HM_HOUR_KEY);
             mSelectedMinute = savedInstanceState.getInt(HM_MINUTE_KEY);
         }
@@ -68,7 +72,7 @@ public class HourMinutePickerDialogFragment extends DialogFragment {
             Bundle result = new Bundle();
             result.putInt(HM_HOUR_KEY, mSelectedHour);
             result.putInt(HM_MINUTE_KEY, mSelectedMinute);
-            getParentFragmentManager().setFragmentResult(HM_REQUEST_KEY, result);
+            getParentFragmentManager().setFragmentResult(mRequestKey, result);
             dismiss();
         });
         // 设置对话框
@@ -87,6 +91,7 @@ public class HourMinutePickerDialogFragment extends DialogFragment {
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putString(HM_REQUEST_KEY, mRequestKey);
         outState.putInt(HM_HOUR_KEY, mSelectedHour);
         outState.putInt(HM_MINUTE_KEY, mSelectedMinute);
         super.onSaveInstanceState(outState);

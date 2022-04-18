@@ -20,13 +20,14 @@ import androidx.preference.SwitchPreferenceCompat;
 
 import com.cyberlight.perfect.R;
 import com.cyberlight.perfect.constant.SettingConstants;
+import com.cyberlight.perfect.util.DbContract;
 import com.cyberlight.perfect.util.DbUtil;
 
 @SuppressLint("BatteryLife")
 public class SettingsActivity extends AppCompatActivity {
 
     private static final String RESET_ALL_SETTINGS_REQUEST_KEY = "reset_all_settings_request_key";
-    private static final String CLEAR_ALL_DATA_REQUEST_KEY = "clear_all_data_request_key";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,75 +62,75 @@ public class SettingsActivity extends AppCompatActivity {
             SwitchPreferenceCompat flashlightPref = findPreference(SettingConstants.KEY_FLASHLIGHT);
             SwitchPreferenceCompat strictTimePref = findPreference(SettingConstants.KEY_STRICT_TIME);
             SwitchPreferenceCompat keepScreenOnPref = findPreference(SettingConstants.KEY_KEEP_SCREEN_ON);
-            Preference clearAllDataPref = findPreference("clear_all_data");
-            Preference resetPref = findPreference("reset_all_settings");
-            Preference ignoreBatteryOptimizationPref = findPreference("ignore_battery_optimization");
-            Preference manageStartupAppsPref = findPreference("manage_startup_apps");
+            SwitchPreferenceCompat manageBedtimePref = findPreference(SettingConstants.KEY_MANAGE_BEDTIME);
+            Preference wakeUpPref = findPreference(SettingConstants.KEY_WAKE_UP);
+            Preference fallAsleepPref = findPreference(SettingConstants.KEY_FALL_ASLEEP);
+            Preference clearDataPref = findPreference(SettingConstants.KEY_CLEAR_DATA);
+            Preference resetPref = findPreference(SettingConstants.KEY_RESET_ALL_SETTINGS);
+            Preference ignoreBatteryOptimizationPref = findPreference(SettingConstants.KEY_IGNORE_BATTERY_OPTIMIZATION);
+            Preference manageStartupAppsPref = findPreference(SettingConstants.KEY_MANAGE_STARTUP_APPS);
 
             // 检查各个Preference是否存在
             if (focusDurationPref == null || soundPref == null || vibrationPref == null ||
                     flashlightPref == null || strictTimePref == null || keepScreenOnPref == null ||
-                    clearAllDataPref == null || resetPref == null
-                    || ignoreBatteryOptimizationPref == null || manageStartupAppsPref == null)
+                    manageBedtimePref == null || wakeUpPref == null || fallAsleepPref == null ||
+                    clearDataPref == null || resetPref == null ||
+                    ignoreBatteryOptimizationPref == null || manageStartupAppsPref == null)
                 return;
 
             // 设置几个自定义Preference的点击监听
             FragmentManager fragmentManager = getChildFragmentManager();
-            clearAllDataPref.setOnPreferenceClickListener(preference -> {
-                if (fragmentManager.findFragmentByTag(ConfirmDialogFragment.TAG) == null) {
-                    DialogFragment confirmDialogFragment = ConfirmDialogFragment.newInstance(
-                            getString(R.string.settings_clear_all_data_confirm_dialog_title),
-                            getString(R.string.settings_clear_all_data_confirm_dialog_content),
-                            getString(R.string.dialog_btn_yes),
-                            getString(R.string.dialog_btn_no),
-                            CLEAR_ALL_DATA_REQUEST_KEY
-                    );
-                    confirmDialogFragment.show(fragmentManager, ConfirmDialogFragment.TAG);
+            wakeUpPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    // fixme
+                    return false;
+                }
+            });
+            fallAsleepPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    // fixme
+                    return false;
+                }
+            });
+            clearDataPref.setOnPreferenceClickListener(preference -> {
+                if (fragmentManager.findFragmentByTag(ClearDialogFragment.TAG) == null) {
+                    DialogFragment dialogFragment = new ClearDialogFragment();
+                    dialogFragment.show(fragmentManager, ClearDialogFragment.TAG);
                 }
                 return false;
             });
             resetPref.setOnPreferenceClickListener(preference -> {
                 if (fragmentManager.findFragmentByTag(ConfirmDialogFragment.TAG) == null) {
-                    DialogFragment confirmDialogFragment = ConfirmDialogFragment.newInstance(
+                    DialogFragment dialogFragment = ConfirmDialogFragment.newInstance(
+                            RESET_ALL_SETTINGS_REQUEST_KEY,
                             getString(R.string.settings_reset_confirm_dialog_title),
                             getString(R.string.settings_reset_confirm_dialog_content),
                             getString(R.string.dialog_btn_yes),
-                            getString(R.string.dialog_btn_no),
-                            RESET_ALL_SETTINGS_REQUEST_KEY
+                            getString(R.string.dialog_btn_no)
                     );
-                    confirmDialogFragment.show(fragmentManager, ConfirmDialogFragment.TAG);
+                    dialogFragment.show(fragmentManager, ConfirmDialogFragment.TAG);
                 }
                 return false;
             });
             ignoreBatteryOptimizationPref.setOnPreferenceClickListener(preference -> {
                 PowerManager powerManager = (PowerManager) context.getSystemService(POWER_SERVICE);
                 if (!powerManager.isIgnoringBatteryOptimizations(context.getPackageName())) {
-                    Intent intent = new Intent();
-                    intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                    Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
                     intent.setData(Uri.parse("package:" + context.getPackageName()));
-                    startActivity(intent);
+                    if (intent.resolveActivity(context.getPackageManager()) != null)
+                        startActivity(intent);
                 }
                 return false;
             });
             manageStartupAppsPref.setOnPreferenceClickListener(preference -> {
-                Intent intent = new Intent();
-                ComponentName componentName = new ComponentName(
-                        "com.android.settings",
-                        "com.android.settings.Settings$AppAndNotificationDashboardActivity"
-                );
-                intent.setComponent(componentName);
+                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                intent.setData(Uri.parse("package:" + context.getPackageName()));
                 if (intent.resolveActivity(context.getPackageManager()) != null)
                     startActivity(intent);
                 return false;
             });
-            // 监听清空数据对话框和重置设置对话框的返回结果
-            fragmentManager.setFragmentResultListener(CLEAR_ALL_DATA_REQUEST_KEY,
-                    this, (requestKey, result) -> {
-                        if (result.getInt(ConfirmDialogFragment.CONFIRM_WHICH_KEY) ==
-                                ConfirmDialogFragment.CONFIRM_POSITIVE)
-                            // 删除所有数据
-                            DbUtil.truncateAllTables(context);
-                    });
             fragmentManager.setFragmentResultListener(RESET_ALL_SETTINGS_REQUEST_KEY,
                     this, (requestKey, result) -> {
                         if (result.getInt(ConfirmDialogFragment.CONFIRM_WHICH_KEY) ==
@@ -141,6 +142,7 @@ public class SettingsActivity extends AppCompatActivity {
                             flashlightPref.setChecked(SettingConstants.DEFAULT_FLASHLIGHT_VALUE);
                             strictTimePref.setChecked(SettingConstants.DEFAULT_STRICT_TIME_VALUE);
                             keepScreenOnPref.setChecked(SettingConstants.DEFAULT_KEEP_SCREEN_ON_VALUE);
+                            manageBedtimePref.setChecked(SettingConstants.DEFAULT_MANAGE_BEDTIME_VALUE);
                         }
                     });
         }

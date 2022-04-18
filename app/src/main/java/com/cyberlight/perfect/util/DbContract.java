@@ -2,6 +2,11 @@ package com.cyberlight.perfect.util;
 
 import android.provider.BaseColumns;
 
+import androidx.annotation.StringDef;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
  * 数据库协定类，协定数据库名、版本，
  * 并为每个表创建一个静态内部类，在类
@@ -15,6 +20,15 @@ public final class DbContract {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "perfect.db";
 
+
+    // @interface 创建自定义注解
+    // @Retention 指定注解保留时间
+    // @IntDef 限制取值
+    @StringDef({EventsTable.TABLE_NAME, EventRecordsTable.TABLE_NAME, FocusRecordsTable.TABLE_NAME,
+            PlansTable.TABLE_NAME, PlanRecordsTable.TABLE_NAME, SummaryTable.TABLE_NAME})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface DbTableName {
+    }
 
     public static class EventsTable implements BaseColumns {
 

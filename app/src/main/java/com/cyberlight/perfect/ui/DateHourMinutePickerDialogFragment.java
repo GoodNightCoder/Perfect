@@ -19,17 +19,20 @@ import com.cyberlight.perfect.widget.IntegerWheelPicker;
 
 public class DateHourMinutePickerDialogFragment extends DialogFragment {
 
+    // 用于findFragmentByTag
     public static final String TAG = "DateHourMinutePickerDialogFragment";
 
     // 用于FragmentResultListener传递结果、bundle初始化、
     // savedInstanceState状态恢复等
-    public static final String DHM_REQUEST_KEY = "dhm_request_key";
+    private static final String DHM_REQUEST_KEY = "dhm_request_key";
     public static final String DHM_YEAR_KEY = "dhm_year_key";
     public static final String DHM_MONTH_KEY = "dhm_month_key";
     public static final String DHM_DAY_OF_MONTH_KEY = "dhm_day_of_month_key";
     public static final String DHM_HOUR_KEY = "dhm_hour_key";
     public static final String DHM_MINUTE_KEY = "dhm_minute_key";
 
+    private String mRequestKey;
+    //当前选中的年月日时分
     private int mSelectedYear;
     private int mSelectedMonth;
     private int mSelectedDayOfMonth;
@@ -39,10 +42,16 @@ public class DateHourMinutePickerDialogFragment extends DialogFragment {
     public DateHourMinutePickerDialogFragment() {
     }
 
-    public static DateHourMinutePickerDialogFragment newInstance(int year, int month, int dayOfMonth
-            , int hour, int minute) {
+    // 创建DateHourMinutePickerDialogFragment对象，并设置初始值
+    public static DateHourMinutePickerDialogFragment newInstance(String requestKey,
+                                                                 int year,
+                                                                 int month,
+                                                                 int dayOfMonth,
+                                                                 int hour,
+                                                                 int minute) {
         DateHourMinutePickerDialogFragment fragment = new DateHourMinutePickerDialogFragment();
         Bundle bundle = new Bundle();
+        bundle.putString(DHM_REQUEST_KEY, requestKey);
         bundle.putInt(DHM_YEAR_KEY, year);
         bundle.putInt(DHM_MONTH_KEY, month);
         bundle.putInt(DHM_DAY_OF_MONTH_KEY, dayOfMonth);
@@ -55,9 +64,10 @@ public class DateHourMinutePickerDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // 获取并设置初始时间
+        // 获取并设置初始值
         Bundle bundle = getArguments();
         if (bundle != null) {
+            mRequestKey = bundle.getString(DHM_REQUEST_KEY);
             mSelectedYear = bundle.getInt(DHM_YEAR_KEY);
             mSelectedMonth = bundle.getInt(DHM_MONTH_KEY);
             mSelectedDayOfMonth = bundle.getInt(DHM_DAY_OF_MONTH_KEY);
@@ -66,6 +76,7 @@ public class DateHourMinutePickerDialogFragment extends DialogFragment {
         }
         // 恢复对话框状态
         if (savedInstanceState != null) {
+            mRequestKey = savedInstanceState.getString(DHM_REQUEST_KEY);
             mSelectedYear = savedInstanceState.getInt(DHM_YEAR_KEY);
             mSelectedMonth = savedInstanceState.getInt(DHM_MONTH_KEY);
             mSelectedDayOfMonth = savedInstanceState.getInt(DHM_DAY_OF_MONTH_KEY);
@@ -75,7 +86,7 @@ public class DateHourMinutePickerDialogFragment extends DialogFragment {
         // 设置对话框布局
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_dhm_picker, null);
-        // 将初始时间赋给日期指示textView
+        // 将初始日期赋给日期指示textView
         TextView mIndicatorTv =
                 view.findViewById(R.id.dialog_dhm_indicator_tv);
         mIndicatorTv.setText(DateTimeFormatUtil
@@ -98,29 +109,33 @@ public class DateHourMinutePickerDialogFragment extends DialogFragment {
         });
         mHourWp.setOnValueSelectedListener(value -> mSelectedHour = value);
         mMinuteWp.setOnValueSelectedListener(value -> mSelectedMinute = value);
-        // 设置取消和确认按钮
+        // 设置对话框的取消、确认按钮
         TextView mCancelTv = view.findViewById(R.id.dialog_dhm_cancel_tv);
         TextView mConfirmTv = view.findViewById(R.id.dialog_dhm_confirm_tv);
         mCancelTv.setOnClickListener(v -> dismiss());
         mConfirmTv.setOnClickListener(v -> {
-            // 将对话框选择的时间通过setFragmentResult返回给Activity
+            // 将对话框选择结果通过setFragmentResult返回给Activity
             Bundle result = new Bundle();
             result.putInt(DHM_YEAR_KEY, mSelectedYear);
             result.putInt(DHM_MONTH_KEY, mSelectedMonth);
             result.putInt(DHM_DAY_OF_MONTH_KEY, mSelectedDayOfMonth);
             result.putInt(DHM_HOUR_KEY, mSelectedHour);
             result.putInt(DHM_MINUTE_KEY, mSelectedMinute);
-            getParentFragmentManager().setFragmentResult(DHM_REQUEST_KEY, result);
+            // 注意此处要使用getParentFragmentManager()
+            getParentFragmentManager().setFragmentResult(mRequestKey, result);
             dismiss();
         });
         // 设置对话框
+        // R.style.SlideBottomAnimDialog是对话框进出动画
         Dialog dialog = new Dialog(getContext(), R.style.SlideBottomAnimDialog);
+        // 设置对话框布局
         dialog.setContentView(view);
+        // 设置对话框样式
         Window window = dialog.getWindow();
         if (window != null) {
             WindowManager.LayoutParams lp = window.getAttributes();
-            lp.gravity = Gravity.BOTTOM; // 靠近底部
-            lp.y = 80;// 与底部距离
+            lp.gravity = Gravity.BOTTOM; // 贴近底部
+            lp.y = 80;// 与底部的距离
             lp.width = getResources().getDisplayMetrics().widthPixels / 8 * 7; // 宽度
             window.setAttributes(lp);
         }
@@ -130,6 +145,7 @@ public class DateHourMinutePickerDialogFragment extends DialogFragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         // 保存对话框状态
+        outState.putString(DHM_REQUEST_KEY, mRequestKey);
         outState.putInt(DHM_YEAR_KEY, mSelectedYear);
         outState.putInt(DHM_MONTH_KEY, mSelectedMonth);
         outState.putInt(DHM_DAY_OF_MONTH_KEY, mSelectedDayOfMonth);

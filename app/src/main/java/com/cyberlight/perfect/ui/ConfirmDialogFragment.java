@@ -27,27 +27,27 @@ public class ConfirmDialogFragment extends DialogFragment {
     private static final String CONFIRM_NEGATIVE_TEXT_KEY = "confirm_negative_text_key";
     private static final String CONFIRM_REQUEST_KEY = "confirm_request_key";
 
-    private String title;
-    private String message;
-    private String positiveText;
-    private String negativeText;
-    private String requestKey;
+    private String mTitle;
+    private String mContent;
+    private String mPositiveText;
+    private String mNegativeText;
+    private String mRequestKey;
 
     public ConfirmDialogFragment() {
     }
 
-    public static ConfirmDialogFragment newInstance(String title,
-                                                    String message,
+    public static ConfirmDialogFragment newInstance(String requestKey,
+                                                    String title,
+                                                    String content,
                                                     String positiveText,
-                                                    String negativeText,
-                                                    String requestKey) {
+                                                    String negativeText) {
         ConfirmDialogFragment fragment = new ConfirmDialogFragment();
         Bundle bundle = new Bundle();
+        bundle.putString(CONFIRM_REQUEST_KEY, requestKey);
         bundle.putString(CONFIRM_TITLE_KEY, title);
-        bundle.putString(CONFIRM_CONTENT_KEY, message);
+        bundle.putString(CONFIRM_CONTENT_KEY, content);
         bundle.putString(CONFIRM_POSITIVE_TEXT_KEY, positiveText);
         bundle.putString(CONFIRM_NEGATIVE_TEXT_KEY, negativeText);
-        bundle.putString(CONFIRM_REQUEST_KEY, requestKey);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -57,18 +57,18 @@ public class ConfirmDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Bundle bundle = getArguments();
         if (bundle != null) {
-            title = bundle.getString(CONFIRM_TITLE_KEY);
-            message = bundle.getString(CONFIRM_CONTENT_KEY);
-            positiveText = bundle.getString(CONFIRM_POSITIVE_TEXT_KEY);
-            negativeText = bundle.getString(CONFIRM_NEGATIVE_TEXT_KEY);
-            requestKey = bundle.getString(CONFIRM_REQUEST_KEY);
+            mRequestKey = bundle.getString(CONFIRM_REQUEST_KEY);
+            mTitle = bundle.getString(CONFIRM_TITLE_KEY);
+            mContent = bundle.getString(CONFIRM_CONTENT_KEY);
+            mPositiveText = bundle.getString(CONFIRM_POSITIVE_TEXT_KEY);
+            mNegativeText = bundle.getString(CONFIRM_NEGATIVE_TEXT_KEY);
         }
         if (savedInstanceState != null) {
-            title = savedInstanceState.getString(CONFIRM_TITLE_KEY);
-            message = savedInstanceState.getString(CONFIRM_CONTENT_KEY);
-            positiveText = savedInstanceState.getString(CONFIRM_POSITIVE_TEXT_KEY);
-            negativeText = savedInstanceState.getString(CONFIRM_NEGATIVE_TEXT_KEY);
-            requestKey = savedInstanceState.getString(CONFIRM_REQUEST_KEY);
+            mRequestKey = savedInstanceState.getString(CONFIRM_REQUEST_KEY);
+            mTitle = savedInstanceState.getString(CONFIRM_TITLE_KEY);
+            mContent = savedInstanceState.getString(CONFIRM_CONTENT_KEY);
+            mPositiveText = savedInstanceState.getString(CONFIRM_POSITIVE_TEXT_KEY);
+            mNegativeText = savedInstanceState.getString(CONFIRM_NEGATIVE_TEXT_KEY);
         }
         // 设置布局
         LayoutInflater inflater = requireActivity().getLayoutInflater();
@@ -77,20 +77,20 @@ public class ConfirmDialogFragment extends DialogFragment {
         TextView mContentTv = view.findViewById(R.id.dialog_confirm_content_tv);
         TextView mNegativeTv = view.findViewById(R.id.dialog_confirm_negative_tv);
         TextView mPositiveTv = view.findViewById(R.id.dialog_confirm_positive_tv);
-        mTitleTv.setText(title);
-        mContentTv.setText(message);
-        mPositiveTv.setText(positiveText);
+        mTitleTv.setText(mTitle);
+        mContentTv.setText(mContent);
+        mPositiveTv.setText(mPositiveText);
         mPositiveTv.setOnClickListener(v -> {
             Bundle result = new Bundle();
             result.putInt(CONFIRM_WHICH_KEY, CONFIRM_POSITIVE);
-            getParentFragmentManager().setFragmentResult(requestKey, result);
+            getParentFragmentManager().setFragmentResult(mRequestKey, result);
             dismiss();
         });
-        mNegativeTv.setText(negativeText);
+        mNegativeTv.setText(mNegativeText);
         mNegativeTv.setOnClickListener(v -> {
             Bundle result = new Bundle();
             result.putInt(CONFIRM_WHICH_KEY, CONFIRM_NEGATIVE);
-            getParentFragmentManager().setFragmentResult(requestKey, result);
+            getParentFragmentManager().setFragmentResult(mRequestKey, result);
             dismiss();
         });
 
@@ -108,11 +108,11 @@ public class ConfirmDialogFragment extends DialogFragment {
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putString(CONFIRM_TITLE_KEY, title);
-        outState.putString(CONFIRM_CONTENT_KEY, message);
-        outState.putString(CONFIRM_POSITIVE_TEXT_KEY, positiveText);
-        outState.putString(CONFIRM_NEGATIVE_TEXT_KEY, negativeText);
-        outState.putString(CONFIRM_REQUEST_KEY, requestKey);
+        outState.putString(CONFIRM_REQUEST_KEY, mRequestKey);
+        outState.putString(CONFIRM_TITLE_KEY, mTitle);
+        outState.putString(CONFIRM_CONTENT_KEY, mContent);
+        outState.putString(CONFIRM_POSITIVE_TEXT_KEY, mPositiveText);
+        outState.putString(CONFIRM_NEGATIVE_TEXT_KEY, mNegativeText);
         super.onSaveInstanceState(outState);
     }
 

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_dialog_rc_30"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/dialog_clear_title_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="15dp"
+        android:text="@string/clear_dialog_title"
+        android:textAppearance="@style/TextAppearance.Perfect.DialogTitle" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:scrollbars="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="30dp"
+            android:paddingVertical="12dp">
+
+            <CheckBox
+                android:id="@+id/dialog_clear_events_check_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/clear_events_option"
+                android:textAppearance="@style/TextAppearance.Perfect.DialogContent" />
+
+            <CheckBox
+                android:id="@+id/dialog_clear_focus_records_check_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/clear_focus_records_option"
+                android:textAppearance="@style/TextAppearance.Perfect.DialogContent" />
+
+            <CheckBox
+                android:id="@+id/dialog_clear_plans_check_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/clear_plans_option"
+                android:textAppearance="@style/TextAppearance.Perfect.DialogContent" />
+
+            <CheckBox
+                android:id="@+id/dialog_clear_summary_check_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/clear_summary_option"
+                android:textAppearance="@style/TextAppearance.Perfect.DialogContent" />
+        </LinearLayout>
+
+    </ScrollView>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/dialog_clear_cancel_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_btn_rc_100"
+            android:gravity="center"
+            android:paddingVertical="6dp"
+            android:text="@string/dialog_btn_cancel"
+            android:textAppearance="@style/TextAppearance.Perfect.DialogButton" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:layout_marginVertical="5dp"
+            android:background="@color/gray" />
+
+        <TextView
+            android:id="@+id/dialog_clear_confirm_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_btn_rc_100"
+            android:gravity="center"
+            android:paddingVertical="6dp"
+            android:text="@string/dialog_btn_confirm"
+            android:textAppearance="@style/TextAppearance.Perfect.DialogButton" />
+
+    </LinearLayout>
+</LinearLayout>

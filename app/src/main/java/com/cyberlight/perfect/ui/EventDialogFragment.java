@@ -2,6 +2,7 @@ package com.cyberlight.perfect.ui;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -42,6 +43,9 @@ public class EventDialogFragment extends DialogFragment {
     private static final String DURATION_KEY = "duration_key";
     private static final String INTERVAL_UNIT_KEY = "interval_unit_key";
     private static final String INTERVAL_VALUE_KEY = "interval_value_key";
+    private static final String PICK_DHM_REQUEST_KEY = "pick_dhm_request_key";
+    private static final String PICK_HM_REQUEST_KEY = "pick_hm_request_key";
+    private static final String PICK_TU_REQUEST_KEY = "pick_tu_request_key";
 
     private LocalDateTime mStartDateTime;
     private long mDuration;
@@ -56,8 +60,23 @@ public class EventDialogFragment extends DialogFragment {
     public EventDialogFragment() {
     }
 
-    public static EventDialogFragment newInstance() {
-        return new EventDialogFragment();
+    private DialogInterface.OnDismissListener mOnDismissListener;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            mOnDismissListener = (DialogInterface.OnDismissListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(requireActivity()
+                    + " must implement DialogInterface.OnDismissListener");
+        }
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        mOnDismissListener.onDismiss(dialog);
+        super.onDismiss(dialog);
     }
 
     @NonNull
@@ -105,7 +124,8 @@ public class EventDialogFragment extends DialogFragment {
             int initMinute = mStartDateTime.getMinute();
             if (fragmentManager.findFragmentByTag(DateHourMinutePickerDialogFragment.TAG) == null) {
                 DialogFragment dateHourMinutePickerDialogFragment =
-                        DateHourMinutePickerDialogFragment.newInstance(initYear, initMonth,
+                        DateHourMinutePickerDialogFragment.newInstance(
+                                PICK_DHM_REQUEST_KEY, initYear, initMonth,
                                 initDayOfMonth, initHour, initMinute);
                 dateHourMinutePickerDialogFragment.show(fragmentManager,
                         DateHourMinutePickerDialogFragment.TAG);
@@ -120,7 +140,8 @@ public class EventDialogFragment extends DialogFragment {
             int initMinute = min % 60;
             if (fragmentManager.findFragmentByTag(HourMinutePickerDialogFragment.TAG) == null) {
                 DialogFragment hourMinutePickerDialogFragment =
-                        HourMinutePickerDialogFragment.newInstance(initHour, initMinute);
+                        HourMinutePickerDialogFragment.newInstance(
+                                PICK_HM_REQUEST_KEY, initHour, initMinute);
                 hourMinutePickerDialogFragment.show(fragmentManager,
                         HourMinutePickerDialogFragment.TAG);
             }
@@ -131,7 +152,8 @@ public class EventDialogFragment extends DialogFragment {
         mRepeatContentTv.setOnClickListener(v -> {
             if (fragmentManager.findFragmentByTag(TimeOfUnitPickerDialogFragment.TAG) == null) {
                 DialogFragment timeOfUnitPickerDialogFragment =
-                        TimeOfUnitPickerDialogFragment.newInstance(mIntervalValue, mIntervalUnit);
+                        TimeOfUnitPickerDialogFragment.newInstance(PICK_TU_REQUEST_KEY,
+                                mIntervalValue, mIntervalUnit);
                 timeOfUnitPickerDialogFragment.show(fragmentManager,
                         TimeOfUnitPickerDialogFragment.TAG);
             }
@@ -195,8 +217,7 @@ public class EventDialogFragment extends DialogFragment {
             dismiss();
         });
         // 设置FragmentResultListener获取选择结果
-        fragmentManager.setFragmentResultListener(
-                DateHourMinutePickerDialogFragment.DHM_REQUEST_KEY, this,
+        fragmentManager.setFragmentResultListener(PICK_DHM_REQUEST_KEY, this,
                 (requestKey, result) -> {
                     int year = result.getInt(DateHourMinutePickerDialogFragment.DHM_YEAR_KEY);
                     int month = result.getInt(DateHourMinutePickerDialogFragment.DHM_MONTH_KEY);
@@ -207,14 +228,14 @@ public class EventDialogFragment extends DialogFragment {
                     mStartContentTv.setText(DateTimeFormatUtil.getReadableDateHourMinute(mStartDateTime));
                 }
         );
-        fragmentManager.setFragmentResultListener(HourMinutePickerDialogFragment.HM_REQUEST_KEY,
+        fragmentManager.setFragmentResultListener(PICK_HM_REQUEST_KEY,
                 this, (requestKey, result) -> {
                     int hour = result.getInt(HourMinutePickerDialogFragment.HM_HOUR_KEY);
                     int minute = result.getInt(HourMinutePickerDialogFragment.HM_MINUTE_KEY);
                     mDuration = (hour * 60L + minute) * 60000;
                     mDurationContentTv.setText(getDurationStr());
                 });
-        fragmentManager.setFragmentResultListener(TimeOfUnitPickerDialogFragment.TU_REQUEST_KEY,
+        fragmentManager.setFragmentResultListener(PICK_TU_REQUEST_KEY,
                 this, (requestKey, result) -> {
                     mIntervalValue = result.getInt(TimeOfUnitPickerDialogFragment.TU_VALUE_KEY);
                     mIntervalUnit = result.getInt(TimeOfUnitPickerDialogFragment.TU_UNIT_KEY);

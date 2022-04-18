@@ -18,27 +18,39 @@ import java.util.List;
 public class DbUtil {
     private static final String TAG = "DbUtil";
 
-    public static void truncateAllTables(Context context) {
+    /**
+     * 清空指定数据库表的数据
+     * tableName必须是如下数据库表名：
+     * <ul>
+     *  <li>{@link DbContract.EventsTable#TABLE_NAME}</li>
+     *  <li>{@link DbContract.EventRecordsTable#TABLE_NAME}</li>
+     *  <li>{@link DbContract.FocusRecordsTable#TABLE_NAME}</li>
+     *  <li>{@link DbContract.PlansTable#TABLE_NAME}</li>
+     *  <li>{@link DbContract.PlanRecordsTable#TABLE_NAME}</li>
+     *  <li>{@link DbContract.SummaryTable#TABLE_NAME}</li>
+     * </ul>
+     *
+     * @param context   用于创建DbHelper的context对象
+     * @param tableName 要清空数据的数据库表名
+     */
+    public static void truncateTable(Context context, @DbContract.DbTableName String tableName) {
         DbHelper dbHelper = new DbHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.execSQL("DELETE FROM " + DbContract.EventsTable.TABLE_NAME + ";");
-        db.execSQL("DELETE FROM " + DbContract.EventRecordsTable.TABLE_NAME + ";");
-        db.execSQL("DELETE FROM " + DbContract.FocusRecordsTable.TABLE_NAME + ";");
-        db.execSQL("DELETE FROM " + DbContract.PlansTable.TABLE_NAME + ";");
-        db.execSQL("DELETE FROM " + DbContract.PlanRecordsTable.TABLE_NAME + ";");
-        db.execSQL("DELETE FROM " + DbContract.SummaryTable.TABLE_NAME + ";");
-
-        db.execSQL("DELETE FROM sqlite_sequence WHERE name = '" + DbContract.EventsTable.TABLE_NAME + "';");
-        db.execSQL("DELETE FROM sqlite_sequence WHERE name = '" + DbContract.EventRecordsTable.TABLE_NAME + "';");
-        db.execSQL("DELETE FROM sqlite_sequence WHERE name = '" + DbContract.FocusRecordsTable.TABLE_NAME + "';");
-        db.execSQL("DELETE FROM sqlite_sequence WHERE name = '" + DbContract.PlansTable.TABLE_NAME + "';");
-        db.execSQL("DELETE FROM sqlite_sequence WHERE name = '" + DbContract.PlanRecordsTable.TABLE_NAME + "';");
-        db.execSQL("DELETE FROM sqlite_sequence WHERE name = '" + DbContract.SummaryTable.TABLE_NAME + "';");
-
+        db.execSQL("DELETE FROM " + tableName + ";");
+        db.execSQL("DELETE FROM sqlite_sequence WHERE name = '" + tableName + "';");
         db.execSQL("VACUUM");
-        Log.d(TAG, "Truncate succeeded");
     }
 
+    /**
+     * 添加事件到事件表
+     *
+     * @param context  用于创建DbHelper的context对象
+     * @param title    事件标题
+     * @param start    事件起始时间(EpochMillis)
+     * @param duration 事件持续时长(ms)
+     * @param interval 事件重复间隔(ms)
+     * @return 事件是否添加成功
+     */
     public static boolean addEvent(Context context,
                                    String title,
                                    long start,
@@ -46,7 +58,6 @@ public class DbUtil {
                                    long interval) {
         DbHelper dbHelper = new DbHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        //添加Event到数据库
         ContentValues values = new ContentValues();
         values.put(DbContract.EventsTable.COLUMN_NAME_TITLE, title);
         values.put(DbContract.EventsTable.COLUMN_NAME_START, start);
@@ -56,6 +67,12 @@ public class DbUtil {
         return newRowId != -1;
     }
 
+    /**
+     * 获取事件表中所有事件
+     *
+     * @param context 用于创建DbHelper的context对象
+     * @return 包含事件表中所有事件的List
+     */
     public static List<Event> getDbEvents(Context context) {
         DbHelper dbHelper = new DbHelper(context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();

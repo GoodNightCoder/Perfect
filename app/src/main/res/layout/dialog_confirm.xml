@@ -9,16 +9,17 @@
         android:id="@+id/dialog_confirm_title_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
         android:layout_marginStart="26dp"
-        android:textAppearance="@style/TextAppearance.Perfect.DialogTitle"/>
+        android:layout_marginTop="15dp"
+        android:textAppearance="@style/TextAppearance.Perfect.DialogTitle" />
 
     <TextView
         android:id="@+id/dialog_confirm_content_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="15dp"
         android:layout_marginHorizontal="26dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="15dp"
         android:textAppearance="@style/TextAppearance.Perfect.DialogContent" />
 
     <LinearLayout

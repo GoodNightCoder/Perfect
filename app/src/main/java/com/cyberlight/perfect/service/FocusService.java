@@ -34,7 +34,7 @@ import java.text.NumberFormat;
 
 public class FocusService extends Service {
     private static final String TAG = "FocusService";
-    private static final boolean ENABLE_TEST_MODE = true;
+    private static final boolean ENABLE_TEST_MODE = false;
 
     // 闪光、振动提醒的时间
     private static final long[] RELAX_VIBRATION_FLASHLIGHT_TIMINGS = {0, 100, 100, 100, 100, 100, 100, 100};

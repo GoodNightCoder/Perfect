@@ -17,18 +17,20 @@ import com.cyberlight.perfect.widget.IntegerWheelPicker;
 
 public class PlanTargetPickerDialogFragment extends DialogFragment {
     public static final String TAG = "PlanTargetPickerDialogFragment";
-    public static final String PT_REQUEST_KEY = "pt_request_key";
+    private static final String PT_REQUEST_KEY = "pt_request_key";
 
     public static final String PT_TARGET_KEY = "pt_target_key";
 
+    private String mRequestKey;
     private int mSelectedTarget;
 
     public PlanTargetPickerDialogFragment() {
     }
 
-    public static PlanTargetPickerDialogFragment newInstance(int target) {
+    public static PlanTargetPickerDialogFragment newInstance(String requestKey, int target) {
         PlanTargetPickerDialogFragment fragment = new PlanTargetPickerDialogFragment();
         Bundle bundle = new Bundle();
+        bundle.putString(PT_REQUEST_KEY, requestKey);
         bundle.putInt(PT_TARGET_KEY, target);
         fragment.setArguments(bundle);
         return fragment;
@@ -39,9 +41,11 @@ public class PlanTargetPickerDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Bundle bundle = getArguments();
         if (bundle != null) {
+            mRequestKey = bundle.getString(PT_REQUEST_KEY);
             mSelectedTarget = bundle.getInt(PT_TARGET_KEY);
         }
         if (savedInstanceState != null) {
+            mRequestKey = savedInstanceState.getString(PT_REQUEST_KEY);
             mSelectedTarget = savedInstanceState.getInt(PT_TARGET_KEY);
         }
         // 设置布局
@@ -59,7 +63,7 @@ public class PlanTargetPickerDialogFragment extends DialogFragment {
             //将对话框选择的时间返回给Activity
             Bundle result = new Bundle();
             result.putInt(PT_TARGET_KEY, mSelectedTarget);
-            getParentFragmentManager().setFragmentResult(PT_REQUEST_KEY, result);
+            getParentFragmentManager().setFragmentResult(mRequestKey, result);
             dismiss();
         });
         // 设置对话框
@@ -78,6 +82,7 @@ public class PlanTargetPickerDialogFragment extends DialogFragment {
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putString(PT_REQUEST_KEY, mRequestKey);
         outState.putInt(PT_TARGET_KEY, mSelectedTarget);
         super.onSaveInstanceState(outState);
     }

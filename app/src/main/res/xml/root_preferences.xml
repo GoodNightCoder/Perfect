@@ -2,6 +2,7 @@
 
     <PreferenceCategory app:title="@string/settings_focus_mode_header">
 
+
         <ListPreference
             app:defaultValue="25min"
             app:entries="@array/settings_focus_duration_entries"
@@ -41,12 +42,31 @@
     <PreferenceCategory app:title="@string/settings_reset_header">
 
         <Preference
-            app:key="clear_all_data"
-            app:title="@string/settings_clear_all_data_title" />
+            app:key="clear_data"
+            app:title="@string/settings_clear_title" />
 
         <Preference
             app:key="reset_all_settings"
             app:title="@string/settings_reset_all_settings_title" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Bedtime">
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="manage_bedtime"
+            app:title="@string/settings_manage_bedtime_title" />
+
+        <Preference
+            app:dependency="manage_bedtime"
+            app:key="wake_up"
+            app:title="Wake Up" />
+
+        <Preference
+            app:dependency="manage_bedtime"
+            app:key="fall_asleep"
+            app:title="Fall Asleep" />
 
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_help_header">

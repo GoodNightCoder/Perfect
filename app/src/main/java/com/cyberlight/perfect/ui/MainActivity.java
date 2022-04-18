@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -45,42 +46,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressLint({"NotifyDataSetChanged", "UnspecifiedImmutableFlag"})
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DialogInterface.OnDismissListener {
 
-    // 主页日期选择器
-    private static final String D_REQUEST_KEY = "pick_date";
-    private static final String D_YEAR_KEY = "d_year_key";
-    private static final String D_MONTH_KEY = "d_month_key";
-    private static final String D_DAY_OF_MONTH_KEY = "d_day_of_month_key";
+    private static final String TAG = "MainActivity";
+
+    private static final String PICK_D_REQUEST_KEY = "pick_d_request_key";
 
     // 状态恢复用
     private static final String CUR_EPOCH_DAY_KEY = "cur_epoch_day_key";
     private static final String CUR_POSITION_KEY = "cur_position_key";
     private static final String CUR_SCROLL_Y_KEY = "cur_scroll_y_key";
-
-    /**
-     * 总页数
-     */
     public static final int PAGES_COUNT = 50;
 
-    /**
-     * 当前页序号
-     */
+    // 当前页
     private int curPosition;
-
-    /**
-     * 当前页日期
-     */
+    // 当前页日期
     private LocalDate curDate;
-
-    /**
-     * 当前ViewPager滚动到的位置
-     */
+    // 当前滚动Y位置
     private int curScrollY;
-
-    /**
-     * 各页的日期
-     */
+    // 各页的日期
     private final LocalDate[] pageDates = new LocalDate[PAGES_COUNT];
 
     private TextView mDateTv;
@@ -138,7 +122,8 @@ public class MainActivity extends AppCompatActivity {
             int initMonth = curDate.getMonthValue();
             int initDayOfMonth = curDate.getDayOfMonth();
             if (fragmentManager.findFragmentByTag(DatePickerFragment.TAG) == null) {
-                DialogFragment dialogFragment = DatePickerFragment.newInstance(initYear, initMonth, initDayOfMonth);
+                DialogFragment dialogFragment = DatePickerFragment.newInstance(PICK_D_REQUEST_KEY,
+                        initYear, initMonth, initDayOfMonth);
                 dialogFragment.show(fragmentManager, DatePickerFragment.TAG);
             }
         });
@@ -182,11 +167,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         // 监听日期选择对话框结果
-        fragmentManager.setFragmentResultListener(D_REQUEST_KEY,
+        fragmentManager.setFragmentResultListener(PICK_D_REQUEST_KEY,
                 MainActivity.this, (requestKey, result) -> {
-                    int year = result.getInt(D_YEAR_KEY);
-                    int month = result.getInt(D_MONTH_KEY);
-                    int dayOfMonth = result.getInt(D_DAY_OF_MONTH_KEY);
+                    int year = result.getInt(DatePickerFragment.D_YEAR_KEY);
+                    int month = result.getInt(DatePickerFragment.D_MONTH_KEY);
+                    int dayOfMonth = result.getInt(DatePickerFragment.D_DAY_OF_MONTH_KEY);
                     curDate = LocalDate.of(year, month, dayOfMonth);
                     onDateChanged();
                     updatePageDates(curPosition, curDate);
@@ -199,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // 保证在其他Activity修改了数据后，返回时数据及时更新，比如去EventActivity添加事件后
+        // 保证数据能及时更新，比如去SettingsActivity删除数据后
         pagerAdapter.notifyDataSetChanged();
         // 检查事件提醒是否启用
         checkEventReminder();
@@ -259,21 +244,37 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // 添加事件、计划、总结对话框dismiss监听
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        // 保证数据在添加事件、计划、总结对话框关闭后能及时更新
+        pagerAdapter.notifyDataSetChanged();
+    }
+
     // 注意这个DatePickerFragment只能是public static，否则报错，原因待挖掘
     public static class DatePickerFragment extends DialogFragment
             implements DatePickerDialog.OnDateSetListener {
 
         public static final String TAG = "DatePickerFragment";
 
+        private static final String D_REQUEST_KEY = "d_request_key";
+
+        public static final String D_YEAR_KEY = "d_year_key";
+        public static final String D_MONTH_KEY = "d_month_key";
+        public static final String D_DAY_OF_MONTH_KEY = "d_day_of_month_key";
+
+        private String mRequestKey;
 
         public DatePickerFragment() {
         }
 
-        public static DatePickerFragment newInstance(int year,
+        public static DatePickerFragment newInstance(String requestKey,
+                                                     int year,
                                                      int month,
                                                      int dayOfMonth) {
             DatePickerFragment fragment = new DatePickerFragment();
             Bundle bundle = new Bundle();
+            bundle.putString(D_REQUEST_KEY, requestKey);
             bundle.putInt(D_YEAR_KEY, year);
             bundle.putInt(D_MONTH_KEY, month - 1);
             bundle.putInt(D_DAY_OF_MONTH_KEY, dayOfMonth);
@@ -289,9 +290,13 @@ public class MainActivity extends AppCompatActivity {
             int initMonth = 0;
             int initDayOfMonth = 1;
             if (bundle != null) {
+                mRequestKey = bundle.getString(D_REQUEST_KEY);
                 initYear = bundle.getInt(D_YEAR_KEY);
                 initMonth = bundle.getInt(D_MONTH_KEY);
                 initDayOfMonth = bundle.getInt(D_DAY_OF_MONTH_KEY);
+            }
+            if (savedInstanceState != null) {
+                mRequestKey = savedInstanceState.getString(D_REQUEST_KEY);
             }
             return new DatePickerDialog(getActivity(), this, initYear, initMonth, initDayOfMonth);
         }
@@ -302,7 +307,13 @@ public class MainActivity extends AppCompatActivity {
             result.putInt(D_YEAR_KEY, year);
             result.putInt(D_MONTH_KEY, month + 1);
             result.putInt(D_DAY_OF_MONTH_KEY, dayOfMonth);
-            getParentFragmentManager().setFragmentResult(D_REQUEST_KEY, result);
+            getParentFragmentManager().setFragmentResult(mRequestKey, result);
+        }
+
+        @Override
+        public void onSaveInstanceState(@NonNull Bundle outState) {
+            outState.putString(D_REQUEST_KEY, mRequestKey);
+            super.onSaveInstanceState(outState);
         }
     }
 
@@ -354,7 +365,7 @@ public class MainActivity extends AppCompatActivity {
                 // 对添加事件按钮设置监听
                 mAddEventIv.setOnClickListener(v13 -> {
                     if (fragmentManager.findFragmentByTag(EventDialogFragment.TAG) == null) {
-                        DialogFragment dialogFragment = EventDialogFragment.newInstance();
+                        DialogFragment dialogFragment = new EventDialogFragment();
                         dialogFragment.show(fragmentManager, EventDialogFragment.TAG);
                     }
                 });
@@ -366,7 +377,7 @@ public class MainActivity extends AppCompatActivity {
                 // 对添加计划按钮设置监听
                 mAddPlanIv.setOnClickListener(v12 -> {
                     if (fragmentManager.findFragmentByTag(PlanDialogFragment.TAG) == null) {
-                        DialogFragment dialogFragment = PlanDialogFragment.newInstance();
+                        DialogFragment dialogFragment = new PlanDialogFragment();
                         dialogFragment.show(fragmentManager, PlanDialogFragment.TAG);
                     }
                 });
@@ -385,7 +396,7 @@ public class MainActivity extends AppCompatActivity {
                                 Toast.LENGTH_SHORT);
                     } else {
                         if (fragmentManager.findFragmentByTag(SummaryDialogFragment.TAG) == null) {
-                            DialogFragment dialogFragment = SummaryDialogFragment.newInstance();
+                            DialogFragment dialogFragment = new SummaryDialogFragment();
                             dialogFragment.show(fragmentManager, SummaryDialogFragment.TAG);
                         }
                     }

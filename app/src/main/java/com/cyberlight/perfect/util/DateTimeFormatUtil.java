@@ -110,9 +110,9 @@ public class DateTimeFormatUtil {
         String language = Locale.getDefault().getLanguage();
         String pattern;
         if (language.equals(new Locale("zh").getLanguage())) {
-            pattern = "yyyy年M月d日  HH:mm";
+            pattern = "yyyy年M月d日 HH:mm";
         } else {
-            pattern = "MMM d, yyyy  HH:mm";
+            pattern = "MMM d, yyyy HH:mm";
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         return dateTime.format(formatter);
