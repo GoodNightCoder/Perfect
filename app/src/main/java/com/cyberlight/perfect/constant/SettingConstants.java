@@ -24,4 +24,6 @@ public final class SettingConstants {
     public static final boolean DEFAULT_STRICT_TIME_VALUE = true;
     public static final boolean DEFAULT_KEEP_SCREEN_ON_VALUE = true;
     public static final boolean DEFAULT_MANAGE_BEDTIME_VALUE = false;
+    public static final int DEFAULT_WAKE_UP_VALUE = 25200;
+    public static final int DEFAULT_FALL_ASLEEP_VALUE = 82800;
 }

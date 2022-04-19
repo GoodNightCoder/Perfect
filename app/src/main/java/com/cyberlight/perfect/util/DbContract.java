@@ -16,14 +16,11 @@ public final class DbContract {
     private DbContract() {
     }
 
-    //DB info
+    // DB info
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "perfect.db";
 
-
-    // @interface 创建自定义注解
-    // @Retention 指定注解保留时间
-    // @IntDef 限制取值
+    // 限制表名取值
     @StringDef({EventsTable.TABLE_NAME, EventRecordsTable.TABLE_NAME, FocusRecordsTable.TABLE_NAME,
             PlansTable.TABLE_NAME, PlanRecordsTable.TABLE_NAME, SummaryTable.TABLE_NAME})
     @Retention(RetentionPolicy.SOURCE)

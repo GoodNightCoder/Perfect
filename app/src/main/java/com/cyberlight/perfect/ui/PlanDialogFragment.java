@@ -106,21 +106,18 @@ public class PlanDialogFragment extends DialogFragment {
             EditText mContentEt = view.findViewById(R.id.dialog_plan_content_et);
             String planContent = mContentEt.getText().toString();
             if (planContent.equals("")) {
-                ToastUtil.showToast(
-                        context,
-                        getString(R.string.plan_incomplete_toast),
+                ToastUtil.showToast(context,
+                        R.string.plan_incomplete_toast,
                         Toast.LENGTH_SHORT);
                 return;
             }
             if (DbUtil.addPlan(context, planContent, mTarget)) {
-                ToastUtil.showToast(
-                        context,
-                        getString(R.string.plan_success_toast),
+                ToastUtil.showToast(context,
+                        R.string.plan_success_toast,
                         Toast.LENGTH_SHORT);
             } else {
-                ToastUtil.showToast(
-                        context,
-                        getString(R.string.plan_fail_toast),
+                ToastUtil.showToast(context,
+                        R.string.plan_fail_toast,
                         Toast.LENGTH_SHORT);
             }
             dismiss();

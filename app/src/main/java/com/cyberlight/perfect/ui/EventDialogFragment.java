@@ -167,28 +167,28 @@ public class EventDialogFragment extends DialogFragment {
             // title不能为空
             if (mTitle.equals("")) {
                 ToastUtil.showToast(context,
-                        getString(R.string.event_incomplete_info_toast),
+                        R.string.event_incomplete_info_toast,
                         Toast.LENGTH_SHORT);
                 return;
             }
             // start不允许小于0
             if (mStart < 0) {
                 ToastUtil.showToast(context,
-                        getString(R.string.event_start_time_invalid_toast),
+                        R.string.event_start_time_invalid_toast,
                         Toast.LENGTH_SHORT);
                 return;
             }
             // duration必须大于等于5分钟
             if (mDuration < 300000) {
                 ToastUtil.showToast(context,
-                        getString(R.string.event_duration_invalid_toast),
+                        R.string.event_duration_invalid_toast,
                         Toast.LENGTH_SHORT);
                 return;
             }
             // interval必须大于等于duration
             if (mInterval < mDuration) {
                 ToastUtil.showToast(context,
-                        getString(R.string.event_interval_less_than_duration_toast),
+                        R.string.event_interval_less_than_duration_toast,
                         Toast.LENGTH_SHORT);
                 return;
             }
@@ -200,18 +200,19 @@ public class EventDialogFragment extends DialogFragment {
                 Event ev = events.get(i);
                 if (ev.isTimeConflictWith(mEvent)) {
                     ToastUtil.showToast(context,
-                            getString(R.string.event_time_conflict_toast), Toast.LENGTH_SHORT);
+                            R.string.event_time_conflict_toast,
+                            Toast.LENGTH_SHORT);
                     return;
                 }
             }
             // 添加事件，显示是否成功的消息，退出对话框
             if (DbUtil.addEvent(context, mTitle, mStart, mDuration, mInterval)) {
                 ToastUtil.showToast(context,
-                        getString(R.string.event_success_toast),
+                        R.string.event_success_toast,
                         Toast.LENGTH_SHORT);
             } else {
                 ToastUtil.showToast(context,
-                        getString(R.string.event_fail_toast),
+                        R.string.event_fail_toast,
                         Toast.LENGTH_SHORT);
             }
             dismiss();

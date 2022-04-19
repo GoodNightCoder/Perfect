@@ -100,6 +100,7 @@
 
     <string name="event_reminder_activated_text">Event reminder activated</string>
     <string name="event_reminder_activated_title">Event Reminder</string>
+    <string name="no_matching_activity_toast">No matching activity</string>
 
     <plurals name="interval_day_format">
         <item quantity="one">Every %d day</item>

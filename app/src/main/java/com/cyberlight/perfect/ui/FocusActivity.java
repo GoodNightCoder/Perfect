@@ -301,10 +301,7 @@ public class FocusActivity extends AppCompatActivity {
     private void exitFocus() {
         Intent stopServiceIntent = new Intent(this, FocusService.class);
         stopService(stopServiceIntent);
-        ToastUtil.showToast(
-                this,
-                getString(R.string.focus_exit_toast),
-                Toast.LENGTH_SHORT);
+        ToastUtil.showToast(this, R.string.focus_exit_toast, Toast.LENGTH_SHORT);
         finish();
     }
 

@@ -81,6 +81,16 @@ public class Event {
     }
 
     /**
+     * 获取在指定时间，事件下一次开始时间
+     *
+     * @param specTime 指定时间(ms)
+     * @return 该事件在指定时间之后最近的开始时间
+     */
+    public long getNextStart(long specTime) {
+        return start + getEventOccurNum(specTime) * interval;
+    }
+
+    /**
      * 获取指定时间正在进行的具体事件
      *
      * @param specTime 指定时间(ms)

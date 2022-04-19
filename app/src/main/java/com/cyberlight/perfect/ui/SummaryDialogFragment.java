@@ -99,29 +99,25 @@ public class SummaryDialogFragment extends DialogFragment {
             String review = mReviewEt.getText().toString();
             String memo = mMemoEt.getText().toString();
             if (review.equals("")) {
-                ToastUtil.showToast(
-                        context,
-                        getString(R.string.summary_no_text_toast),
+                ToastUtil.showToast(context,
+                        R.string.summary_no_text_toast,
                         Toast.LENGTH_SHORT);
                 return;
             }
             if (rating == 0) {
-                ToastUtil.showToast(
-                        context,
-                        getString(R.string.summary_no_rating_toast),
+                ToastUtil.showToast(context,
+                        R.string.summary_no_rating_toast,
                         Toast.LENGTH_SHORT);
                 return;
             }
             if (DbUtil.addSummary(context, rating, review, memo,
                     DateTimeFormatUtil.getNeatDate(date))) {
-                ToastUtil.showToast(
-                        context,
-                        getString(R.string.summary_success_toast),
+                ToastUtil.showToast(context,
+                        R.string.summary_success_toast,
                         Toast.LENGTH_SHORT);
             } else {
-                ToastUtil.showToast(
-                        context,
-                        getString(R.string.summary_fail_toast),
+                ToastUtil.showToast(context,
+                        R.string.summary_fail_toast,
                         Toast.LENGTH_SHORT);
             }
             dismiss();

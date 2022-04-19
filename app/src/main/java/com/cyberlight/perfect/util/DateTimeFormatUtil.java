@@ -3,6 +3,7 @@ package com.cyberlight.perfect.util;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -24,6 +25,18 @@ public class DateTimeFormatUtil {
         String pattern = "yyyy-MM-dd";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         return date.format(formatter);
+    }
+
+    /**
+     * 获取位数统一、样式唯一的格式化时分(HH:mm)
+     *
+     * @param time LocalTime对象
+     * @return 位数统一、样式唯一的格式化时分
+     */
+    public static String getNeatHourMinute(LocalTime time) {
+        String pattern = "HH:mm";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+        return time.format(formatter);
     }
 
     /**
@@ -135,6 +148,18 @@ public class DateTimeFormatUtil {
     }
 
     /**
+     * 获取位数统一、样式唯一的格式化时分(HH:mm)
+     *
+     * @param hour   时
+     * @param minute 分
+     * @return 位数统一、样式唯一的格式化时分
+     */
+    public static String getNeatHourMinute(int hour, int minute) {
+        LocalTime time = LocalTime.of(hour, minute);
+        return getNeatHourMinute(time);
+    }
+
+    /**
      * 获取位数统一、样式唯一的格式化日期与时间，包括
      * 年月日时分秒(yyyy-MM-dd HH:mm:ss)
      *
@@ -226,6 +251,17 @@ public class DateTimeFormatUtil {
     public static String getNeatDate(long millis) {
         LocalDate date = Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDate();
         return getNeatDate(date);
+    }
+
+    /**
+     * 获取位数统一、样式唯一的格式化时分(HH:mm)
+     *
+     * @param secondOfDay 从一天的开始算起第几秒
+     * @return 位数统一、样式唯一的格式化时分
+     */
+    public static String getNeatHourMinute(long secondOfDay) {
+        LocalTime time = LocalTime.ofSecondOfDay(secondOfDay);
+        return getNeatHourMinute(time);
     }
 
     /**

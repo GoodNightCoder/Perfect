@@ -36,7 +36,7 @@ public class EventReminderReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG,"收到事件提醒广播");
+        Log.d(TAG, "收到事件提醒广播");
         List<Event> events = DbUtil.getDbEvents(context);
         if (events.size() > 0) {
             // create notification channel
@@ -91,16 +91,11 @@ public class EventReminderReceiver extends BroadcastReceiver {
                 }
             }
             // 判断即将发生的事件并添加定时提醒
-            Event nextEvent = events.get(0);
-            long nextStart = nextEvent.start +
-                    nextEvent.getEventOccurNum(curTimeMillis) * nextEvent.interval;
+            long nextStart = events.get(0).getNextStart(curTimeMillis);
             for (int i = 1; i < events.size(); i++) {
-                Event event = events.get(i);
-                long nextStart_ = event.start +
-                        event.getEventOccurNum(curTimeMillis) * event.interval;
-                if (nextStart_ < nextStart) {
-                    nextEvent = event;
-                    nextStart = nextStart_;
+                long tmp = events.get(i).getNextStart(curTimeMillis);
+                if (tmp < nextStart) {
+                    nextStart = tmp;
                 }
             }
             AlarmManager alarmManager =
@@ -108,14 +103,11 @@ public class EventReminderReceiver extends BroadcastReceiver {
             Intent nextAlarmIntent = new Intent(context, EventReminderReceiver.class);
             nextAlarmIntent.putExtra(IS_FIRST_REMIND_EXTRA_KEY, false);
             nextAlarmIntent.setAction(EVENT_REMINDER_ACTION);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                    context,
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
                     EVENT_REMINDER_REQUEST_CODE,
                     nextAlarmIntent,
-                    PendingIntent.FLAG_CANCEL_CURRENT
-            );
-            alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP, nextStart, pendingIntent);
+                    PendingIntent.FLAG_CANCEL_CURRENT);
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextStart, pendingIntent);
         }
 
     }

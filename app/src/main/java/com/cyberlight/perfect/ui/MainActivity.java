@@ -384,15 +384,12 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
                 // 对添加总结按钮设置监听
                 mAddSummaryIv.setOnClickListener(v1 -> {
                     if (hasSummarized) {
-                        ToastUtil.showToast(
-                                MainActivity.this,
-                                getString(R.string.main_have_sum_toast),
+                        ToastUtil.showToast(MainActivity.this,
+                                R.string.main_have_sum_toast,
                                 Toast.LENGTH_SHORT);
-
                     } else if (!date.equals(LocalDate.now())) {
-                        ToastUtil.showToast(
-                                MainActivity.this,
-                                getString(R.string.main_sum_not_today_toast),
+                        ToastUtil.showToast(MainActivity.this,
+                                R.string.main_sum_not_today_toast,
                                 Toast.LENGTH_SHORT);
                     } else {
                         if (fragmentManager.findFragmentByTag(SummaryDialogFragment.TAG) == null) {

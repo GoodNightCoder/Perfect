@@ -59,11 +59,13 @@
             app:title="@string/settings_manage_bedtime_title" />
 
         <Preference
+            app:defaultValue="25200"
             app:dependency="manage_bedtime"
             app:key="wake_up"
             app:title="Wake Up" />
 
         <Preference
+            app:defaultValue="82800"
             app:dependency="manage_bedtime"
             app:key="fall_asleep"
             app:title="Fall Asleep" />

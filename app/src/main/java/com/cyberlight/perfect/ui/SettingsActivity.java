@@ -1,14 +1,18 @@
 package com.cyberlight.perfect.ui;
 
 import android.annotation.SuppressLint;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
@@ -16,18 +20,24 @@ import androidx.fragment.app.FragmentManager;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreferenceCompat;
 
 import com.cyberlight.perfect.R;
 import com.cyberlight.perfect.constant.SettingConstants;
+import com.cyberlight.perfect.util.DateTimeFormatUtil;
 import com.cyberlight.perfect.util.DbContract;
 import com.cyberlight.perfect.util.DbUtil;
+import com.cyberlight.perfect.util.ToastUtil;
+
+import java.time.LocalTime;
 
 @SuppressLint("BatteryLife")
 public class SettingsActivity extends AppCompatActivity {
 
     private static final String RESET_ALL_SETTINGS_REQUEST_KEY = "reset_all_settings_request_key";
-
+    private static final String PICK_WAKE_UP_REQUEST_KEY = "pick_wake_up_request_key";
+    private static final String PICK_FALL_ASLEEP_REQUEST_KEY = "pick_fall_asleep_request_key";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +59,13 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
-
             // 获取并检查context
             Context context = getContext();
             if (context == null)
                 return;
-
+            // 获取SharedPreferences
+            SharedPreferences sharedPreferences =
+                    PreferenceManager.getDefaultSharedPreferences(context);
             // 获取各个Preference
             ListPreference focusDurationPref = findPreference(SettingConstants.KEY_FOCUS_DURATION);
             SwitchPreferenceCompat soundPref = findPreference(SettingConstants.KEY_SOUND);
@@ -69,7 +80,6 @@ public class SettingsActivity extends AppCompatActivity {
             Preference resetPref = findPreference(SettingConstants.KEY_RESET_ALL_SETTINGS);
             Preference ignoreBatteryOptimizationPref = findPreference(SettingConstants.KEY_IGNORE_BATTERY_OPTIMIZATION);
             Preference manageStartupAppsPref = findPreference(SettingConstants.KEY_MANAGE_STARTUP_APPS);
-
             // 检查各个Preference是否存在
             if (focusDurationPref == null || soundPref == null || vibrationPref == null ||
                     flashlightPref == null || strictTimePref == null || keepScreenOnPref == null ||
@@ -77,29 +87,45 @@ public class SettingsActivity extends AppCompatActivity {
                     clearDataPref == null || resetPref == null ||
                     ignoreBatteryOptimizationPref == null || manageStartupAppsPref == null)
                 return;
-
+            // 设置wakeUpPref和fallAsleepPref的Summary
+            long wakeUpSecs = sharedPreferences.getInt(SettingConstants.KEY_WAKE_UP,
+                    SettingConstants.DEFAULT_WAKE_UP_VALUE);
+            wakeUpPref.setSummary(DateTimeFormatUtil.getNeatHourMinute(wakeUpSecs));
+            long fallAsleepSecs = sharedPreferences.getInt(SettingConstants.KEY_FALL_ASLEEP,
+                    SettingConstants.DEFAULT_FALL_ASLEEP_VALUE);
+            fallAsleepPref.setSummary(DateTimeFormatUtil.getNeatHourMinute(fallAsleepSecs));
             // 设置几个自定义Preference的点击监听
             FragmentManager fragmentManager = getChildFragmentManager();
-            wakeUpPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    // fixme
-                    return false;
+            wakeUpPref.setOnPreferenceClickListener(preference -> {
+                if (fragmentManager.findFragmentByTag(HourMinutePickerDialogFragment.TAG) == null) {
+                    int secs = sharedPreferences.getInt(
+                            SettingConstants.KEY_WAKE_UP,
+                            SettingConstants.DEFAULT_WAKE_UP_VALUE);
+                    DialogFragment dialogFragment =
+                            HourMinutePickerDialogFragment.newInstance(PICK_WAKE_UP_REQUEST_KEY,
+                                    secs / 3600, secs % 3600 / 60);
+                    dialogFragment.show(fragmentManager, HourMinutePickerDialogFragment.TAG);
                 }
+                return true;
             });
-            fallAsleepPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    // fixme
-                    return false;
+            fallAsleepPref.setOnPreferenceClickListener(preference -> {
+                if (fragmentManager.findFragmentByTag(HourMinutePickerDialogFragment.TAG) == null) {
+                    int secs = sharedPreferences.getInt(
+                            SettingConstants.KEY_FALL_ASLEEP,
+                            SettingConstants.DEFAULT_FALL_ASLEEP_VALUE);
+                    DialogFragment dialogFragment =
+                            HourMinutePickerDialogFragment.newInstance(PICK_FALL_ASLEEP_REQUEST_KEY,
+                                    secs / 3600, secs % 3600 / 60);
+                    dialogFragment.show(fragmentManager, HourMinutePickerDialogFragment.TAG);
                 }
+                return true;
             });
             clearDataPref.setOnPreferenceClickListener(preference -> {
                 if (fragmentManager.findFragmentByTag(ClearDialogFragment.TAG) == null) {
                     DialogFragment dialogFragment = new ClearDialogFragment();
                     dialogFragment.show(fragmentManager, ClearDialogFragment.TAG);
                 }
-                return false;
+                return true;
             });
             resetPref.setOnPreferenceClickListener(preference -> {
                 if (fragmentManager.findFragmentByTag(ConfirmDialogFragment.TAG) == null) {
@@ -112,24 +138,34 @@ public class SettingsActivity extends AppCompatActivity {
                     );
                     dialogFragment.show(fragmentManager, ConfirmDialogFragment.TAG);
                 }
-                return false;
+                return true;
             });
             ignoreBatteryOptimizationPref.setOnPreferenceClickListener(preference -> {
                 PowerManager powerManager = (PowerManager) context.getSystemService(POWER_SERVICE);
                 if (!powerManager.isIgnoringBatteryOptimizations(context.getPackageName())) {
                     Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
                     intent.setData(Uri.parse("package:" + context.getPackageName()));
-                    if (intent.resolveActivity(context.getPackageManager()) != null)
+                    try {
                         startActivity(intent);
+                    } catch (ActivityNotFoundException e) {
+                        ToastUtil.showToast(context,
+                                R.string.no_matching_activity_toast,
+                                Toast.LENGTH_SHORT);
+                    }
                 }
-                return false;
+                return true;
             });
             manageStartupAppsPref.setOnPreferenceClickListener(preference -> {
                 Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                 intent.setData(Uri.parse("package:" + context.getPackageName()));
-                if (intent.resolveActivity(context.getPackageManager()) != null)
+                try {
                     startActivity(intent);
-                return false;
+                } catch (ActivityNotFoundException e) {
+                    ToastUtil.showToast(context,
+                            R.string.no_matching_activity_toast,
+                            Toast.LENGTH_SHORT);
+                }
+                return true;
             });
             fragmentManager.setFragmentResultListener(RESET_ALL_SETTINGS_REQUEST_KEY,
                     this, (requestKey, result) -> {
@@ -143,7 +179,38 @@ public class SettingsActivity extends AppCompatActivity {
                             strictTimePref.setChecked(SettingConstants.DEFAULT_STRICT_TIME_VALUE);
                             keepScreenOnPref.setChecked(SettingConstants.DEFAULT_KEEP_SCREEN_ON_VALUE);
                             manageBedtimePref.setChecked(SettingConstants.DEFAULT_MANAGE_BEDTIME_VALUE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            // 恢复默认起床、睡觉时间
+                            editor.putInt(SettingConstants.KEY_WAKE_UP,
+                                    SettingConstants.DEFAULT_WAKE_UP_VALUE);
+                            editor.putInt(SettingConstants.KEY_FALL_ASLEEP,
+                                    SettingConstants.DEFAULT_FALL_ASLEEP_VALUE);
+                            editor.apply();
+                            wakeUpPref.setSummary(DateTimeFormatUtil.getNeatHourMinute(
+                                    SettingConstants.DEFAULT_WAKE_UP_VALUE));
+                            fallAsleepPref.setSummary(DateTimeFormatUtil.getNeatHourMinute(
+                                    SettingConstants.DEFAULT_FALL_ASLEEP_VALUE));
                         }
+                    });
+            fragmentManager.setFragmentResultListener(PICK_WAKE_UP_REQUEST_KEY,
+                    this, (requestKey, result) -> {
+                        int hour = result.getInt(HourMinutePickerDialogFragment.HM_HOUR_KEY);
+                        int minute = result.getInt(HourMinutePickerDialogFragment.HM_MINUTE_KEY);
+                        int newSecs = hour * 3600 + minute * 60;
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putInt(SettingConstants.KEY_WAKE_UP, newSecs);
+                        editor.apply();
+                        wakeUpPref.setSummary(DateTimeFormatUtil.getNeatHourMinute(newSecs));
+                    });
+            fragmentManager.setFragmentResultListener(PICK_FALL_ASLEEP_REQUEST_KEY,
+                    this, (requestKey, result) -> {
+                        int hour = result.getInt(HourMinutePickerDialogFragment.HM_HOUR_KEY);
+                        int minute = result.getInt(HourMinutePickerDialogFragment.HM_MINUTE_KEY);
+                        int newSecs = hour * 3600 + minute * 60;
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putInt(SettingConstants.KEY_FALL_ASLEEP, newSecs);
+                        editor.apply();
+                        fallAsleepPref.setSummary(DateTimeFormatUtil.getNeatHourMinute(newSecs));
                     });
         }
     }
