@@ -2,7 +2,6 @@ package com.cyberlight.perfect.ui;
 
 import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -26,11 +24,9 @@ import androidx.preference.SwitchPreferenceCompat;
 import com.cyberlight.perfect.R;
 import com.cyberlight.perfect.constant.SettingConstants;
 import com.cyberlight.perfect.util.DateTimeFormatUtil;
-import com.cyberlight.perfect.util.DbContract;
-import com.cyberlight.perfect.util.DbUtil;
+import com.cyberlight.perfect.util.SettingManager;
+import com.cyberlight.perfect.util.SharedPrefSettingManager;
 import com.cyberlight.perfect.util.ToastUtil;
-
-import java.time.LocalTime;
 
 @SuppressLint("BatteryLife")
 public class SettingsActivity extends AppCompatActivity {
@@ -87,20 +83,17 @@ public class SettingsActivity extends AppCompatActivity {
                     clearDataPref == null || resetPref == null ||
                     ignoreBatteryOptimizationPref == null || manageStartupAppsPref == null)
                 return;
-            // 设置wakeUpPref和fallAsleepPref的Summary
-            long wakeUpSecs = sharedPreferences.getInt(SettingConstants.KEY_WAKE_UP,
-                    SettingConstants.DEFAULT_WAKE_UP_VALUE);
-            wakeUpPref.setSummary(DateTimeFormatUtil.getNeatHourMinute(wakeUpSecs));
-            long fallAsleepSecs = sharedPreferences.getInt(SettingConstants.KEY_FALL_ASLEEP,
-                    SettingConstants.DEFAULT_FALL_ASLEEP_VALUE);
-            fallAsleepPref.setSummary(DateTimeFormatUtil.getNeatHourMinute(fallAsleepSecs));
+            SettingManager settingManager = SharedPrefSettingManager.getInstance(context);
+            // 初始化wakeUpPref和fallAsleepPref的Summary
+            long curWakeUp = settingManager.getWakeUp();
+            wakeUpPref.setSummary(DateTimeFormatUtil.getNeatHourMinute(curWakeUp));
+            long curFallAsleep = settingManager.getFallAsleep();
+            fallAsleepPref.setSummary(DateTimeFormatUtil.getNeatHourMinute(curFallAsleep));
             // 设置几个自定义Preference的点击监听
             FragmentManager fragmentManager = getChildFragmentManager();
             wakeUpPref.setOnPreferenceClickListener(preference -> {
                 if (fragmentManager.findFragmentByTag(HourMinutePickerDialogFragment.TAG) == null) {
-                    int secs = sharedPreferences.getInt(
-                            SettingConstants.KEY_WAKE_UP,
-                            SettingConstants.DEFAULT_WAKE_UP_VALUE);
+                    int secs = (int) settingManager.getWakeUp();
                     DialogFragment dialogFragment =
                             HourMinutePickerDialogFragment.newInstance(PICK_WAKE_UP_REQUEST_KEY,
                                     secs / 3600, secs % 3600 / 60);
@@ -110,9 +103,7 @@ public class SettingsActivity extends AppCompatActivity {
             });
             fallAsleepPref.setOnPreferenceClickListener(preference -> {
                 if (fragmentManager.findFragmentByTag(HourMinutePickerDialogFragment.TAG) == null) {
-                    int secs = sharedPreferences.getInt(
-                            SettingConstants.KEY_FALL_ASLEEP,
-                            SettingConstants.DEFAULT_FALL_ASLEEP_VALUE);
+                    int secs = (int) settingManager.getFallAsleep();
                     DialogFragment dialogFragment =
                             HourMinutePickerDialogFragment.newInstance(PICK_FALL_ASLEEP_REQUEST_KEY,
                                     secs / 3600, secs % 3600 / 60);
@@ -179,13 +170,9 @@ public class SettingsActivity extends AppCompatActivity {
                             strictTimePref.setChecked(SettingConstants.DEFAULT_STRICT_TIME_VALUE);
                             keepScreenOnPref.setChecked(SettingConstants.DEFAULT_KEEP_SCREEN_ON_VALUE);
                             manageBedtimePref.setChecked(SettingConstants.DEFAULT_MANAGE_BEDTIME_VALUE);
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
                             // 恢复默认起床、睡觉时间
-                            editor.putInt(SettingConstants.KEY_WAKE_UP,
-                                    SettingConstants.DEFAULT_WAKE_UP_VALUE);
-                            editor.putInt(SettingConstants.KEY_FALL_ASLEEP,
-                                    SettingConstants.DEFAULT_FALL_ASLEEP_VALUE);
-                            editor.apply();
+                            settingManager.setWakeUp(SettingConstants.DEFAULT_WAKE_UP_VALUE);
+                            settingManager.setFallAsleep(SettingConstants.DEFAULT_FALL_ASLEEP_VALUE);
                             wakeUpPref.setSummary(DateTimeFormatUtil.getNeatHourMinute(
                                     SettingConstants.DEFAULT_WAKE_UP_VALUE));
                             fallAsleepPref.setSummary(DateTimeFormatUtil.getNeatHourMinute(
@@ -196,21 +183,17 @@ public class SettingsActivity extends AppCompatActivity {
                     this, (requestKey, result) -> {
                         int hour = result.getInt(HourMinutePickerDialogFragment.HM_HOUR_KEY);
                         int minute = result.getInt(HourMinutePickerDialogFragment.HM_MINUTE_KEY);
-                        int newSecs = hour * 3600 + minute * 60;
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putInt(SettingConstants.KEY_WAKE_UP, newSecs);
-                        editor.apply();
-                        wakeUpPref.setSummary(DateTimeFormatUtil.getNeatHourMinute(newSecs));
+                        long newWakeUp = hour * 3600L + minute * 60L;
+                        settingManager.setWakeUp(newWakeUp);
+                        wakeUpPref.setSummary(DateTimeFormatUtil.getNeatHourMinute(newWakeUp));
                     });
             fragmentManager.setFragmentResultListener(PICK_FALL_ASLEEP_REQUEST_KEY,
                     this, (requestKey, result) -> {
                         int hour = result.getInt(HourMinutePickerDialogFragment.HM_HOUR_KEY);
                         int minute = result.getInt(HourMinutePickerDialogFragment.HM_MINUTE_KEY);
-                        int newSecs = hour * 3600 + minute * 60;
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putInt(SettingConstants.KEY_FALL_ASLEEP, newSecs);
-                        editor.apply();
-                        fallAsleepPref.setSummary(DateTimeFormatUtil.getNeatHourMinute(newSecs));
+                        long newFallAsleep = hour * 3600L + minute * 60L;
+                        settingManager.setFallAsleep(newFallAsleep);
+                        fallAsleepPref.setSummary(DateTimeFormatUtil.getNeatHourMinute(newFallAsleep));
                     });
         }
     }

@@ -29,19 +29,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ui.FocusActivity"
             android:configChanges="orientation|screenSize"
             android:exported="false"
             android:launchMode="singleTask"
             android:theme="@style/Theme.Perfect.FocusActivity" />
-
         <activity
             android:name=".ui.SettingsActivity"
             android:exported="false"
             android:label="@string/settings_activity_title"
             android:launchMode="singleTop" />
+
+        <service
+            android:name=".service.BedtimeAlarmService"
+            android:enabled="true"
+            android:exported="false" />
 
         <service
             android:name=".service.FocusService"
@@ -56,7 +59,6 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
         <receiver
             android:name=".receiver.EventReminderReceiver"
             android:enabled="true"
@@ -65,7 +67,6 @@
                 <action android:name="event_reminder_action" />
             </intent-filter>
         </receiver>
-
     </application>
 
 </manifest>

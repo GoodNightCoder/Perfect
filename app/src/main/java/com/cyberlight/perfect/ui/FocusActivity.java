@@ -7,7 +7,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,11 +21,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.PreferenceManager;
 
 import com.cyberlight.perfect.R;
-import com.cyberlight.perfect.constant.SettingConstants;
 import com.cyberlight.perfect.service.FocusService;
+import com.cyberlight.perfect.util.SettingManager;
+import com.cyberlight.perfect.util.SharedPrefSettingManager;
 import com.cyberlight.perfect.util.ToastUtil;
 import com.cyberlight.perfect.widget.CircularProgressView;
 
@@ -189,16 +188,14 @@ public class FocusActivity extends AppCompatActivity {
             }
         });
 
-        //设置屏幕是否常亮
-        SharedPreferences sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(this);
-        boolean keepScreenOn = sharedPreferences.getBoolean(SettingConstants.KEY_KEEP_SCREEN_ON,
-                SettingConstants.DEFAULT_KEEP_SCREEN_ON_VALUE);
+        // 设置屏幕常亮
+        SettingManager settingManager = SharedPrefSettingManager.getInstance(this);
+        boolean keepScreenOn = settingManager.getKeepScreenOn();
         if (keepScreenOn) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
 
-        //启动专注服务
+        // 启动专注服务
         Intent focusServiceIntent = new Intent(this, FocusService.class);
         startService(focusServiceIntent);
     }

@@ -178,6 +178,9 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
                     pagerAdapter.notifyDataSetChanged();
                 });
         onDateChanged();
+
+        // 检查事件提醒是否启动
+        EventReminderReceiver.startEventReminder(this, false);
     }
 
 
@@ -186,8 +189,6 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         super.onResume();
         // 保证数据能及时更新，比如去SettingsActivity删除数据后
         pagerAdapter.notifyDataSetChanged();
-        // 检查事件提醒是否启用
-        checkEventReminder();
     }
 
     @Override
@@ -196,21 +197,6 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         savedInstanceState.putInt(CUR_POSITION_KEY, curPosition);
         savedInstanceState.putInt(CUR_SCROLL_Y_KEY, curScrollY);
         super.onSaveInstanceState(savedInstanceState);
-    }
-
-    /**
-     * 检查事件提醒是否启动，如果没有则启动
-     */
-    private void checkEventReminder() {
-        Intent nextAlarmIntent = new Intent(this, EventReminderReceiver.class);
-        nextAlarmIntent.setAction(EventReminderReceiver.EVENT_REMINDER_ACTION);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this,
-                EventReminderReceiver.EVENT_REMINDER_REQUEST_CODE,
-                nextAlarmIntent,
-                PendingIntent.FLAG_NO_CREATE);
-        if (pendingIntent == null) {
-            sendBroadcast(nextAlarmIntent);
-        }
     }
 
     /**

@@ -7,6 +7,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ContentProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -67,11 +68,12 @@ public class EventReminderReceiver extends BroadcastReceiver {
                 // show notification
                 notificationManagerCompat.notify(NOTIFICATION_ID, notification);
             }
+            // 判断正在进行的事件并发送通知提醒
             long curTimeMillis = System.currentTimeMillis();
             for (int i = 0; i < events.size(); i++) {
                 Event event = events.get(i);
                 SpecEvent specEvent = event.getOnGoingSpecEvent(curTimeMillis);
-                if (specEvent != null) {//有事件正在进行，发通知提醒
+                if (specEvent != null) {// 有事件正在进行，发通知提醒
                     // build notification
                     Intent notificationIntent = new Intent(context, MainActivity.class);
                     PendingIntent pendingIntent =
@@ -111,4 +113,29 @@ public class EventReminderReceiver extends BroadcastReceiver {
         }
 
     }
+
+    /**
+     * 检查事件提醒是否启动，如果没有则启动，
+     * 如果已启动则根据需要更新定时任务
+     *
+     * @param context 可用Context对象
+     * @param update  若已启动，是否需要更新任务
+     */
+    public static void startEventReminder(Context context, boolean update) {
+        Intent intent = new Intent(context, EventReminderReceiver.class);
+        intent.setAction(EVENT_REMINDER_ACTION);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
+                EVENT_REMINDER_REQUEST_CODE,
+                intent,
+                PendingIntent.FLAG_NO_CREATE);
+        if (pendingIntent == null) {
+            // 启动事件提醒
+            context.sendBroadcast(intent);
+        } else if (update) {
+            // 更新事件提醒
+            intent.putExtra(IS_FIRST_REMIND_EXTRA_KEY, false);
+            context.sendBroadcast(intent);
+        }
+    }
+
 }

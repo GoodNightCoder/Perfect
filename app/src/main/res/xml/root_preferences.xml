@@ -4,7 +4,7 @@
 
 
         <ListPreference
-            app:defaultValue="25min"
+            app:defaultValue="1500000"
             app:entries="@array/settings_focus_duration_entries"
             app:entryValues="@array/settings_focus_duration_values"
             app:key="focus_duration"

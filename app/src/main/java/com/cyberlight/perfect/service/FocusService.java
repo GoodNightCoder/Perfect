@@ -10,7 +10,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.os.Binder;
@@ -21,14 +20,14 @@ import android.os.Vibrator;
 import android.util.Log;
 
 import androidx.core.app.NotificationManagerCompat;
-import androidx.preference.PreferenceManager;
 
 import com.cyberlight.perfect.R;
-import com.cyberlight.perfect.constant.SettingConstants;
 import com.cyberlight.perfect.ui.FocusActivity;
 import com.cyberlight.perfect.util.DateTimeFormatUtil;
 import com.cyberlight.perfect.util.DbUtil;
 import com.cyberlight.perfect.util.FlashlightUtil;
+import com.cyberlight.perfect.util.SettingManager;
+import com.cyberlight.perfect.util.SharedPrefSettingManager;
 
 import java.text.NumberFormat;
 
@@ -160,21 +159,13 @@ public class FocusService extends Service {
      * 获取设置的值
      */
     private void loadSettings() {
-        SharedPreferences sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(this);
-        String focusDuraStr = sharedPreferences.getString(SettingConstants.KEY_FOCUS_DURATION, SettingConstants.DEFAULT_FOCUS_DURATION_VALUE);
-        String[] focusDuraStrValues = getResources().getStringArray(R.array.settings_focus_duration_values);
-        for (int i = 0; i < focusDuraStrValues.length; i++) {
-            if (focusDuraStr.equals(focusDuraStrValues[i])) {
-                mFocusDuration = SettingConstants.FOCUS_DURATION_VALUES[i];
-                mRelaxDuration = mFocusDuration < 1800000 ? 1800000 - mFocusDuration : 3600000 - mFocusDuration;
-                break;
-            }
-        }
-        mVibration = sharedPreferences.getBoolean(SettingConstants.KEY_VIBRATION, SettingConstants.DEFAULT_VIBRATION_VALUE);
-        mSound = sharedPreferences.getBoolean(SettingConstants.KEY_SOUND, SettingConstants.DEFAULT_SOUND_VALUE);
-        mFlashlight = sharedPreferences.getBoolean(SettingConstants.KEY_FLASHLIGHT, SettingConstants.DEFAULT_FLASHLIGHT_VALUE);
-        mStrictTime = sharedPreferences.getBoolean(SettingConstants.KEY_STRICT_TIME, SettingConstants.DEFAULT_STRICT_TIME_VALUE);
+        SettingManager settingManager = SharedPrefSettingManager.getInstance(this);
+        mFocusDuration = settingManager.getFocusDuration();
+        mRelaxDuration = mFocusDuration < 1800000 ? 1800000 - mFocusDuration : 3600000 - mFocusDuration;
+        mVibration = settingManager.getVibration();
+        mSound = settingManager.getSound();
+        mFlashlight = settingManager.getFlashlight();
+        mStrictTime = settingManager.getStrictTime();
 
         // TEST
         if (ENABLE_TEST_MODE) {
@@ -268,8 +259,9 @@ public class FocusService extends Service {
                 mFocusStateStr = getString(R.string.focus_relaxing_state);
                 // 发出各种提醒
                 if (mSound) {
-                    MediaPlayer mediaPlayer =
-                            MediaPlayer.create(context.getApplicationContext(), R.raw.focus_reminder_sound);
+                    MediaPlayer mediaPlayer = MediaPlayer.create(context.getApplicationContext(),
+                            R.raw.focus_reminder_sound);
+                    mediaPlayer.setOnCompletionListener(MediaPlayer::release);
                     mediaPlayer.start();
                 }
                 if (mVibration) {
@@ -295,8 +287,9 @@ public class FocusService extends Service {
                 mFocusStateStr = getString(R.string.focus_focusing_state);
                 // 发出各种提醒
                 if (mSound) {
-                    MediaPlayer mediaPlayer =
-                            MediaPlayer.create(context.getApplicationContext(), R.raw.focus_reminder_sound);
+                    MediaPlayer mediaPlayer = MediaPlayer.create(context.getApplicationContext(),
+                            R.raw.focus_reminder_sound);
+                    mediaPlayer.setOnCompletionListener(MediaPlayer::release);
                     mediaPlayer.start();
                 }
                 if (mVibration) {

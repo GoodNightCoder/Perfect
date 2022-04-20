@@ -16,6 +16,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.cyberlight.perfect.R;
+import com.cyberlight.perfect.receiver.EventReminderReceiver;
 import com.cyberlight.perfect.util.DbContract;
 import com.cyberlight.perfect.util.DbUtil;
 
@@ -82,6 +83,8 @@ public class ClearDialogFragment extends DialogFragment {
                         if (mEventsCheckBox.isChecked()) {
                             DbUtil.truncateTable(context, DbContract.EventsTable.TABLE_NAME);
                             DbUtil.truncateTable(context, DbContract.EventRecordsTable.TABLE_NAME);
+                            // 更新事件提醒任务
+                            EventReminderReceiver.startEventReminder(context, true);
                         }
                         if (mFocusRecordsCheckBox.isChecked())
                             DbUtil.truncateTable(context, DbContract.FocusRecordsTable.TABLE_NAME);
