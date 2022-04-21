@@ -81,29 +81,31 @@ public class Event {
     }
 
     /**
-     * 获取在指定时间，事件下一次开始时间
+     * 获取该事件在指定时间之后最近一次具体事件
      *
      * @param specTime 指定时间(ms)
-     * @return 该事件在指定时间之后最近的开始时间
+     * @return 该事件在指定时间之后最近一次具体事件
      */
-    public long getNextStart(long specTime) {
-        return start + getEventOccurNum(specTime) * interval;
+    public SpecEvent getNextSpecEvent(long specTime) {
+        int occurNum = getEventOccurNum(specTime);
+        long nextStart = start + getEventOccurNum(specTime) * interval;
+        return new SpecEvent(this, nextStart, occurNum + 1);
     }
 
-    /**
-     * 获取指定时间正在进行的具体事件
-     *
-     * @param specTime 指定时间(ms)
-     * @return 指定时间正在进行的具体事件, 若无具体事件正在进行返回null
-     */
-    public SpecEvent getOnGoingSpecEvent(long specTime) {
-        int occurNum = getEventOccurNum(specTime);
-        if (occurNum == 0) return null;// 事件还没开始
-        long lastStart = start + (occurNum - 1) * interval;
-        if (specTime < lastStart + duration)
-            return new SpecEvent(this, lastStart, occurNum);
-        return null;
-    }
+//    /**
+//     * 获取指定时间正在进行的具体事件
+//     *
+//     * @param specTime 指定时间(ms)
+//     * @return 指定时间正在进行的具体事件, 若无具体事件正在进行返回null
+//     */
+//    public SpecEvent getOnGoingSpecEvent(long specTime) {
+//        int occurNum = getEventOccurNum(specTime);
+//        if (occurNum == 0) return null;// 事件还没开始
+//        long lastStart = start + (occurNum - 1) * interval;
+//        if (specTime < lastStart + duration)
+//            return new SpecEvent(this, lastStart, occurNum);
+//        return null;
+//    }
 
     /**
      * 判断事件与指定事件时间是否冲突
@@ -135,21 +137,9 @@ public class Event {
             translationTimes++;
         }
         long earlyStartNearest = early.start + intervalGCD * translationTimes;
-        //判断两事件距离最近时是否有时间冲突
-        if (!(earlyStartNearest + early.duration - 1 < later.start ||
-                later.start + later.duration - 1 < earlyStartNearest)) {
-            Log.d(TAG, "Time Conflict\n" + early + "\n" +
-                    DateTimeFormatUtil.getReadableDateHourMinute(earlyStartNearest) + "~" +
-                    DateTimeFormatUtil.getReadableDateHourMinute(earlyStartNearest +
-                            early.duration - 1) + "\n" +
-                    "Conflict with\n" + later + "\n" +
-                    DateTimeFormatUtil.getReadableDateHourMinute(later.start) + "~" +
-                    DateTimeFormatUtil.getReadableDateHourMinute(later.start +
-                            later.duration - 1)
-            );
-            return true;
-        }
-        return false;
+        // 判断两事件距离最近时是否有时间冲突
+        return !(earlyStartNearest + early.duration - 1 < later.start ||
+                later.start + later.duration - 1 < earlyStartNearest);
     }
 
     /**

@@ -3,7 +3,6 @@ package com.cyberlight.perfect.ui;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,8 +33,11 @@ import com.cyberlight.perfect.model.Plan;
 import com.cyberlight.perfect.model.SpecPlan;
 import com.cyberlight.perfect.model.Summary;
 import com.cyberlight.perfect.receiver.EventReminderReceiver;
+import com.cyberlight.perfect.service.BedtimeAlarmService;
 import com.cyberlight.perfect.util.DateTimeFormatUtil;
 import com.cyberlight.perfect.util.DbUtil;
+import com.cyberlight.perfect.util.SettingManager;
+import com.cyberlight.perfect.util.SharedPrefSettingManager;
 import com.cyberlight.perfect.util.ToastUtil;
 import com.cyberlight.perfect.widget.ScheduleLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -178,9 +180,14 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
                     pagerAdapter.notifyDataSetChanged();
                 });
         onDateChanged();
-
         // 检查事件提醒是否启动
-        EventReminderReceiver.startEventReminder(this, false);
+        EventReminderReceiver.activateEventReminder(this, false);
+        // 检查闹钟是否启动
+        SettingManager settingManager = SharedPrefSettingManager.getInstance(this);
+        boolean manageBedtime = settingManager.getManageBedtime();
+        if (manageBedtime) {
+            BedtimeAlarmService.activateBedtimeAlarm(this, false);
+        }
     }
 
 

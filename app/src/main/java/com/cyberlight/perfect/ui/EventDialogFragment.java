@@ -209,7 +209,7 @@ public class EventDialogFragment extends DialogFragment {
             // 添加事件，显示是否成功的消息，退出对话框
             if (DbUtil.addEvent(context, mTitle, mStart, mDuration, mInterval)) {
                 // 更新事件提醒任务
-                EventReminderReceiver.startEventReminder(context, true);
+                EventReminderReceiver.activateEventReminder(context, true);
                 ToastUtil.showToast(context,
                         R.string.event_success_toast,
                         Toast.LENGTH_SHORT);

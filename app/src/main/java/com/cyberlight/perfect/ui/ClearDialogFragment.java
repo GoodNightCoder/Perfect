@@ -83,8 +83,8 @@ public class ClearDialogFragment extends DialogFragment {
                         if (mEventsCheckBox.isChecked()) {
                             DbUtil.truncateTable(context, DbContract.EventsTable.TABLE_NAME);
                             DbUtil.truncateTable(context, DbContract.EventRecordsTable.TABLE_NAME);
-                            // 更新事件提醒任务
-                            EventReminderReceiver.startEventReminder(context, true);
+                            // 取消已有事件提醒
+                            EventReminderReceiver.cancelEventReminder(context);
                         }
                         if (mFocusRecordsCheckBox.isChecked())
                             DbUtil.truncateTable(context, DbContract.FocusRecordsTable.TABLE_NAME);

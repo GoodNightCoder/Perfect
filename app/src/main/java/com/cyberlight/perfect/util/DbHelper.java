@@ -9,8 +9,6 @@ import androidx.annotation.Nullable;
 
 public class DbHelper extends SQLiteOpenHelper {
 
-    private static final String TAG = "DbHelper";
-
     // Events Table
     private static final String SQL_CREATE_EVENTS_TABLE =
             "CREATE TABLE " + DbContract.EventsTable.TABLE_NAME + " (" +
@@ -87,7 +85,6 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_PLANS_TABLE);
         db.execSQL(SQL_CREATE_PLAN_RECORDS_TABLE);
         db.execSQL(SQL_CREATE_SUMMARY_TABLE);
-        Log.d(TAG, "Create succeeded");
     }
 
     @Override
@@ -99,7 +96,6 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_PLAN_RECORDS_TABLE);
         db.execSQL(SQL_DELETE_SUMMARY_TABLE);
         onCreate(db);
-        Log.d(TAG, "Update succeeded");
     }
 
 }

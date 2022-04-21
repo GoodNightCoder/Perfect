@@ -20,7 +20,6 @@ import com.cyberlight.perfect.util.DbUtil;
 @SuppressLint("ViewConstructor")
 public class SpecEventButton extends androidx.appcompat.widget.AppCompatButton {
 
-    private static final String TAG = "SpecEventButton";
     private final Context mContext;
     public SpecEvent mSpecEvent;
     private boolean isFinished;
@@ -51,12 +50,10 @@ public class SpecEventButton extends androidx.appcompat.widget.AppCompatButton {
         setPadding(10, 4, 0, 0);
         setGravity(Gravity.NO_GRAVITY);//文字左上角显示
         if (DbUtil.specEventIsFinished(mContext, mSpecEvent)) {
-            Log.d(TAG, mSpecEvent.toString() + "完成");
             isFinished = true;
             setBackground(AppCompatResources.getDrawable(mContext,
                     R.drawable.bg_finished_event_btn));//设置按钮自定义样式
         } else {
-            Log.d(TAG, mSpecEvent.toString() + "未完成");
             isFinished = false;
             setBackground(AppCompatResources.getDrawable(mContext,
                     R.drawable.bg_unfinished_event_btn));//设置按钮自定义样式

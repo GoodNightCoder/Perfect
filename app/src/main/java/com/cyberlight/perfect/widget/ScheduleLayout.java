@@ -28,7 +28,6 @@ import java.time.ZoneId;
 import java.util.List;
 
 public class ScheduleLayout extends ViewGroup {
-    private static final String TAG = "ScheduleLayout";
 
     //attrs.xml定义属性的默认值
     private static final int DEFAULT_WIDTH = 1080;//整个layout的默认宽度
@@ -143,7 +142,6 @@ public class ScheduleLayout extends ViewGroup {
                             if (DbUtil.finishSpecEvent(mContext, specEvent))
                                 specEventButton.toggleFinishState();
                         }
-                        Log.d(TAG, "事件完成状态切换");
                     };
                     specEventButton.setOnTouchListener(new OnTouchListener() {
                         int mDownX;

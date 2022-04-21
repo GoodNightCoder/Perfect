@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DbUtil {
-    private static final String TAG = "DbUtil";
 
     /**
      * 清空指定数据库表的数据
@@ -295,11 +294,9 @@ public class DbUtil {
                 + specEvent.occurNum + ";";
         Cursor cursor = db.rawQuery(selectSql, null);
         if (cursor.moveToFirst()) {
-            Log.d(TAG, "specEvent finished");
             cursor.close();
             return true;
         } else {
-            Log.d(TAG, "specEvent unfinished");
             cursor.close();
             return false;
         }

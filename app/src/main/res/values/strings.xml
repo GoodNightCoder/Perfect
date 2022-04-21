@@ -101,6 +101,11 @@
     <string name="event_reminder_activated_text">Event reminder activated</string>
     <string name="event_reminder_activated_title">Event Reminder</string>
     <string name="no_matching_activity_toast">No matching activity</string>
+    <string name="bedtime_notification_stop_alarm_text">Tap to stop alarm</string>
+    <string name="bedtime_cannot_adjust_volume_toast">Your device\'s volume cannot be adjusted</string>
+    <string name="bedtime_notification_wake_up_title">Wake Up Alarm</string>
+    <string name="bedtime_notification_fall_asleep_title">Fall Asleep Alarm</string>
+    <string name="focus_new_settings_applied_toast">New settings applied to focus task</string>
 
     <plurals name="interval_day_format">
         <item quantity="one">Every %d day</item>
