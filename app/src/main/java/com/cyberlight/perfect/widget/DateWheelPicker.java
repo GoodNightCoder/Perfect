@@ -42,7 +42,7 @@ public class DateWheelPicker extends WheelPicker<String> {
             int i = 0;
             while (true) {
                 final LocalDate date = mStartDate.plusDays(i);
-                mDataList.add(DateTimeFormatUtil.getReadableMonthAndDayOfMonth(date));
+                mDataList.add(DateTimeFormatUtil.getReadableMonthAndDayOfMonth(getContext(), date));
                 if (date.equals(mEndDate)) {
                     break;
                 }

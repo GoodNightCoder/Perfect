@@ -10,8 +10,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.provider.Settings;
-import android.util.Log;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +27,7 @@ import com.cyberlight.perfect.R;
 import com.cyberlight.perfect.constant.SettingConstants;
 import com.cyberlight.perfect.service.BedtimeAlarmService;
 import com.cyberlight.perfect.service.FocusService;
+import com.cyberlight.perfect.test.DebugUtil;
 import com.cyberlight.perfect.util.DateTimeFormatUtil;
 import com.cyberlight.perfect.util.SettingManager;
 import com.cyberlight.perfect.util.SharedPrefSettingManager;
@@ -54,6 +55,9 @@ public class SettingsActivity extends AppCompatActivity {
         //对自定义返回键设置监听
         ImageView mBackIv = findViewById(R.id.settings_back_iv);
         mBackIv.setOnClickListener(v -> finish());
+
+        //TEST:
+        DebugUtil.setToggleView(this, findViewById(R.id.settings_title_tv), new Handler());
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -62,7 +66,7 @@ public class SettingsActivity extends AppCompatActivity {
         private final Runnable mApplyRunnable = new Runnable() {
             @Override
             public void run() {
-                FocusService.sendUpdateBroadcast(mContext);
+                FocusService.notifySettingsChanged(mContext);
             }
         };
 
@@ -238,9 +242,9 @@ public class SettingsActivity extends AppCompatActivity {
                 case SettingConstants.KEY_MANAGE_BEDTIME: {
                     boolean manageBedtime = settingManager.getManageBedtime();
                     if (manageBedtime) {
-                        BedtimeAlarmService.activateBedtimeAlarm(mContext, false);
+                        BedtimeAlarmService.activateAlarm(mContext, false);
                     } else {
-                        BedtimeAlarmService.cancelBedtimeAlarm(mContext);
+                        BedtimeAlarmService.cancelAlarm(mContext);
                     }
                     break;
                 }
@@ -248,7 +252,7 @@ public class SettingsActivity extends AppCompatActivity {
                 case SettingConstants.KEY_FALL_ASLEEP: {
                     boolean manageBedtime = settingManager.getManageBedtime();
                     if (manageBedtime) {
-                        BedtimeAlarmService.activateBedtimeAlarm(mContext, true);
+                        BedtimeAlarmService.activateAlarm(mContext, true);
                     }
                     break;
                 }

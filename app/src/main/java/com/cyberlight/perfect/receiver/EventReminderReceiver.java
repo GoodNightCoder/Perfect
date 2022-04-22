@@ -9,7 +9,6 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import androidx.core.app.NotificationManagerCompat;
 
@@ -24,9 +23,10 @@ import java.util.List;
 @SuppressLint("UnspecifiedImmutableFlag")
 public class EventReminderReceiver extends BroadcastReceiver {
 
-    private static final CharSequence CHANNEL_NAME = "Event notifications";
-    private static final String CHANNEL_ID = "event_channel";
-    private static final int CHANNEL_IMPORTANCE = NotificationManager.IMPORTANCE_HIGH;
+    public static final CharSequence EVENT_CHANNEL_NAME = "Event notifications";
+    public static final String EVENT_CHANNEL_ID = "event_channel";
+    public static final int EVENT_CHANNEL_IMPORTANCE = NotificationManager.IMPORTANCE_HIGH;
+
     private static final int NOTIFICATION_ID = 10;
 
     private static final String EXTRA_EVENT_TITLE = "extra_event_title";
@@ -41,7 +41,7 @@ public class EventReminderReceiver extends BroadcastReceiver {
         String eventTime = intent.getStringExtra(EXTRA_EVENT_TIME);
         Notification notification = buildNotification(context, eventTitle, eventTime);
         showNotification(context, notification);
-        setNextEventReminder(context);
+        setNextReminder(context);
     }
 
     /**
@@ -51,8 +51,7 @@ public class EventReminderReceiver extends BroadcastReceiver {
      * @param context 可用Context对象
      * @param update  若已启动，是否需要更新任务
      */
-    public static void activateEventReminder(Context context, boolean update) {
-        createNotificationChannel(context);
+    public static void activateReminder(Context context, boolean update) {
         Intent intent = new Intent(context, EventReminderReceiver.class);
         intent.setAction(EVENT_REMINDER_ACTION);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
@@ -61,14 +60,14 @@ public class EventReminderReceiver extends BroadcastReceiver {
                 PendingIntent.FLAG_NO_CREATE);
         if (pendingIntent == null) {
             // 启动事件提醒
-            boolean firstSet = setNextEventReminder(context);
+            boolean firstSet = setNextReminder(context);
             if (firstSet) {
                 Notification notification = buildNotification(context, context.getString(R.string.event_reminder_activated_title), context.getString(R.string.event_reminder_activated_text));
                 showNotification(context, notification);
             }
         } else if (update) {
             // 更新事件提醒
-            setNextEventReminder(context);
+            setNextReminder(context);
         }
     }
 
@@ -77,7 +76,7 @@ public class EventReminderReceiver extends BroadcastReceiver {
      *
      * @param context 可用的Context对象
      */
-    public static void cancelEventReminder(Context context) {
+    public static void cancelReminder(Context context) {
         Intent remindIntent = new Intent(context, EventReminderReceiver.class);
         remindIntent.setAction(EVENT_REMINDER_ACTION);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, EVENT_REMINDER_REQUEST_CODE, remindIntent, PendingIntent.FLAG_NO_CREATE);
@@ -94,7 +93,7 @@ public class EventReminderReceiver extends BroadcastReceiver {
      * @param context 可用Context对象
      * @return 是否存在下次事件
      */
-    private static boolean setNextEventReminder(Context context) {
+    private static boolean setNextReminder(Context context) {
         List<Event> events = DbUtil.getDbEvents(context);
         if (events.size() > 0) {
             long curTimeMillis = System.currentTimeMillis();
@@ -105,7 +104,7 @@ public class EventReminderReceiver extends BroadcastReceiver {
                     next = tmp;
                 }
             }
-            setEventReminder(context, next.title, next.toTimeString(), next.specStart);
+            setReminder(context, next.title, next.toTimeString(context), next.specStart);
             return true;
         }
         return false;
@@ -119,7 +118,7 @@ public class EventReminderReceiver extends BroadcastReceiver {
      * @param eventTime       事件时间信息
      * @param triggerAtMillis 提醒触发时间
      */
-    private static void setEventReminder(Context context, String eventTitle, String eventTime, long triggerAtMillis) {
+    private static void setReminder(Context context, String eventTitle, String eventTime, long triggerAtMillis) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, EventReminderReceiver.class);
         intent.putExtra(EXTRA_EVENT_TITLE, eventTitle);
@@ -129,18 +128,11 @@ public class EventReminderReceiver extends BroadcastReceiver {
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
     }
 
-
-    private static void createNotificationChannel(Context context) {
-        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, CHANNEL_IMPORTANCE);
-        NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
-        notificationManager.createNotificationChannel(channel);
-    }
-
     private static Notification buildNotification(Context context, String title, String text) {
         Intent notificationIntent = new Intent(context, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
         return new Notification.Builder(context,
-                EventReminderReceiver.CHANNEL_ID)
+                EventReminderReceiver.EVENT_CHANNEL_ID)
                 .setContentTitle(title)
                 .setContentText(text)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)

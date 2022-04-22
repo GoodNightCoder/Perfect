@@ -1,5 +1,6 @@
 package com.cyberlight.perfect.service;
 
+
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.cyberlight.perfect.R;
+import com.cyberlight.perfect.test.DebugUtil;
 import com.cyberlight.perfect.ui.FocusActivity;
 import com.cyberlight.perfect.util.DbUtil;
 import com.cyberlight.perfect.util.FlashlightUtil;
@@ -34,26 +36,25 @@ import java.text.NumberFormat;
 
 @SuppressLint("UnspecifiedImmutableFlag")
 public class FocusService extends Service {
-    private static final boolean ENABLE_TEST_MODE = false;
 
-    // 闪光、振动提醒的时间
+    // 闪光、振动时间
     private static final long[] RELAX_VIBRATION_FLASHLIGHT_TIMINGS = {0, 100, 100, 100, 100, 100, 100, 100};
     private static final long[] FOCUS_VIBRATION_FLASHLIGHT_TIMINGS = {0, 800, 100, 800};
 
     // 该前台服务的通知相关常量
-    private static final CharSequence CHANNEL_NAME = "Focus notifications";
-    private static final String CHANNEL_ID = "focus_channel";
-    private static final int CHANNEL_IMPORTANCE = NotificationManager.IMPORTANCE_DEFAULT;
+    public static final CharSequence FOCUS_CHANNEL_NAME = "Focus notifications";
+    public static final String FOCUS_CHANNEL_ID = "focus_channel";
+    public static final int FOCUS_CHANNEL_IMPORTANCE = NotificationManager.IMPORTANCE_DEFAULT;
     private static final int NOTIFICATION_ID = 8;
 
-    // 专注定时提醒任务相关的信息
+    // 定时任务相关的信息
     private long mCurStart;
     private long mNextStart;
     private long mCurDuration;
     private boolean mFocusing;
     private String mFocusStateStr;
 
-    // 设置中的值，加载后不应改变
+    // 专注设置
     private long mFocusDuration;
     private long mRelaxDuration;
     private boolean mVibration;
@@ -97,17 +98,15 @@ public class FocusService extends Service {
         // 注册专注广播接收器
         mFocusReminderReceiver = new FocusReceiver();
         IntentFilter filter = new IntentFilter();
-        filter.addAction(FocusReceiver.REMIND_ACTION);
-        filter.addAction(FocusReceiver.UPDATE_ACTION);
+        filter.addAction(FocusReceiver.FOCUS_REMIND_ACTION);
+        filter.addAction(FocusReceiver.FOCUS_UPDATE_ACTION);
         registerReceiver(mFocusReminderReceiver, filter);
         // 加载设置
         loadSettings();
         // 初始化专注定时提醒任务数据
         initReminderData();
         // 启动专注提醒
-        setAlarm(this, mNextStart);
-        // 创建通知渠道
-        createNotificationChannel();
+        setReminder(mNextStart);
         // 设置为前台服务
         startForeground(NOTIFICATION_ID, buildNotification("", ""));
         // 启动每秒更新任务
@@ -126,8 +125,19 @@ public class FocusService extends Service {
         // 注销广播接收器
         unregisterReceiver(mFocusReminderReceiver);
         // 取消定时任务
-        cancelAlarm(this);
+        cancelReminder();
         super.onDestroy();
+    }
+
+    /**
+     * 通知专注广播接收器设置有变化
+     *
+     * @param context 可用Context对象
+     */
+    public static void notifySettingsChanged(Context context) {
+        Intent intent = new Intent();
+        intent.setAction(FocusReceiver.FOCUS_UPDATE_ACTION);
+        context.sendBroadcast(intent);
     }
 
     public void setOnUpdateListener(OnUpdateListener onUpdateListener) {
@@ -150,8 +160,7 @@ public class FocusService extends Service {
         mFlashlight = settingManager.getFlashlight();
         mStrictTime = settingManager.getStrictTime();
 
-        // TEST
-        if (ENABLE_TEST_MODE) {
+        if (DebugUtil.enableTestMode) {
             mFocusDuration = 12987;
             mRelaxDuration = 5000;
             mStrictTime = false;
@@ -195,56 +204,36 @@ public class FocusService extends Service {
     }
 
     /**
-     * 通知专注服务设置有变化
-     *
-     * @param context 可用Context对象
-     */
-    public static void sendUpdateBroadcast(Context context) {
-        Intent intent = new Intent();
-        intent.setAction(FocusReceiver.UPDATE_ACTION);
-        context.sendBroadcast(intent);
-    }
-
-    /**
      * 设置专注提醒定时任务
      *
-     * @param context         可用Context对象
      * @param triggerAtMillis 任务触发时间(EpochMilli)
      */
-    private static void setAlarm(Context context, long triggerAtMillis) {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+    private void setReminder(long triggerAtMillis) {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent();
-        intent.setAction(FocusReceiver.REMIND_ACTION);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        intent.setAction(FocusReceiver.FOCUS_REMIND_ACTION);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
     }
 
     /**
      * 取消专注提醒定时任务
-     *
-     * @param context 可用Context对象
      */
-    private static void cancelAlarm(Context context) {
+    private void cancelReminder() {
         Intent intent = new Intent();
-        intent.setAction(FocusReceiver.REMIND_ACTION);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_NO_CREATE);
+        intent.setAction(FocusReceiver.FOCUS_REMIND_ACTION);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, PendingIntent.FLAG_NO_CREATE);
         if (pendingIntent != null) {
-            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             alarmManager.cancel(pendingIntent);
             pendingIntent.cancel();
         }
     }
 
-    private void createNotificationChannel() {
-        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, CHANNEL_IMPORTANCE);
-        NotificationManager notificationManager = getSystemService(NotificationManager.class);
-        notificationManager.createNotificationChannel(channel);
-    }
-
     private Notification buildNotification(String title, String text) {
         Intent intent = new Intent(this, FocusActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-        return new Notification.Builder(this, CHANNEL_ID)
+        return new Notification.Builder(this, FOCUS_CHANNEL_ID)
                 .setContentTitle(title)
                 .setContentText(text)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
@@ -260,13 +249,13 @@ public class FocusService extends Service {
     }
 
     private class FocusReceiver extends BroadcastReceiver {
-        private static final String REMIND_ACTION = "remind_action";
-        private static final String UPDATE_ACTION = "update_action";
+        private static final String FOCUS_REMIND_ACTION = "focus_remind_action";
+        private static final String FOCUS_UPDATE_ACTION = "focus_update_action";
 
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-            if (action.equals(REMIND_ACTION)) {
+            if (action.equals(FOCUS_REMIND_ACTION)) {
                 if (mFocusing) {
                     // 专注结束，切换到休息
                     // 保存专注记录到数据库
@@ -289,16 +278,17 @@ public class FocusService extends Service {
                 // 发出提醒
                 remind(context, mFocusing, mSound, mVibration, mFlashlight);
                 // 设置下次专注提醒
-                setAlarm(context, mNextStart);
-            } else if (action.equals(UPDATE_ACTION)) {
+                setReminder(mNextStart);
+            } else if (action.equals(FOCUS_UPDATE_ACTION)) {
                 // 刷新设置与专注数据，重新设置专注任务
                 ToastUtil.showToast(context, R.string.focus_new_settings_applied_toast, Toast.LENGTH_SHORT);
                 loadSettings();
                 initReminderData();
-                setAlarm(context, mNextStart);
+                setReminder(mNextStart);
             }
         }
 
+        // 专注提醒
         private void remind(Context context, boolean focusing, boolean sound, boolean vibration, boolean flashlight) {
             final long[] timings = focusing ? FOCUS_VIBRATION_FLASHLIGHT_TIMINGS : RELAX_VIBRATION_FLASHLIGHT_TIMINGS;
             final int resId = R.raw.focus_reminder_sound;

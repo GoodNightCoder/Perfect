@@ -1,5 +1,9 @@
 package com.cyberlight.perfect.util;
 
+import android.content.Context;
+
+import com.cyberlight.perfect.R;
+
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -57,17 +61,18 @@ public class DateTimeFormatUtil {
      * 中文:yyyy年M月d日
      * English:MMM d, yyyy
      *
-     * @param date LocalDate对象
+     * @param context 可用Context对象
+     * @param date    LocalDate对象
      * @return 易读的格式化日期
      */
-    public static String getReadableDate(LocalDate date) {
-        String language = Locale.getDefault().getLanguage();
-        String pattern;
-        if (language.equals(new Locale("zh").getLanguage())) {
-            pattern = "yyyy年M月d日";
-        } else {
-            pattern = "MMM d, yyyy";
-        }
+    public static String getReadableDate(Context context, LocalDate date) {
+//        String language = Locale.getDefault().getLanguage();
+        String pattern = context.getString(R.string.dtf_readable_date);
+//        if (language.equals(new Locale("zh").getLanguage())) {
+//            pattern = "yyyy年M月d日";
+//        } else {
+//            pattern =;
+//        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         return date.format(formatter);
     }
@@ -77,17 +82,18 @@ public class DateTimeFormatUtil {
      * 中文:yyyy年M月d日E
      * English:E, MMM d, yyyy
      *
-     * @param date LocalDate对象
+     * @param context 可用Context对象
+     * @param date    LocalDate对象
      * @return 易读的格式化日期
      */
-    public static String getReadableDateAndDayOfWeek(LocalDate date) {
-        String language = Locale.getDefault().getLanguage();
-        String pattern;
-        if (language.equals(new Locale("zh").getLanguage())) {
-            pattern = "yyyy年M月d日E";
-        } else {
-            pattern = "E, MMM d, yyyy";
-        }
+    public static String getReadableDateAndDayOfWeek(Context context, LocalDate date) {
+//        String language = Locale.getDefault().getLanguage();
+        String pattern = context.getString(R.string.dtf_readable_date_and_day_of_week);
+//        if (language.equals(new Locale("zh").getLanguage())) {
+//            pattern = "yyyy年M月d日E";
+//        } else {
+//            pattern = "E, MMM d, yyyy";
+//        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         return date.format(formatter);
     }
@@ -97,17 +103,18 @@ public class DateTimeFormatUtil {
      * 中文:M月d日
      * English:MMM d
      *
-     * @param date LocalDate对象
+     * @param context 可用Context对象
+     * @param date    LocalDate对象
      * @return 日期的月和日字符串
      */
-    public static String getReadableMonthAndDayOfMonth(LocalDate date) {
-        String language = Locale.getDefault().getLanguage();
-        String pattern;
-        if (language.equals(new Locale("zh").getLanguage())) {
-            pattern = "M月d日";
-        } else {
-            pattern = "MMM d";
-        }
+    public static String getReadableMonthAndDayOfMonth(Context context, LocalDate date) {
+//        String language = Locale.getDefault().getLanguage();
+        String pattern = context.getString(R.string.dtf_readable_month_and_day_of_month);
+//        if (language.equals(new Locale("zh").getLanguage())) {
+//            pattern = "M月d日";
+//        } else {
+//            pattern = "MMM d";
+//        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         return date.format(formatter);
     }
@@ -116,17 +123,18 @@ public class DateTimeFormatUtil {
      * 获取易读的日期时间(年、月、日、时、分)，适于展示给用户(yyyy.M.d HH:mm)
      * 本App中用于发送事件提醒通知
      *
+     * @param context  可用Context对象
      * @param dateTime LocalDateTime对象
      * @return 易读的日期时间
      */
-    public static String getReadableDateHourMinute(LocalDateTime dateTime) {
+    public static String getReadableDateHourMinute(Context context, LocalDateTime dateTime) {
         String language = Locale.getDefault().getLanguage();
-        String pattern;
-        if (language.equals(new Locale("zh").getLanguage())) {
-            pattern = "yyyy年M月d日 HH:mm";
-        } else {
-            pattern = "MMM d, yyyy HH:mm";
-        }
+        String pattern = context.getString(R.string.dtf_readable_date_hour_minute);
+//        if (language.equals(new Locale("zh").getLanguage())) {
+//            pattern = "yyyy年M月d日 HH:mm";
+//        } else {
+//            pattern = "MMM d, yyyy HH:mm";
+//        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         return dateTime.format(formatter);
     }
@@ -181,14 +189,15 @@ public class DateTimeFormatUtil {
      * 中文:yyyy年M月d日
      * English:MMM d, yyyy
      *
+     * @param context    可用Context对象
      * @param year       年
      * @param month      月(1~12)
      * @param dayOfMonth 日
      * @return 易读的格式化日期
      */
-    public static String getReadableDate(int year, int month, int dayOfMonth) {
+    public static String getReadableDate(Context context, int year, int month, int dayOfMonth) {
         LocalDate date = LocalDate.of(year, month, dayOfMonth);
-        return getReadableDate(date);
+        return getReadableDate(context, date);
     }
 
     /**
@@ -196,14 +205,15 @@ public class DateTimeFormatUtil {
      * 中文:yyyy年M月d日E
      * English:E, MMM d, yyyy
      *
+     * @param context    可用Context对象
      * @param year       年
      * @param month      月(1~12)
      * @param dayOfMonth 日
      * @return 易读的格式化日期
      */
-    public static String getReadableDateAndDayOfWeek(int year, int month, int dayOfMonth) {
+    public static String getReadableDateAndDayOfWeek(Context context, int year, int month, int dayOfMonth) {
         LocalDate date = LocalDate.of(year, month, dayOfMonth);
-        return getReadableDateAndDayOfWeek(date);
+        return getReadableDateAndDayOfWeek(context, date);
     }
 
     /**
@@ -211,20 +221,22 @@ public class DateTimeFormatUtil {
      * 中文:M月d日
      * English:MMM d
      *
+     * @param context    可用Context对象
      * @param year       年
      * @param month      月(1~12)
      * @param dayOfMonth 日
      * @return 日期的月和日字符串
      */
-    public static String getReadableMonthAndDayOfMonth(int year, int month, int dayOfMonth) {
+    public static String getReadableMonthAndDayOfMonth(Context context, int year, int month, int dayOfMonth) {
         LocalDate date = LocalDate.of(year, month, dayOfMonth);
-        return getReadableMonthAndDayOfMonth(date);
+        return getReadableMonthAndDayOfMonth(context, date);
     }
 
     /**
      * 获取易读的日期时间(年、月、日、时、分)，适于展示给用户(yyyy.M.d HH:mm)
      * 本App中用于发送事件提醒通知
      *
+     * @param context    可用Context对象
      * @param year       年
      * @param month      月(1~12)
      * @param dayOfMonth 日
@@ -232,11 +244,10 @@ public class DateTimeFormatUtil {
      * @param minute     分
      * @return 易读的日期时间
      */
-    public static String getReadableDateHourMinute(
-            int year, int month, int dayOfMonth, int hour, int minute) {
+    public static String getReadableDateHourMinute(Context context, int year, int month, int dayOfMonth, int hour, int minute) {
         LocalDateTime dateTime =
                 LocalDateTime.of(year, month, dayOfMonth, hour, minute);
-        return getReadableDateHourMinute(dateTime);
+        return getReadableDateHourMinute(context, dateTime);
     }
 
 
@@ -282,12 +293,13 @@ public class DateTimeFormatUtil {
      * 中文:yyyy年M月d日
      * English:MMM d, yyyy
      *
-     * @param millis 从1970-01-01 00:00:00经过的毫秒数
+     * @param context 可用Context对象
+     * @param millis  从1970-01-01 00:00:00经过的毫秒数
      * @return 易读的格式化日期
      */
-    public static String getReadableDate(long millis) {
+    public static String getReadableDate(Context context, long millis) {
         LocalDate date = Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDate();
-        return getReadableDate(date);
+        return getReadableDate(context, date);
     }
 
     /**
@@ -295,12 +307,13 @@ public class DateTimeFormatUtil {
      * 中文:yyyy年M月d日E
      * English:E, MMM d, yyyy
      *
-     * @param millis 从1970-01-01 00:00:00经过的毫秒数
+     * @param context 可用Context对象
+     * @param millis  从1970-01-01 00:00:00经过的毫秒数
      * @return 易读的格式化日期
      */
-    public static String getReadableDateAndDayOfWeek(long millis) {
+    public static String getReadableDateAndDayOfWeek(Context context, long millis) {
         LocalDate date = Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDate();
-        return getReadableDateAndDayOfWeek(date);
+        return getReadableDateAndDayOfWeek(context, date);
     }
 
     /**
@@ -308,25 +321,27 @@ public class DateTimeFormatUtil {
      * 中文:M月d日
      * English:MMM d
      *
-     * @param millis 从1970-01-01 00:00:00经过的毫秒数
+     * @param context 可用Context对象
+     * @param millis  从1970-01-01 00:00:00经过的毫秒数
      * @return 日期的月和日字符串
      */
-    public static String getReadableMonthAndDayOfMonth(long millis) {
+    public static String getReadableMonthAndDayOfMonth(Context context, long millis) {
         LocalDate date = Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDate();
-        return getReadableMonthAndDayOfMonth(date);
+        return getReadableMonthAndDayOfMonth(context, date);
     }
 
     /**
      * 获取易读的日期时间(年、月、日、时、分)，适于展示给用户(yyyy.M.d HH:mm)
      * 本App中用于发送事件提醒通知
      *
-     * @param millis 从1970-01-01 00:00:00经过的毫秒数
+     * @param context 可用Context对象
+     * @param millis  从1970-01-01 00:00:00经过的毫秒数
      * @return 易读的日期时间
      */
-    public static String getReadableDateHourMinute(long millis) {
+    public static String getReadableDateHourMinute(Context context, long millis) {
         LocalDateTime dateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(millis),
                 ZoneId.systemDefault());
-        return getReadableDateHourMinute(dateTime);
+        return getReadableDateHourMinute(context, dateTime);
     }
 
 

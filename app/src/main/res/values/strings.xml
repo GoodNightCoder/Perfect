@@ -62,6 +62,7 @@
     <string name="event_duration_invalid_toast">Duration cannot be less than 5 minutes</string>
     <string name="event_start_time_invalid_toast">Invalid start time</string>
     <string name="event_interval_less_than_duration_toast">Repeat interval must be greater than or equal to duration</string>
+    <string name="event_duration_pattern">%1$dh %2$dm</string>
 
     <!--  SummaryDialogFragment  -->
     <string name="summary_dialog_title">Summary</string>
@@ -101,11 +102,22 @@
     <string name="event_reminder_activated_text">Event reminder activated</string>
     <string name="event_reminder_activated_title">Event Reminder</string>
     <string name="no_matching_activity_toast">No matching activity</string>
+
+    <string name="bedtime_alarm_activated_text">Bedtime alarm activated</string>
+    <string name="bedtime_alarm_activated_title">Bedtime Alarm</string>
     <string name="bedtime_notification_stop_alarm_text">Tap to stop alarm</string>
     <string name="bedtime_cannot_adjust_volume_toast">Your device\'s volume cannot be adjusted</string>
     <string name="bedtime_notification_wake_up_title">Wake Up Alarm</string>
     <string name="bedtime_notification_fall_asleep_title">Fall Asleep Alarm</string>
     <string name="focus_new_settings_applied_toast">New settings applied to focus task</string>
+
+    <string name="dtf_readable_date">MMM d, yyyy</string>
+    <string name="dtf_readable_date_and_day_of_week">E, MMM d, yyyy</string>
+    <string name="dtf_readable_month_and_day_of_month">MMM d</string>
+    <string name="dtf_readable_date_hour_minute">MMM d, yyyy HH:mm</string>
+    <string name="bedtime_notification_summary_text">Let\'s summarize today</string>
+    <string name="bedtime_notification_summary_title">Summary</string>
+    <string name="bedtime_notification_memo_title">Memo</string>
 
     <plurals name="interval_day_format">
         <item quantity="one">Every %d day</item>

@@ -13,13 +13,16 @@ import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.IBinder;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.IntDef;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.cyberlight.perfect.R;
+import com.cyberlight.perfect.model.Summary;
+import com.cyberlight.perfect.ui.MainActivity;
 import com.cyberlight.perfect.util.DateTimeFormatUtil;
+import com.cyberlight.perfect.util.DbUtil;
 import com.cyberlight.perfect.util.SettingManager;
 import com.cyberlight.perfect.util.SharedPrefSettingManager;
 import com.cyberlight.perfect.util.ToastUtil;
@@ -33,10 +36,13 @@ import java.time.ZoneId;
 @SuppressLint("UnspecifiedImmutableFlag")
 public class BedtimeAlarmService extends Service {
 
-    private static final CharSequence CHANNEL_NAME = "Bedtime notifications";
-    private static final String CHANNEL_ID = "bedtime_channel";
-    private static final int CHANNEL_IMPORTANCE = NotificationManager.IMPORTANCE_HIGH;
-    private static final int NOTIFICATION_ID = 12;
+    public static final CharSequence BEDTIME_CHANNEL_NAME = "Bedtime notifications";
+    public static final String BEDTIME_CHANNEL_ID = "bedtime_channel";
+    public static final int BEDTIME_CHANNEL_IMPORTANCE = NotificationManager.IMPORTANCE_HIGH;
+
+    private static final int ALARM_NOTIFICATION_ID = 12;
+    private static final int AFTER_ALARM_NOTIFICATION_ID = 13;
+    private static final int FIRST_SET_ALARM_NOTIFICATION_ID = 14;
 
     private static final String EXTRA_STOP = "stop_alarm";
     private static final String EXTRA_ALARM_TYPE = "alarm_type";
@@ -46,6 +52,8 @@ public class BedtimeAlarmService extends Service {
     public @interface AlarmType {
     }
 
+    @AlarmType
+    private int mAlarmType;
     private static final int TYPE_WAKE_UP = 1;
     private static final int TYPE_FALL_ASLEEP = 2;
 
@@ -54,17 +62,10 @@ public class BedtimeAlarmService extends Service {
     private boolean mRunning = false;
     private int volumeToReset;
 
+
     public BedtimeAlarmService() {
     }
 
-    @Override
-    public void onCreate() {
-        // 创建通知渠道
-        NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
-                CHANNEL_NAME, CHANNEL_IMPORTANCE);
-        NotificationManager notificationManager = getSystemService(NotificationManager.class);
-        notificationManager.createNotificationChannel(channel);
-    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -73,10 +74,10 @@ public class BedtimeAlarmService extends Service {
             if (stop) stopSelf();
         } else {
             mRunning = true;
-            int alarmType = intent.getIntExtra(EXTRA_ALARM_TYPE, 0);
-            startAlarm(alarmType);
+            mAlarmType = intent.getIntExtra(EXTRA_ALARM_TYPE, 0);
+            startAlarm();
             // 设置下次闹钟
-            activateBedtimeAlarm(this, true);
+            activateAlarm(this, true);
         }
         return super.onStartCommand(intent, flags, startId);
     }
@@ -100,8 +101,39 @@ public class BedtimeAlarmService extends Service {
             audioFocusRequest = null;
         }
         // MediaPlayer使用完必须释放
-        if (mMediaPlayer != null)
+        if (mMediaPlayer != null) {
             mMediaPlayer.release();
+            mMediaPlayer = null;
+        }
+        // 闹钟结束后提醒待办事项或总结
+        String title, text;
+        switch (mAlarmType) {
+            case TYPE_WAKE_UP:
+                LocalDate date = LocalDate.now();
+                Summary yesterdaySummary = DbUtil.getSummary(this, DateTimeFormatUtil.getNeatDate(date.minusDays(1)));
+                if (yesterdaySummary == null) return;// 无备忘录
+                title = getString(R.string.bedtime_notification_memo_title);
+                text = yesterdaySummary.memo;
+                break;
+            case TYPE_FALL_ASLEEP:
+                title = getString(R.string.bedtime_notification_summary_title);
+                text = getString(R.string.bedtime_notification_summary_text);
+                break;
+            default:
+                return;
+        }
+        Intent intent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        Notification notification = new Notification.Builder(this, BEDTIME_CHANNEL_ID)
+                .setVisibility(Notification.VISIBILITY_PUBLIC)
+                .setContentTitle(title)
+                .setContentText(text)
+                .setContentIntent(pendingIntent)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setAutoCancel(true)
+                .build();
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+        notificationManagerCompat.notify(AFTER_ALARM_NOTIFICATION_ID, notification);
     }
 
     /**
@@ -111,14 +143,23 @@ public class BedtimeAlarmService extends Service {
      * @param context 可用Context对象
      * @param update  若已启动，是否需要更新闹钟
      */
-    public static void activateBedtimeAlarm(Context context, boolean update) {
+    public static void activateAlarm(Context context, boolean update) {
         Intent intent = new Intent(context, BedtimeAlarmService.class);
         PendingIntent pendingIntent = PendingIntent.getService(context, 77,
                 intent, PendingIntent.FLAG_NO_CREATE);
-        if (pendingIntent != null && !update) {
-            //TEST
-            Log.d("perfect_debug", "闹钟已设且不需更新");
-            return;
+        // 闹钟已设置，且不需更新
+        if (pendingIntent != null && !update) return;
+        // 初次设置闹钟，发送通知提醒用户
+        if (pendingIntent == null) {
+            Notification notification = new Notification.Builder(context, BEDTIME_CHANNEL_ID)
+                    .setVisibility(Notification.VISIBILITY_PUBLIC)
+                    .setContentTitle(context.getText(R.string.bedtime_alarm_activated_title))
+                    .setContentText(context.getText(R.string.bedtime_alarm_activated_text))
+                    .setSmallIcon(R.drawable.ic_launcher_foreground)
+                    .setAutoCancel(true)
+                    .build();
+            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
+            notificationManagerCompat.notify(FIRST_SET_ALARM_NOTIFICATION_ID, notification);
         }
         SettingManager settingManager = SharedPrefSettingManager.getInstance(context);
         // 计算下一次闹钟的触发时间
@@ -156,8 +197,6 @@ public class BedtimeAlarmService extends Service {
             alarmType = isWakeUpSmaller ? TYPE_WAKE_UP : TYPE_FALL_ASLEEP;
         }
         // 设置闹钟
-        //TEST
-        Log.d("perfect_debug", "设置闹钟:" + DateTimeFormatUtil.getDateTimeForDebugging(alarmTimeMillis));
         intent.putExtra(EXTRA_ALARM_TYPE, alarmType);
         pendingIntent = PendingIntent.getService(context, 77,
                 intent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -170,23 +209,21 @@ public class BedtimeAlarmService extends Service {
      *
      * @param context 可用Context对象
      */
-    public static void cancelBedtimeAlarm(Context context) {
+    public static void cancelAlarm(Context context) {
         Intent intent = new Intent(context, BedtimeAlarmService.class);
         PendingIntent pendingIntent = PendingIntent.getService(context, 77,
                 intent, PendingIntent.FLAG_NO_CREATE);
         if (pendingIntent != null) {
-            // TEST
-            Log.d("perfect_debug", "闹钟被取消");
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             alarmManager.cancel(pendingIntent);
             pendingIntent.cancel();
         }
     }
 
-    private void startAlarm(@AlarmType int alarmType) {
+    private void startAlarm() {
         int resId;
         String title;
-        switch (alarmType) {
+        switch (mAlarmType) {
             case TYPE_WAKE_UP:
                 resId = R.raw.wake_up_alarm_music;
                 title = getString(R.string.bedtime_notification_wake_up_title);
@@ -221,7 +258,7 @@ public class BedtimeAlarmService extends Service {
         stopIntent.putExtra(EXTRA_STOP, true);
         PendingIntent stopPendingIntent =
                 PendingIntent.getService(this, 7, stopIntent, 0);
-        Notification notification = new Notification.Builder(this, CHANNEL_ID)
+        Notification notification = new Notification.Builder(this, BEDTIME_CHANNEL_ID)
                 .setVisibility(Notification.VISIBILITY_PUBLIC)
                 .setContentTitle(title)
                 .setContentText(getString(R.string.bedtime_notification_stop_alarm_text))
@@ -230,6 +267,6 @@ public class BedtimeAlarmService extends Service {
                 .setAutoCancel(true)
                 .setOnlyAlertOnce(true)
                 .build();
-        startForeground(NOTIFICATION_ID, notification);
+        startForeground(ALARM_NOTIFICATION_ID, notification);
     }
 }

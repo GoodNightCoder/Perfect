@@ -1,6 +1,7 @@
 package com.cyberlight.perfect.ui;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 
 import com.cyberlight.perfect.R;
@@ -64,6 +66,7 @@ public class DateHourMinutePickerDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Context context = requireContext();
         // 获取并设置初始值
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -90,7 +93,7 @@ public class DateHourMinutePickerDialogFragment extends DialogFragment {
         TextView mIndicatorTv =
                 view.findViewById(R.id.dialog_dhm_indicator_tv);
         mIndicatorTv.setText(DateTimeFormatUtil
-                .getReadableDateAndDayOfWeek(mSelectedYear, mSelectedMonth, mSelectedDayOfMonth));
+                .getReadableDateAndDayOfWeek(context, mSelectedYear, mSelectedMonth, mSelectedDayOfMonth));
         // 获取三个选择器
         DateWheelPicker mDateWp = view.findViewById(R.id.dialog_dhm_date_wp);
         IntegerWheelPicker mHourWp = view.findViewById(R.id.dialog_dhm_hour_wp);
@@ -105,7 +108,7 @@ public class DateHourMinutePickerDialogFragment extends DialogFragment {
             mSelectedMonth = month;
             mSelectedDayOfMonth = dayOfMonth;
             mIndicatorTv.setText(DateTimeFormatUtil
-                    .getReadableDateAndDayOfWeek(mSelectedYear, mSelectedMonth, mSelectedDayOfMonth));
+                    .getReadableDateAndDayOfWeek(context, mSelectedYear, mSelectedMonth, mSelectedDayOfMonth));
         });
         mHourWp.setOnValueSelectedListener(value -> mSelectedHour = value);
         mMinuteWp.setOnValueSelectedListener(value -> mSelectedMinute = value);
@@ -127,7 +130,7 @@ public class DateHourMinutePickerDialogFragment extends DialogFragment {
         });
         // 设置对话框
         // R.style.SlideBottomAnimDialog是对话框进出动画
-        Dialog dialog = new Dialog(getContext(), R.style.SlideBottomAnimDialog);
+        Dialog dialog = new Dialog(context, R.style.SlideBottomAnimDialog);
         // 设置对话框布局
         dialog.setContentView(view);
         // 设置对话框样式

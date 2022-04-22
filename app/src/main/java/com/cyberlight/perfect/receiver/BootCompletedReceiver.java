@@ -14,12 +14,12 @@ public class BootCompletedReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
             // 检查事件提醒是否启动
-            EventReminderReceiver.activateEventReminder(context, false);
+            EventReminderReceiver.activateReminder(context, true);
             // 检查闹钟是否启动
             SettingManager settingManager = SharedPrefSettingManager.getInstance(context);
             boolean manageBedtime = settingManager.getManageBedtime();
             if (manageBedtime) {
-                BedtimeAlarmService.activateBedtimeAlarm(context, false);
+                BedtimeAlarmService.activateAlarm(context, true);
             }
         }
     }

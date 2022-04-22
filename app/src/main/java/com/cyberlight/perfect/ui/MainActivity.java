@@ -34,6 +34,7 @@ import com.cyberlight.perfect.model.SpecPlan;
 import com.cyberlight.perfect.model.Summary;
 import com.cyberlight.perfect.receiver.EventReminderReceiver;
 import com.cyberlight.perfect.service.BedtimeAlarmService;
+import com.cyberlight.perfect.test.DebugUtil;
 import com.cyberlight.perfect.util.DateTimeFormatUtil;
 import com.cyberlight.perfect.util.DbUtil;
 import com.cyberlight.perfect.util.SettingManager;
@@ -181,12 +182,12 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
                 });
         onDateChanged();
         // 检查事件提醒是否启动
-        EventReminderReceiver.activateEventReminder(this, false);
+        EventReminderReceiver.activateReminder(this, false);
         // 检查闹钟是否启动
         SettingManager settingManager = SharedPrefSettingManager.getInstance(this);
         boolean manageBedtime = settingManager.getManageBedtime();
         if (manageBedtime) {
-            BedtimeAlarmService.activateBedtimeAlarm(this, false);
+            BedtimeAlarmService.activateAlarm(this, false);
         }
     }
 
@@ -210,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
      * 当当前页日期改变时调用此方法
      */
     private void onDateChanged() {
-        mDateTv.setText(DateTimeFormatUtil.getReadableDate(curDate));
+        mDateTv.setText(DateTimeFormatUtil.getReadableDate(this, curDate));
         LocalDate today = LocalDate.now();
         boolean isToday = today.equals(curDate);
         if (mFab.getVisibility() == View.VISIBLE && isToday) {
@@ -376,6 +377,11 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
                 });
                 // 对添加总结按钮设置监听
                 mAddSummaryIv.setOnClickListener(v1 -> {
+                    if (DebugUtil.enableTestMode) {
+                        DebugUtil.addTestSummary(MainActivity.this, date);
+                        pagerAdapter.notifyDataSetChanged();
+                        return;
+                    }
                     if (hasSummarized) {
                         ToastUtil.showToast(MainActivity.this,
                                 R.string.main_have_sum_toast,

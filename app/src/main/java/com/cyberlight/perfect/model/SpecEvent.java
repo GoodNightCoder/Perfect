@@ -1,5 +1,7 @@
 package com.cyberlight.perfect.model;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 
 import com.cyberlight.perfect.util.DateTimeFormatUtil;
@@ -28,8 +30,8 @@ public class SpecEvent extends Event {
                 '}';
     }
 
-    public String toTimeString() {
-        return DateTimeFormatUtil.getReadableDateHourMinute(specStart) + " ~ " +
-                DateTimeFormatUtil.getReadableDateHourMinute(specStart + duration);
+    public String toTimeString(Context context) {
+        return DateTimeFormatUtil.getReadableDateHourMinute(context, specStart) + " ~ " +
+                DateTimeFormatUtil.getReadableDateHourMinute(context, specStart + duration);
     }
 }
