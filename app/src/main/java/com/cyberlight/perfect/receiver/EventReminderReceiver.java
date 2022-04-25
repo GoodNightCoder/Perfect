@@ -3,20 +3,19 @@ package com.cyberlight.perfect.receiver;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-
-import androidx.core.app.NotificationManagerCompat;
+import android.text.TextUtils;
 
 import com.cyberlight.perfect.R;
 import com.cyberlight.perfect.model.Event;
 import com.cyberlight.perfect.model.SpecEvent;
 import com.cyberlight.perfect.ui.MainActivity;
 import com.cyberlight.perfect.util.DbUtil;
+import com.cyberlight.perfect.util.NotificationUtil;
 
 import java.util.List;
 
@@ -26,8 +25,7 @@ public class EventReminderReceiver extends BroadcastReceiver {
     public static final CharSequence EVENT_CHANNEL_NAME = "Event notifications";
     public static final String EVENT_CHANNEL_ID = "event_channel";
     public static final int EVENT_CHANNEL_IMPORTANCE = NotificationManager.IMPORTANCE_HIGH;
-
-    private static final int NOTIFICATION_ID = 10;
+    private static final int EVENT_NOTIFICATION_ID = 10;
 
     private static final String EXTRA_EVENT_TITLE = "extra_event_title";
     private static final String EXTRA_EVENT_TIME = "extra_event_time";
@@ -37,10 +35,22 @@ public class EventReminderReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        // 发送事件通知
         String eventTitle = intent.getStringExtra(EXTRA_EVENT_TITLE);
         String eventTime = intent.getStringExtra(EXTRA_EVENT_TIME);
-        Notification notification = buildNotification(context, eventTitle, eventTime);
-        showNotification(context, notification);
+        if (!TextUtils.isEmpty(eventTitle) && !TextUtils.isEmpty(eventTime)) {
+            Intent ni = new Intent(context, MainActivity.class);
+            PendingIntent npi = PendingIntent.getActivity(context, 0, ni, 0);
+            Notification notification = NotificationUtil.buildNotification(context,
+                    EVENT_CHANNEL_ID,
+                    eventTitle,
+                    eventTime,
+                    npi,
+                    true,
+                    false);
+            NotificationUtil.showNotification(context, EVENT_NOTIFICATION_ID, notification);
+        }
+        // 安排下一次事件提醒
         setNextReminder(context);
     }
 
@@ -62,8 +72,16 @@ public class EventReminderReceiver extends BroadcastReceiver {
             // 启动事件提醒
             boolean firstSet = setNextReminder(context);
             if (firstSet) {
-                Notification notification = buildNotification(context, context.getString(R.string.event_reminder_activated_title), context.getString(R.string.event_reminder_activated_text));
-                showNotification(context, notification);
+                Intent ni = new Intent(context, MainActivity.class);
+                PendingIntent npi = PendingIntent.getActivity(context, 0, ni, 0);
+                Notification notification = NotificationUtil.buildNotification(context,
+                        EVENT_CHANNEL_ID,
+                        context.getText(R.string.event_reminder_activated_title),
+                        context.getText(R.string.event_reminder_activated_text),
+                        npi,
+                        true,
+                        false);
+                NotificationUtil.showNotification(context, EVENT_NOTIFICATION_ID, notification);
             }
         } else if (update) {
             // 更新事件提醒
@@ -126,25 +144,6 @@ public class EventReminderReceiver extends BroadcastReceiver {
         intent.setAction(EVENT_REMINDER_ACTION);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, EVENT_REMINDER_REQUEST_CODE, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
-    }
-
-    private static Notification buildNotification(Context context, String title, String text) {
-        Intent notificationIntent = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
-        return new Notification.Builder(context,
-                EventReminderReceiver.EVENT_CHANNEL_ID)
-                .setContentTitle(title)
-                .setContentText(text)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
-                .setOnlyAlertOnce(false)
-                .build();
-    }
-
-    private static void showNotification(Context context, Notification notification) {
-        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
-        notificationManagerCompat.notify(NOTIFICATION_ID, notification);
     }
 
 }

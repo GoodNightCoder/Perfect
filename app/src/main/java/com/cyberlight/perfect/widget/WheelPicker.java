@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Handler;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -48,59 +49,27 @@ public class WheelPicker<T> extends View {
      * 当前选中item在dataList中的下标值
      */
     private int mSelectedItemPosition;
-
-    /**
-     * item被选中监听器
-     */
     private OnItemSelectedListener<T> mOnItemSelectedListener;
 
-    /**
-     * 未选中item的文字大小
-     */
+    // 未选中项的文字样式
     private int mItemTextSize;
-
-    /**
-     * 未选中item的文字颜色
-     */
     private int mItemTextColor;
+    private final TextPaint mItemTextPaint;
 
-    /**
-     * 用于绘制未选中item的文字
-     */
-    private Paint mItemTextPaint;
-
-    /**
-     * 选中item的文字大小
-     */
+    // 选中项的文字样式
     private int mSelectedItemTextSize;
-
-    /**
-     * 选中item的文字颜色
-     */
     private int mSelectedItemTextColor;
+    private final TextPaint mSelectedItemTextPaint;
+    private float mSelectedItemTextStrokeWidth;
+    private float mSelectedItemLetterSpacing;
 
-    /**
-     * 用于绘制选中item的文字
-     */
-    private Paint mSelectedItemTextPaint;
-
-    /**
-     * 指示文字大小
-     */
+    // 指示文字样式
     private int mIndicatorTextSize;
-
-    /**
-     * 指示文字颜色
-     */
     private int mIndicatorTextColor;
+    private final TextPaint mIndicatorTextPaint;
 
     /**
-     * 用于绘制指示文字
-     */
-    private Paint mIndicatorTextPaint;
-
-    /**
-     * 指示文字，坐落在selectedItem的文字后
+     * 指示文字
      */
     private String mIndicatorText;
 
@@ -112,7 +81,7 @@ public class WheelPicker<T> extends View {
     /**
      * 用于测量文字尺寸的paint
      */
-    private Paint mMeasureTextPaint;
+    private final Paint mMeasureTextPaint;
 
     /**
      * 文字最大宽度，用来保证文字都能显示完全
@@ -172,7 +141,7 @@ public class WheelPicker<T> extends View {
     /**
      * 用于绘制幕布
      */
-    private Paint mCurtainPaint;
+    private final Paint mCurtainPaint;
 
     /**
      * 是否绘制选中项的分隔线
@@ -187,7 +156,7 @@ public class WheelPicker<T> extends View {
     /**
      * 用于绘制选中项的分隔线
      */
-    private Paint mSelectedItemDividerPaint;
+    private final Paint mSelectedItemDividerPaint;
 
     /**
      * 整个选择器的绘制区域
@@ -269,10 +238,6 @@ public class WheelPicker<T> extends View {
      */
     private final Scroller mScroller;
 
-
-    /**
-     * 用来执行mScrollRunnable
-     */
     private final Handler mHandler = new Handler();
 
     /**
@@ -304,83 +269,96 @@ public class WheelPicker<T> extends View {
 
     public WheelPicker(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        //初始化
-        initAttrs(context, attrs, defStyleAttr, defStyleRes);
-        initPaint();
+        mItemTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
+        mSelectedItemTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
+        mIndicatorTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
+        mCurtainPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+        mSelectedItemDividerPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+        mMeasureTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
         mDrawRect = new Rect();
         mSelectedItemRect = new Rect();
         mScroller = new Scroller(context);
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+        initAttrs(context, attrs, defStyleAttr, defStyleRes);
+        initPaint();
     }
 
     private void initAttrs(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.WheelPicker, defStyleAttr,
-                defStyleRes);
+        TypedArray a = context.obtainStyledAttributes(
+                attrs, R.styleable.WheelPicker, defStyleAttr, defStyleRes);
         try {
-            mItemTextSize = a.getDimensionPixelSize(R.styleable.WheelPicker_itemTextSize,
-                    getResources().getDimensionPixelSize(R.dimen.WheelPicker_itemTextSize));
-            mItemTextColor = a.getColor(R.styleable.WheelPicker_itemTextColor,
-                    Color.BLACK);
-            mSelectedItemTextSize = a.getDimensionPixelSize(R.styleable.WheelPicker_selectedItemTextSize,
-                    getResources().getDimensionPixelSize(R.dimen.WheelPicker_selectedItemTextSize));
-            mSelectedItemTextColor = a.getColor(R.styleable.WheelPicker_selectedItemTextColor,
-                    Color.BLUE);
-            mIndicatorTextSize = a.getDimensionPixelSize(R.styleable.WheelPicker_indicatorTextSize,
-                    mItemTextSize);
-            mIndicatorTextColor = a.getColor(R.styleable.WheelPicker_indicatorTextColor,
-                    mSelectedItemTextColor);
-            mIndicatorText = a.getString(R.styleable.WheelPicker_indicatorText);
-            mMaxWidthText = a.getString(R.styleable.WheelPicker_maxWidthText);
-            mItemWidthSpace = a.getDimensionPixelSize(R.styleable.WheelPicker_itemWidthSpace,
-                    getResources().getDimensionPixelOffset(R.dimen.WheelPicker_itemWidthSpace));
-            mItemHeightSpace = a.getDimensionPixelSize(R.styleable.WheelPicker_itemHeightSpace,
-                    getResources().getDimensionPixelOffset(R.dimen.WheelPicker_itemHeightSpace));
-            mHalfVisibleItemCount = a.getInteger(R.styleable.WheelPicker_halfVisibleItemCount,
-                    2);
-            mIsTextSizeGradual = a.getBoolean(R.styleable.WheelPicker_textSizeGradual,
-                    true);
-            mIsTextColorGradual = a.getBoolean(R.styleable.WheelPicker_textColorGradual,
-                    true);
-            mIsTextAlphaGradual = a.getBoolean(R.styleable.WheelPicker_textAlphaGradual,
-                    true);
-            mIsShowCurtain = a.getBoolean(R.styleable.WheelPicker_showCurtain,
-                    false);
-            mCurtainColor = a.getColor(R.styleable.WheelPicker_curtainColor,
-                    Color.GRAY);
-            mIsShowSelectedItemDivider = a.getBoolean(R.styleable.WheelPicker_showSelectedItemDivider,
-                    true);
-            mSelectedItemDividerColor = a.getColor(R.styleable.WheelPicker_selectedItemDividerColor,
-                    Color.BLACK);
-            mIsCyclic = a.getBoolean(R.styleable.WheelPicker_cyclic, false);
+            mItemTextSize = a.getDimensionPixelSize(
+                    R.styleable.WheelPicker_itemTextSize, -1);
+            mItemTextColor = a.getColor(
+                    R.styleable.WheelPicker_itemTextColor, Color.BLACK);
+            mSelectedItemTextSize = a.getDimensionPixelSize(
+                    R.styleable.WheelPicker_selectedItemTextSize, -1);
+            mSelectedItemTextColor = a.getColor(
+                    R.styleable.WheelPicker_selectedItemTextColor, Color.BLACK);
+            mSelectedItemTextStrokeWidth = a.getFloat(
+                    R.styleable.WheelPicker_selectedItemTextStrokeWidth, 0);
+            mSelectedItemLetterSpacing = a.getFloat(
+                    R.styleable.WheelPicker_selectedItemLetterSpacing, 0);
+            mIndicatorTextSize = a.getDimensionPixelSize(
+                    R.styleable.WheelPicker_indicatorTextSize, -1);
+            mIndicatorTextColor = a.getColor(
+                    R.styleable.WheelPicker_indicatorTextColor, Color.BLACK);
+            mIndicatorText = a.getString(
+                    R.styleable.WheelPicker_indicatorText);
+            mMaxWidthText = a.getString(
+                    R.styleable.WheelPicker_maxWidthText);
+            mItemWidthSpace = a.getDimensionPixelSize(
+                    R.styleable.WheelPicker_itemWidthSpace, 0);
+            mItemHeightSpace = a.getDimensionPixelSize(
+                    R.styleable.WheelPicker_itemHeightSpace, 0);
+            mHalfVisibleItemCount = a.getInteger(
+                    R.styleable.WheelPicker_halfVisibleItemCount, 2);
+            mIsTextSizeGradual = a.getBoolean(
+                    R.styleable.WheelPicker_textSizeGradual, true);
+            mIsTextColorGradual = a.getBoolean(
+                    R.styleable.WheelPicker_textColorGradual, true);
+            mIsTextAlphaGradual = a.getBoolean(
+                    R.styleable.WheelPicker_textAlphaGradual, true);
+            mIsShowCurtain = a.getBoolean(
+                    R.styleable.WheelPicker_showCurtain, false);
+            mCurtainColor = a.getColor(
+                    R.styleable.WheelPicker_curtainColor, Color.GRAY);
+            mIsShowSelectedItemDivider = a.getBoolean(
+                    R.styleable.WheelPicker_showSelectedItemDivider, true);
+            mSelectedItemDividerColor = a.getColor(
+                    R.styleable.WheelPicker_selectedItemDividerColor, Color.BLACK);
+            mIsCyclic = a.getBoolean(
+                    R.styleable.WheelPicker_cyclic, false);
         } finally {
             a.recycle();
         }
     }
 
     private void initPaint() {
-        mCurtainPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
         mCurtainPaint.setStyle(Paint.Style.FILL);
         mCurtainPaint.setColor(mCurtainColor);
-        mSelectedItemDividerPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+
         mSelectedItemDividerPaint.setStyle(Paint.Style.STROKE);
         mSelectedItemDividerPaint.setColor(mSelectedItemDividerColor);
-        mItemTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
-        mItemTextPaint.setStyle(Paint.Style.FILL);
+
+        mItemTextPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         mItemTextPaint.setTextAlign(Paint.Align.CENTER);
         mItemTextPaint.setColor(mItemTextColor);
         mItemTextPaint.setTextSize(mItemTextSize);
-        mSelectedItemTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
-        mSelectedItemTextPaint.setStyle(Paint.Style.FILL);
+
+        mSelectedItemTextPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         mSelectedItemTextPaint.setTextAlign(Paint.Align.CENTER);
         mSelectedItemTextPaint.setColor(mSelectedItemTextColor);
         mSelectedItemTextPaint.setTextSize(mSelectedItemTextSize);
-        mIndicatorTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
-        mIndicatorTextPaint.setStyle(Paint.Style.FILL);
+        mSelectedItemTextPaint.setStrokeWidth(mSelectedItemTextStrokeWidth);
+        mSelectedItemTextPaint.setLetterSpacing(mSelectedItemLetterSpacing);
+
+        mIndicatorTextPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         mIndicatorTextPaint.setTextAlign(Paint.Align.LEFT);
         mIndicatorTextPaint.setColor(mIndicatorTextColor);
         mIndicatorTextPaint.setTextSize(mIndicatorTextSize);
-        mMeasureTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
-        mMeasureTextPaint.setStyle(Paint.Style.FILL);
+
+        mMeasureTextPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         mMeasureTextPaint.setTextAlign(Paint.Align.CENTER);
     }
 
@@ -410,24 +388,26 @@ public class WheelPicker<T> extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        //计算整个控件绘制的区域
+        // 计算整个控件绘制的区域
         mDrawRect.set(getPaddingLeft(),
                 getPaddingTop(),
-                getWidth() - getPaddingRight(),
-                getHeight() - getPaddingBottom());
-        //计算item的高度
+                w - getPaddingRight(),
+                h - getPaddingBottom());
+        // 计算item的高度
         mItemHeight = mDrawRect.height() / getVisibleItemCount();
-        //计算文字绘制的X坐标，使文字在item里水平居中
+        // 计算文字绘制的X坐标，使文字在item里水平居中
         mTextDrawX = mDrawRect.centerX();
-        //计算文字绘制的Y坐标，使文字在item里垂直居中
+        // 计算文字绘制的Y坐标，使文字在item里垂直居中
         mFirstTextDrawY = (int) ((mItemHeight - (mSelectedItemTextPaint.ascent() + mSelectedItemTextPaint.descent())) / 2);
         mCenterTextDrawY = mFirstTextDrawY + mItemHeight * mHalfVisibleItemCount;
-        //计算selectedItem的边框位置
-        mSelectedItemRect.set(getPaddingLeft(), mItemHeight * mHalfVisibleItemCount,
-                getWidth() - getPaddingRight(), mItemHeight + mItemHeight * mHalfVisibleItemCount);
-        //计算Fling极限
+        // 计算selectedItem的边框位置
+        mSelectedItemRect.set(getPaddingLeft(),
+                mItemHeight * mHalfVisibleItemCount,
+                getWidth() - getPaddingRight(),
+                mItemHeight + mItemHeight * mHalfVisibleItemCount);
+        // 计算Fling极限
         computeFlingLimitY();
-        //计算offsetY
+        // 计算offsetY
         mOffsetY = -mItemHeight * mSelectedItemPosition;
     }
 
@@ -442,7 +422,7 @@ public class WheelPicker<T> extends View {
             canvas.drawLine(mSelectedItemRect.left, mSelectedItemRect.bottom, mSelectedItemRect.right, mSelectedItemRect.bottom, mSelectedItemDividerPaint);
         }
         int selectedPos = computePosition(mOffsetY);
-        //首尾各多绘制一个用于缓冲
+        // 首尾各多绘制一个用于缓冲
         for (int drawPos = selectedPos - mHalfVisibleItemCount - 1;
              drawPos <= selectedPos + mHalfVisibleItemCount + 1; drawPos++) {
             int dataPos = drawPos;
@@ -454,7 +434,7 @@ public class WheelPicker<T> extends View {
             T data = mDataList.get(dataPos);
             int itemDrawY = mFirstTextDrawY + (drawPos + mHalfVisibleItemCount) * mItemHeight + mOffsetY;
             int distanceY = Math.abs(mCenterTextDrawY - itemDrawY);
-            //文字颜色渐变(文字颜色渐变要在设置透明度上边，否则会被覆盖)
+            // 文字颜色渐变(文字颜色渐变要在设置透明度上边，否则会被覆盖)
             if (mIsTextColorGradual && distanceY < mItemHeight) {
                 float colorRatio = 1 - (distanceY / (float) mItemHeight);
                 mSelectedItemTextPaint.setColor(getGradientColor(mItemTextColor, mSelectedItemTextColor, colorRatio));
@@ -463,7 +443,7 @@ public class WheelPicker<T> extends View {
                 mSelectedItemTextPaint.setColor(mSelectedItemTextColor);
                 mItemTextPaint.setColor(mItemTextColor);
             }
-            //文字透明度渐变
+            // 文字透明度渐变
             if (mIsTextAlphaGradual) {
                 float alphaRatio;
                 if (itemDrawY > mCenterTextDrawY) {
@@ -476,7 +456,7 @@ public class WheelPicker<T> extends View {
                 mSelectedItemTextPaint.setAlpha((int) (alphaRatio * 255));
                 mItemTextPaint.setAlpha((int) (alphaRatio * 255));
             }
-            //文字大小渐变
+            // 文字大小渐变
             if (mIsTextSizeGradual && distanceY < mItemHeight) {
                 float addedSize = (mItemHeight - distanceY) / (float) mItemHeight * (mSelectedItemTextSize - mItemTextSize);
                 mSelectedItemTextPaint.setTextSize(mItemTextSize + addedSize);
@@ -485,7 +465,7 @@ public class WheelPicker<T> extends View {
                 mSelectedItemTextPaint.setTextSize(mSelectedItemTextSize);
                 mItemTextPaint.setTextSize(mItemTextSize);
             }
-            //绘制文字
+            // 绘制文字
             String drawText = mDataFormat == null ? data.toString() : mDataFormat.format(data);
             if (drawPos == selectedPos) {
                 canvas.drawText(drawText, mTextDrawX, itemDrawY, mSelectedItemTextPaint);

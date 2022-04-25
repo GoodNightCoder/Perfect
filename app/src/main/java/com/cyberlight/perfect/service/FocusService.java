@@ -4,7 +4,6 @@ package com.cyberlight.perfect.service;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -21,13 +20,12 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.widget.Toast;
 
-import androidx.core.app.NotificationManagerCompat;
-
 import com.cyberlight.perfect.R;
 import com.cyberlight.perfect.test.DebugUtil;
 import com.cyberlight.perfect.ui.FocusActivity;
 import com.cyberlight.perfect.util.DbUtil;
 import com.cyberlight.perfect.util.FlashlightUtil;
+import com.cyberlight.perfect.util.NotificationUtil;
 import com.cyberlight.perfect.util.SettingManager;
 import com.cyberlight.perfect.util.SharedPrefSettingManager;
 import com.cyberlight.perfect.util.ToastUtil;
@@ -45,7 +43,7 @@ public class FocusService extends Service {
     public static final CharSequence FOCUS_CHANNEL_NAME = "Focus notifications";
     public static final String FOCUS_CHANNEL_ID = "focus_channel";
     public static final int FOCUS_CHANNEL_IMPORTANCE = NotificationManager.IMPORTANCE_DEFAULT;
-    private static final int NOTIFICATION_ID = 8;
+    private static final int FOCUS_NOTIFICATION_ID = 8;
 
     // 定时任务相关的信息
     private long mCurStart;
@@ -80,8 +78,16 @@ public class FocusService extends Service {
             float mProgress = (float) remain / mCurDuration;
             String mRemainTimeStr = mNumberFormat.format(min) + ":" + mNumberFormat.format(sec);
             // 更新通知
-            Notification notification = buildNotification(mFocusStateStr, mRemainTimeStr);
-            showNotification(notification);
+            Intent ni = new Intent(FocusService.this, FocusActivity.class);
+            PendingIntent npi = PendingIntent.getActivity(FocusService.this, 0, ni, 0);
+            Notification notification = NotificationUtil.buildNotification(FocusService.this,
+                    FOCUS_CHANNEL_ID,
+                    mFocusStateStr,
+                    mRemainTimeStr,
+                    npi,
+                    false,
+                    true);
+            NotificationUtil.showNotification(FocusService.this, FOCUS_NOTIFICATION_ID, notification);
             // 为保证秒数显示稳定、不会跳数，计算下次刷新的延迟，
             // 控制每次在一秒的中间刷新
             long delayMillis = 1000 + (500 - (curTimeMillis % 1000));
@@ -108,7 +114,16 @@ public class FocusService extends Service {
         // 启动专注提醒
         setReminder(mNextStart);
         // 设置为前台服务
-        startForeground(NOTIFICATION_ID, buildNotification("", ""));
+        Intent ni = new Intent(FocusService.this, FocusActivity.class);
+        PendingIntent npi = PendingIntent.getActivity(FocusService.this, 0, ni, 0);
+        Notification notification = NotificationUtil.buildNotification(FocusService.this,
+                FOCUS_CHANNEL_ID,
+                "",
+                "",
+                npi,
+                false,
+                true);
+        startForeground(FOCUS_NOTIFICATION_ID, notification);
         // 启动每秒更新任务
         mHandler.post(mRunnable);
     }
@@ -228,24 +243,6 @@ public class FocusService extends Service {
             alarmManager.cancel(pendingIntent);
             pendingIntent.cancel();
         }
-    }
-
-    private Notification buildNotification(String title, String text) {
-        Intent intent = new Intent(this, FocusActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-        return new Notification.Builder(this, FOCUS_CHANNEL_ID)
-                .setContentTitle(title)
-                .setContentText(text)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(false)
-                .setOnlyAlertOnce(true)
-                .build();
-    }
-
-    private void showNotification(Notification notification) {
-        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
-        notificationManagerCompat.notify(NOTIFICATION_ID, notification);
     }
 
     private class FocusReceiver extends BroadcastReceiver {

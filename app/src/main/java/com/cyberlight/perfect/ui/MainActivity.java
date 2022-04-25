@@ -62,18 +62,18 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     public static final int PAGES_COUNT = 50;
 
     // 当前页
-    private int curPosition;
+    private int mCurPosition;
     // 当前页日期
-    private LocalDate curDate;
+    private LocalDate mCurDate;
     // 当前滚动Y位置
-    private int curScrollY;
+    private int mCurScrollY;
     // 各页的日期
-    private final LocalDate[] pageDates = new LocalDate[PAGES_COUNT];
+    private final LocalDate[] mPageDates = new LocalDate[PAGES_COUNT];
 
     private TextView mDateTv;
     private ViewPager2 mPager;
     private FloatingActionButton mFab;
-    private PagerAdapter pagerAdapter;
+    private PagerAdapter mPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,16 +83,16 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         if (savedInstanceState != null) {
             // 恢复数据
             long epochDay = savedInstanceState.getLong(CUR_EPOCH_DAY_KEY);
-            curDate = LocalDate.ofEpochDay(epochDay);
-            curPosition = savedInstanceState.getInt(CUR_POSITION_KEY);
-            curScrollY = savedInstanceState.getInt(CUR_SCROLL_Y_KEY);
+            mCurDate = LocalDate.ofEpochDay(epochDay);
+            mCurPosition = savedInstanceState.getInt(CUR_POSITION_KEY);
+            mCurScrollY = savedInstanceState.getInt(CUR_SCROLL_Y_KEY);
         } else {
             // 初始化数据
-            curDate = LocalDate.now();
-            curPosition = PAGES_COUNT / 2;// 设置初始页为中间页
-            curScrollY = 0;
+            mCurDate = LocalDate.now();
+            mCurPosition = PAGES_COUNT / 2;// 设置初始页为中间页
+            mCurScrollY = 0;
         }
-        updatePageDates(curPosition, curDate);
+        updatePageDates(mCurPosition, mCurDate);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         // 初始化控件
@@ -104,10 +104,10 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         // 设置fab
         mFab.setOnClickListener(v -> {
             mFab.setVisibility(View.INVISIBLE);
-            curDate = LocalDate.now();
+            mCurDate = LocalDate.now();
             onDateChanged();
-            updatePageDates(curPosition, curDate);
-            pagerAdapter.notifyDataSetChanged();
+            updatePageDates(mCurPosition, mCurDate);
+            mPagerAdapter.notifyDataSetChanged();
         });
         // 对专注模式图片添加点击监听
         mFocusIv.setOnClickListener(v -> {
@@ -121,9 +121,9 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         });
         // 设置timeTv
         mDateTv.setOnClickListener(v -> {
-            int initYear = curDate.getYear();
-            int initMonth = curDate.getMonthValue();
-            int initDayOfMonth = curDate.getDayOfMonth();
+            int initYear = mCurDate.getYear();
+            int initMonth = mCurDate.getMonthValue();
+            int initDayOfMonth = mCurDate.getDayOfMonth();
             if (fragmentManager.findFragmentByTag(DatePickerFragment.TAG) == null) {
                 DialogFragment dialogFragment = DatePickerFragment.newInstance(PICK_D_REQUEST_KEY,
                         initYear, initMonth, initDayOfMonth);
@@ -131,26 +131,26 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
             }
         });
         // 获取并设置viewPager
-        pagerAdapter = new PagerAdapter();
-        mPager.setAdapter(pagerAdapter);
-        mPager.setCurrentItem(curPosition, false);
+        mPagerAdapter = new PagerAdapter();
+        mPager.setAdapter(mPagerAdapter);
+        mPager.setCurrentItem(mCurPosition, false);
         mPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                curPosition = position;
+                mCurPosition = position;
                 // 复制一份pageDates[position]对象给curDate
-                curDate = LocalDate.ofEpochDay(pageDates[position].toEpochDay());
+                mCurDate = LocalDate.ofEpochDay(mPageDates[position].toEpochDay());
                 onDateChanged();
                 if (position == 0) {
                     mPager.setUserInputEnabled(false);
-                    updatePageDates(PAGES_COUNT - 2, curDate);
+                    updatePageDates(PAGES_COUNT - 2, mCurDate);
                     // 此处无需pagerAdapter.notifyDataSetChanged();
                     // 因为从第0页跳转到倒数第二页时，倒数第二页是还没有加载的
                     // 所以跳转后倒数第二页加载的就已经是新数据了，不必通知数据有更新
                 } else if (position == PAGES_COUNT - 1) {
                     mPager.setUserInputEnabled(false);
-                    updatePageDates(1, curDate);
+                    updatePageDates(1, mCurDate);
                     // 理由同上，无需pagerAdapter.notifyDataSetChanged();
                 }
             }
@@ -159,10 +159,10 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
             public void onPageScrollStateChanged(int state) {
                 super.onPageScrollStateChanged(state);
                 if (state == ViewPager2.SCROLL_STATE_IDLE) {
-                    if (curPosition == 0) {
+                    if (mCurPosition == 0) {
                         mPager.setCurrentItem(PAGES_COUNT - 2, false);
                         mPager.setUserInputEnabled(true);
-                    } else if (curPosition == PAGES_COUNT - 1) {
+                    } else if (mCurPosition == PAGES_COUNT - 1) {
                         mPager.setCurrentItem(1, false);
                         mPager.setUserInputEnabled(true);
                     }
@@ -175,10 +175,10 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
                     int year = result.getInt(DatePickerFragment.D_YEAR_KEY);
                     int month = result.getInt(DatePickerFragment.D_MONTH_KEY);
                     int dayOfMonth = result.getInt(DatePickerFragment.D_DAY_OF_MONTH_KEY);
-                    curDate = LocalDate.of(year, month, dayOfMonth);
+                    mCurDate = LocalDate.of(year, month, dayOfMonth);
                     onDateChanged();
-                    updatePageDates(curPosition, curDate);
-                    pagerAdapter.notifyDataSetChanged();
+                    updatePageDates(mCurPosition, mCurDate);
+                    mPagerAdapter.notifyDataSetChanged();
                 });
         onDateChanged();
         // 检查事件提醒是否启动
@@ -196,14 +196,14 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     protected void onResume() {
         super.onResume();
         // 保证数据能及时更新，比如去SettingsActivity删除数据后
-        pagerAdapter.notifyDataSetChanged();
+        mPagerAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putLong(CUR_EPOCH_DAY_KEY, curDate.toEpochDay());
-        savedInstanceState.putInt(CUR_POSITION_KEY, curPosition);
-        savedInstanceState.putInt(CUR_SCROLL_Y_KEY, curScrollY);
+        savedInstanceState.putLong(CUR_EPOCH_DAY_KEY, mCurDate.toEpochDay());
+        savedInstanceState.putInt(CUR_POSITION_KEY, mCurPosition);
+        savedInstanceState.putInt(CUR_SCROLL_Y_KEY, mCurScrollY);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -211,9 +211,9 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
      * 当当前页日期改变时调用此方法
      */
     private void onDateChanged() {
-        mDateTv.setText(DateTimeFormatUtil.getReadableDate(this, curDate));
+        mDateTv.setText(DateTimeFormatUtil.getReadableDate(this, mCurDate));
         LocalDate today = LocalDate.now();
-        boolean isToday = today.equals(curDate);
+        boolean isToday = today.equals(mCurDate);
         if (mFab.getVisibility() == View.VISIBLE && isToday) {
             mFab.setVisibility(View.INVISIBLE);
         }
@@ -229,12 +229,12 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
      * @param baseDate     基准页日期
      */
     private void updatePageDates(int basePosition, LocalDate baseDate) {
-        pageDates[basePosition] = LocalDate.ofEpochDay(baseDate.toEpochDay());
+        mPageDates[basePosition] = LocalDate.ofEpochDay(baseDate.toEpochDay());
         for (int i = basePosition - 1; i >= 0; i--) {
-            pageDates[i] = baseDate.minusDays(basePosition - i);
+            mPageDates[i] = baseDate.minusDays(basePosition - i);
         }
-        for (int i = basePosition + 1; i < pageDates.length; i++) {
-            pageDates[i] = baseDate.plusDays(i - basePosition);
+        for (int i = basePosition + 1; i < mPageDates.length; i++) {
+            mPageDates[i] = baseDate.plusDays(i - basePosition);
         }
     }
 
@@ -242,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     @Override
     public void onDismiss(DialogInterface dialog) {
         // 保证数据在添加事件、计划、总结对话框关闭后能及时更新
-        pagerAdapter.notifyDataSetChanged();
+        mPagerAdapter.notifyDataSetChanged();
     }
 
     // 注意这个DatePickerFragment只能是public static，否则报错，原因待挖掘
@@ -379,7 +379,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
                 mAddSummaryIv.setOnClickListener(v1 -> {
                     if (DebugUtil.enableTestMode) {
                         DebugUtil.addTestSummary(MainActivity.this, date);
-                        pagerAdapter.notifyDataSetChanged();
+                        mPagerAdapter.notifyDataSetChanged();
                         return;
                     }
                     if (hasSummarized) {
@@ -418,7 +418,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
                 planRecyclerAdapter = new PlanRecyclerAdapter(MainActivity.this, specPlans);
                 mPlansRv.setAdapter(planRecyclerAdapter);
                 // scrollView监听
-                mSv.setOnScrollChangeListener((v15, scrollX, scrollY, oldScrollX, oldScrollY) -> curScrollY = scrollY);
+                mSv.setOnScrollChangeListener((v15, scrollX, scrollY, oldScrollX, oldScrollY) -> mCurScrollY = scrollY);
             }
 
             private void setRating(int rating) {
@@ -458,7 +458,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
                 specPlans.clear();
                 List<Plan> plans = DbUtil.getPlans(MainActivity.this);
                 for (Plan plan : plans) {
-                    int completionCount = DbUtil.getPlanCompletionCountByDate(
+                    int completionCount = DbUtil.getPlanRecordCompletionCountByDate(
                             MainActivity.this, dateStr, plan.planId);
                     if (completionCount > -1) {
                         specPlans.add(new SpecPlan(plan, dateStr, completionCount));
@@ -499,7 +499,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
 
         @Override
         public void onBindViewHolder(@NonNull PageViewHolder holder, int position) {
-            holder.date = LocalDate.ofEpochDay(pageDates[position].toEpochDay());
+            holder.date = LocalDate.ofEpochDay(mPageDates[position].toEpochDay());
         }
 
         @Override
@@ -514,8 +514,8 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
             holder.refreshData();
             // scrollView绘制完后scrollTo到当前viewPager滚动到的位置
             holder.mSv.post(() -> {
-                holder.mSv.scrollTo(0, curScrollY);
-                curScrollY = holder.mSv.getScrollY();
+                holder.mSv.scrollTo(0, mCurScrollY);
+                mCurScrollY = holder.mSv.getScrollY();
             });
         }
 

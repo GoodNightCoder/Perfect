@@ -116,9 +116,9 @@ public class DbUtil {
         return newRowId != -1;
     }
 
-    public static int getPlanCompletionCountByDate(Context context,
-                                                   String dateStr,
-                                                   int planId) {
+    public static int getPlanRecordCompletionCountByDate(Context context,
+                                                         String dateStr,
+                                                         int planId) {
         DbHelper dbHelper = new DbHelper(context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         int completionCount = -1;
@@ -139,10 +139,10 @@ public class DbUtil {
         return completionCount;
     }
 
-    public static boolean updatePlanRecord(Context context,
-                                           String dateStr,
-                                           int planId,
-                                           int newCompletionCount) {
+    public static boolean updatePlanRecordCompletionCount(Context context,
+                                                          String dateStr,
+                                                          int planId,
+                                                          int newCompletionCount) {
         DbHelper dbHelper = new DbHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();

@@ -19,7 +19,7 @@ public class DebugUtil {
     private static final String TAG = "perfect_debug";
 
     // 测试模式指示常量
-    public static boolean enableTestMode = true;
+    public static boolean enableTestMode = false;
 
     /**
      * 只调用Log
@@ -40,7 +40,6 @@ public class DebugUtil {
         Log.d(TAG, text);
         Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
     }
-
 
     /**
      * 为调试模式切换view设置5秒长按监听

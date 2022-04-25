@@ -8,44 +8,56 @@
 
     <declare-styleable name="WheelPicker">
         <attr name="itemTextSize" format="dimension" />
-        <attr name="itemTextColor" format="color" />
         <attr name="selectedItemTextSize" format="dimension" />
-        <attr name="selectedItemTextColor" format="color" />
         <attr name="indicatorTextSize" format="dimension" />
+
+        <attr name="itemTextColor" format="color" />
+        <attr name="selectedItemTextColor" format="color" />
         <attr name="indicatorTextColor" format="color" />
+
+        <attr name="selectedItemTextStrokeWidth" format="float" />
+
+        <attr name="selectedItemLetterSpacing" format="float" />
+
         <attr name="indicatorText" format="string" />
         <attr name="maxWidthText" format="string" />
+
         <attr name="itemWidthSpace" format="dimension" />
         <attr name="itemHeightSpace" format="dimension" />
+
         <attr name="halfVisibleItemCount" format="integer" />
+
         <attr name="textSizeGradual" format="boolean" />
         <attr name="textColorGradual" format="boolean" />
         <attr name="textAlphaGradual" format="boolean" />
+
         <attr name="showCurtain" format="boolean" />
-        <attr name="curtainColor" format="color" />
         <attr name="showSelectedItemDivider" format="boolean" />
+
+        <attr name="curtainColor" format="color" />
         <attr name="selectedItemDividerColor" format="color" />
+
         <attr name="cyclic" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="IntegerWheelPicker">
-        <attr name="maxValue" format="integer"/>
-        <attr name="minValue" format="integer"/>
-        <attr name="digits" format="integer"/>
-        <attr name="digitsEnable" format="boolean"/>
+        <attr name="maxValue" format="integer" />
+        <attr name="minValue" format="integer" />
+        <attr name="digits" format="integer" />
+        <attr name="digitsEnable" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="ScheduleLayout">
         <attr name="antiAlias" />
         <attr name="fgColor" format="color" />
         <attr name="curTimeLineColor" format="color" />
-        <attr name="curTimeLineWidth" format="integer" />
-        <attr name="lineWidth" format="integer" />
-        <attr name="timeTextSize" format="integer" />
-        <attr name="remainTop" format="integer" />
-        <attr name="remainBottom" format="integer" />
-        <attr name="remainLeft" format="integer" />
-        <attr name="remainRight" format="integer" />
+        <attr name="curTimeLineWidth" format="dimension" />
+        <attr name="lineWidth" format="dimension" />
+        <attr name="timeTextSize" format="dimension" />
+        <attr name="remainTop" format="dimension" />
+        <attr name="remainBottom" format="dimension" />
+        <attr name="remainLeft" format="dimension" />
+        <attr name="remainRight" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="CircularProgressView">

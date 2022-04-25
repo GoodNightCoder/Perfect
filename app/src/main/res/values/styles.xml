@@ -3,16 +3,25 @@
 
     <style name="DefaultCountableRadioButton">
         <item name="solidCircleColor">@color/purple_a50</item>
+        <item name="hollowCircleArcWidth">3px</item>
+        <item name="hollowCircleColor">@color/gray</item>
+        <item name="textSize">15sp</item>
+        <item name="textColor">?android:attr/textColorSecondary</item>
     </style>
 
     <style name="DefaultWheelPicker">
         <item name="itemTextColor">?android:attr/textColorPrimary</item>
-        <item name="itemTextSize">14sp</item>
-        <item name="indicatorTextColor">?attr/colorPrimary</item>
-        <item name="indicatorTextSize">16sp</item>
         <item name="selectedItemTextColor">?attr/colorPrimary</item>
-        <item name="selectedItemTextSize">18sp</item>
+        <item name="indicatorTextColor">?attr/colorPrimary</item>
         <item name="selectedItemDividerColor">@color/gray</item>
+
+        <item name="itemTextSize">14sp</item>
+        <item name="selectedItemTextSize">18sp</item>
+        <item name="indicatorTextSize">16sp</item>
+
+        <item name="selectedItemTextStrokeWidth">0.8</item>
+        <item name="selectedItemLetterSpacing">0.008</item>
+
         <item name="itemHeightSpace">16dp</item>
         <item name="itemWidthSpace">32dp</item>
     </style>
@@ -24,6 +33,14 @@
 
     <style name="DefaultScheduleLayout">
         <item name="fgColor">?android:attr/textColorSecondary</item>
+        <item name="curTimeLineColor">@color/red</item>
+        <item name="curTimeLineWidth">2px</item>
+        <item name="lineWidth">1px</item>
+        <item name="timeTextSize">12sp</item>
+        <item name="remainBottom">10dp</item>
+        <item name="remainLeft">5dp</item>
+        <item name="remainRight">10dp</item>
+        <item name="remainTop">2dp</item>
     </style>
 
 

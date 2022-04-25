@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="WheelPicker_itemTextSize">15sp</dimen>
-    <dimen name="WheelPicker_selectedItemTextSize">20sp</dimen>
-    <dimen name="WheelPicker_itemHeightSpace">12dp</dimen>
-    <dimen name="WheelPicker_itemWidthSpace">32dp</dimen>
-</resources>

@@ -72,31 +72,36 @@
                     android:id="@+id/summary_thumb_up_iv1"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/ic_baseline_thumb_up_24"/>
+                    android:padding="1dp"
+                    android:src="@drawable/ic_baseline_thumb_up_24" />
 
                 <ImageView
                     android:id="@+id/summary_thumb_up_iv2"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/ic_baseline_thumb_up_24"/>
+                    android:padding="1dp"
+                    android:src="@drawable/ic_baseline_thumb_up_24" />
 
                 <ImageView
                     android:id="@+id/summary_thumb_up_iv3"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/ic_baseline_thumb_up_24"/>
+                    android:padding="1dp"
+                    android:src="@drawable/ic_baseline_thumb_up_24" />
 
                 <ImageView
                     android:id="@+id/summary_thumb_up_iv4"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/ic_baseline_thumb_up_24"/>
+                    android:padding="1dp"
+                    android:src="@drawable/ic_baseline_thumb_up_24" />
 
                 <ImageView
                     android:id="@+id/summary_thumb_up_iv5"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/ic_baseline_thumb_up_24"/>
+                    android:padding="1dp"
+                    android:src="@drawable/ic_baseline_thumb_up_24" />
 
             </LinearLayout>
 
@@ -132,8 +137,8 @@
                 android:id="@+id/summary_memo_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@null"
                 android:layout_marginBottom="30dp"
+                android:background="@null"
                 android:hint="@string/summary_memo_hint"
                 android:inputType="textMultiLine"
                 android:textAppearance="@style/TextAppearance.Perfect.DialogContent" />

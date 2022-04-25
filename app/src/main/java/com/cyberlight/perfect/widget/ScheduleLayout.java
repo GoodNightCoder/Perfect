@@ -9,7 +9,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -28,18 +29,10 @@ import java.time.ZoneId;
 import java.util.List;
 
 public class ScheduleLayout extends ViewGroup {
+    private static final int DEFAULT_WIDTH = 1080;// 整个layout的默认宽度
+    private static final int TABLE_HEIGHT = 24 * 60 * 2;// 第一条线到最后一条线之间的像素
 
-    //attrs.xml定义属性的默认值
-    private static final int DEFAULT_WIDTH = 1080;//整个layout的默认宽度
-    private static final int DEFAULT_TABLE_COLOR = Color.GRAY;
-    private static final int DEFAULT_CUR_TIME_LINE_COLOR = Color.RED;
-    private static final int DEFAULT_TIME_TEXT_SIZE = 26;//默认的时刻表左端时间的文字大小
-    private static final int DEFAULT_LINE_WIDTH = 1;//线的默认粗细
-    private static final int DEFAULT_CUR_TIME_LINE_WIDTH = 2;//当前时间线的默认粗细
-    private static final boolean DEFAULT_ANTI_ALIAS = true;//默认抗锯齿
-    private static final int SCHEDULE_TABLE_HEIGHT = 24 * 60 * 2;//第一条线到最后一条线之间的像素，注意这是固定的，用户不可修改
-
-    //attrs.xml定义属性
+    // 定义属性
     private boolean antiAlias;
     private int tableColor;
     private int curTimeLineColor;
@@ -51,12 +44,12 @@ public class ScheduleLayout extends ViewGroup {
     private int remainLeft;
     private int remainRight;
 
-    //根据属性计算得到的数据、paint
+    // 根据属性计算得到的数据、paint
     private int timeTextWidth;
     private int timeTextHeight;
-    Paint mLinePaint;
-    Paint mTimePaint;
-    Paint mCurTimePaint;
+    private final Paint mLinePaint;
+    private final Paint mTimePaint;
+    private final Paint mCurTimePaint;
 
     //布局所使用的各种数据
     private final Context mContext;
@@ -67,7 +60,7 @@ public class ScheduleLayout extends ViewGroup {
     private List<Event> events;// 当前layout所使用的事件列表，通过setEvents()修改
 
     private final Handler mHandler = new Handler();
-    private final Runnable curTimeRefreshTask = new Runnable() {
+    private final Runnable mCurTimeRefreshRunnable = new Runnable() {
         @Override
         public void run() {
             invalidate();
@@ -94,6 +87,9 @@ public class ScheduleLayout extends ViewGroup {
         //初始化
         mContext = context;
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+        mLinePaint = new Paint();
+        mTimePaint = new Paint();
+        mCurTimePaint = new Paint();
         initAttrs(context, attrs, defStyleAttr, defStyleRes);
         initPaint();
         initTimeTextBounds();
@@ -116,17 +112,14 @@ public class ScheduleLayout extends ViewGroup {
             LocalDate today = LocalDate.now();
             isToday = today.equals(date);
             if (isToday) {//启动定时刷新curTimeLine任务
-                mHandler.post(curTimeRefreshTask);
+                mHandler.post(mCurTimeRefreshRunnable);
             } else {
-                mHandler.removeCallbacks(curTimeRefreshTask);
+                mHandler.removeCallbacks(mCurTimeRefreshRunnable);
             }
             removeAllViews();
             // 查找发生在当前日期的事件
             long startTime = date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
             long endTime = startTime + 86399999;// 86399999 = 24*60*60*1000-1
-//            Log.d(TAG,
-//                    "查找发生在该时段的事件:" + DateTimeFormatUtil.getDateTimeForDebugging(startTime) +
-//                            " ~ " + DateTimeFormatUtil.getDateTimeForDebugging(endTime));
             for (int i = 0; i < events.size(); i++) {
                 Event event = events.get(i);
                 List<SpecEvent> specEvents = event.getSpecEventsDuring(startTime, endTime);
@@ -184,18 +177,21 @@ public class ScheduleLayout extends ViewGroup {
     }
 
     private void initAttrs(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+
+        final DisplayMetrics metrics = getResources().getDisplayMetrics();
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ScheduleLayout, defStyleAttr, defStyleRes);
         try {
-            tableColor = a.getColor(R.styleable.ScheduleLayout_fgColor, DEFAULT_TABLE_COLOR);
-            curTimeLineColor = a.getColor(R.styleable.ScheduleLayout_curTimeLineColor, DEFAULT_CUR_TIME_LINE_COLOR);
-            curTimeLineWidth = a.getInt(R.styleable.ScheduleLayout_curTimeLineWidth, DEFAULT_CUR_TIME_LINE_WIDTH);
-            timeTextSize = a.getInt(R.styleable.ScheduleLayout_timeTextSize, DEFAULT_TIME_TEXT_SIZE);
-            lineWidth = a.getInt(R.styleable.ScheduleLayout_lineWidth, DEFAULT_LINE_WIDTH);
-            remainTop = a.getInt(R.styleable.ScheduleLayout_remainTop, 0);
-            remainBottom = a.getInt(R.styleable.ScheduleLayout_remainBottom, 0);
-            remainLeft = a.getInt(R.styleable.ScheduleLayout_remainLeft, 0);
-            remainRight = a.getInt(R.styleable.ScheduleLayout_remainRight, 0);
-            antiAlias = a.getBoolean(R.styleable.ScheduleLayout_antiAlias, DEFAULT_ANTI_ALIAS);
+            tableColor = a.getColor(R.styleable.ScheduleLayout_fgColor, Color.BLACK);
+            curTimeLineColor = a.getColor(R.styleable.ScheduleLayout_curTimeLineColor, Color.BLACK);
+            curTimeLineWidth = a.getDimensionPixelSize(R.styleable.ScheduleLayout_curTimeLineWidth, 1);
+            timeTextSize = a.getDimensionPixelSize(R.styleable.ScheduleLayout_timeTextSize,
+                    (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 14, metrics));
+            lineWidth = a.getDimensionPixelSize(R.styleable.ScheduleLayout_lineWidth, 1);
+            remainTop = a.getDimensionPixelSize(R.styleable.ScheduleLayout_remainTop, 0);
+            remainBottom = a.getDimensionPixelSize(R.styleable.ScheduleLayout_remainBottom, 0);
+            remainLeft = a.getDimensionPixelSize(R.styleable.ScheduleLayout_remainLeft, 0);
+            remainRight = a.getDimensionPixelSize(R.styleable.ScheduleLayout_remainRight, 0);
+            antiAlias = a.getBoolean(R.styleable.ScheduleLayout_antiAlias, true);
         } finally {
             a.recycle();
         }
@@ -203,19 +199,16 @@ public class ScheduleLayout extends ViewGroup {
 
     private void initPaint() {
         //画线Paint设置
-        mLinePaint = new Paint();
         mLinePaint.setAntiAlias(antiAlias);
         mLinePaint.setStrokeWidth(lineWidth);
         mLinePaint.setStrokeCap(Paint.Cap.ROUND);
         mLinePaint.setStyle(Paint.Style.STROKE);
         mLinePaint.setColor(tableColor);
         //画时间Paint设置
-        mTimePaint = new Paint();
         mTimePaint.setAntiAlias(antiAlias);
         mTimePaint.setTextSize(timeTextSize);
         mTimePaint.setColor(tableColor);
         //画当前时间线的Paint设置
-        mCurTimePaint = new Paint();
         mCurTimePaint.setAntiAlias(antiAlias);
         mCurTimePaint.setStrokeWidth(curTimeLineWidth);
         mCurTimePaint.setStrokeCap(Paint.Cap.ROUND);
@@ -230,7 +223,6 @@ public class ScheduleLayout extends ViewGroup {
         timeTextWidth = rect.right - rect.left;
         timeTextHeight = rect.bottom - rect.top;
     }
-
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -247,14 +239,14 @@ public class ScheduleLayout extends ViewGroup {
             canvas.drawText(
                     timeText,
                     remainLeft,
-                    remainTop + timeTextHeight + i * SCHEDULE_TABLE_HEIGHT / 24.0f,
+                    remainTop + timeTextHeight + i * TABLE_HEIGHT / 24.0f,
                     mTimePaint);
             //绘制时间表的线
             canvas.drawLine(
                     remainLeft + timeTextWidth + 20,
-                    remainTop + timeTextHeight / 2.0f + i * SCHEDULE_TABLE_HEIGHT / 24.0f,
+                    remainTop + timeTextHeight / 2.0f + i * TABLE_HEIGHT / 24.0f,
                     mWidth - remainRight,
-                    remainTop + timeTextHeight / 2.0f + i * SCHEDULE_TABLE_HEIGHT / 24.0f,
+                    remainTop + timeTextHeight / 2.0f + i * TABLE_HEIGHT / 24.0f,
                     mLinePaint);
         }
         if (date != null) {
@@ -265,15 +257,15 @@ public class ScheduleLayout extends ViewGroup {
                 // 绘制当前时间线
                 canvas.drawLine(
                         remainLeft + timeTextWidth + 20,
-                        remainTop + timeTextHeight / 2.0f + (curHour * 60 + curMinute) * SCHEDULE_TABLE_HEIGHT / 24.0f / 60.0f,
+                        remainTop + timeTextHeight / 2.0f + (curHour * 60 + curMinute) * TABLE_HEIGHT / 24.0f / 60.0f,
                         mWidth - remainRight,
-                        remainTop + timeTextHeight / 2.0f + (curHour * 60 + curMinute) * SCHEDULE_TABLE_HEIGHT / 24.0f / 60.0f,
+                        remainTop + timeTextHeight / 2.0f + (curHour * 60 + curMinute) * TABLE_HEIGHT / 24.0f / 60.0f,
                         mCurTimePaint
                 );
                 //绘制当前时间线左端的小圆点，让当前时间线的视觉效果更明显，小圆点的半径取：当前时间线宽*2
                 canvas.drawCircle(
                         remainLeft + timeTextWidth + 20,
-                        remainTop + timeTextHeight / 2.0f + (curHour * 60 + curMinute) * SCHEDULE_TABLE_HEIGHT / 24.0f / 60.0f,
+                        remainTop + timeTextHeight / 2.0f + (curHour * 60 + curMinute) * TABLE_HEIGHT / 24.0f / 60.0f,
                         curTimeLineWidth * 2,
                         mCurTimePaint
                 );
@@ -296,7 +288,7 @@ public class ScheduleLayout extends ViewGroup {
             default:
                 width = DEFAULT_WIDTH;
         }
-        setMeasuredDimension(width, SCHEDULE_TABLE_HEIGHT + timeTextHeight + remainTop + remainBottom);
+        setMeasuredDimension(width, TABLE_HEIGHT + timeTextHeight + remainTop + remainBottom);
     }
 
     @Override
@@ -305,9 +297,9 @@ public class ScheduleLayout extends ViewGroup {
         final long dayEnd = dayStart + 86399999;
         for (int i = 0; i < getChildCount(); i++) {
             View childView = getChildAt(i);
-            if (childView instanceof SpecEventButton) {//根据eventButton的event摆放按钮
+            if (childView instanceof SpecEventButton) {// 根据eventButton的event摆放按钮
                 SpecEventButton specEventButton = (SpecEventButton) childView;
-                final SpecEvent specEvent = specEventButton.mSpecEvent;
+                final SpecEvent specEvent = specEventButton.getSpecEvent();
                 final long eventStart = specEvent.specStart;
                 final long eventEnd = specEvent.specStart + specEvent.duration - 1;
                 int startMinOfDay;// 事件开始于一天的第几分钟
@@ -324,11 +316,17 @@ public class ScheduleLayout extends ViewGroup {
                 }
                 childView.layout(
                         remainLeft + timeTextWidth + 20,
-                        remainTop + timeTextHeight / 2 + startMinOfDay * SCHEDULE_TABLE_HEIGHT / 1440,
+                        remainTop + timeTextHeight / 2 + startMinOfDay * TABLE_HEIGHT / 1440,
                         mWidth - remainRight,
-                        remainTop + timeTextHeight / 2 + endMinOfDay * SCHEDULE_TABLE_HEIGHT / 1440
+                        remainTop + timeTextHeight / 2 + endMinOfDay * TABLE_HEIGHT / 1440
                 );
             }
         }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mHandler.removeCallbacks(mCurTimeRefreshRunnable);
     }
 }

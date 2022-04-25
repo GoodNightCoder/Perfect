@@ -9,47 +9,36 @@ import android.graphics.Point;
 import android.graphics.RectF;
 import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.cyberlight.perfect.R;
 
 public class CountableRadioButton extends View {
-    private static final String TAG = "CountableRadioButton";
-
-    //View的默认尺寸，当指定wrap_content的时候就会使用这个尺寸
-    public static final int DEFAULT_SIZE = 24;
-
-    //xml中定义属性的默认值
-    public static final boolean DEFAULT_ANTI_ALIAS = true;
-    public static final int DEFAULT_TEXT_COLOR = Color.GRAY;
-    public static final int DEFAULT_TEXT_SIZE = 40;
-    public static final int DEFAULT_CIRCLE_COLOR = Color.GRAY;
-    public static final int DEFAULT_ARC_WIDTH = 3;
-    public static final int DEFAULT_CIRCLE_BG_COLOR = Color.GREEN;
+    // View的默认尺寸，当指定wrap_content的时候就会使用这个尺寸
+    public static final int DEFAULT_SIZE_IN_DIP = 21;
 
     //xml中定义的属性
     private boolean mAntiAlias;
     private int mTextColor;
-    private float mTextSize;
+    private int mTextSize;
     private int mHollowCircleColor;
-    private float mHollowCircleArcWidth;
+    private int mHollowCircleArcWidth;
     private int mSolidCircleColor;
 
     //根据属性来计算的各个数据
-    private Point mCenterPoint;//圆心坐标
-    private float mRadius;//圆弧半径
-    private float mTextY;//文字绘制时的y坐标
-    private RectF mRectF;//圆弧矩形边界
-    private TextPaint mTextPaint;
-    private Paint mPaint;
-    private Paint mHollowCirclePaint;
-    private Paint mSolidCirclePaint;
+    private final Point mCenterPoint;// 圆心坐标
+    private float mRadius;// 圆弧半径
+    private float mTextY;// 文字绘制时的y坐标
+    private final RectF mRectF;// 圆弧矩形边界
+    private final TextPaint mTextPaint;
+    private final Paint mHollowCirclePaint;
+    private final Paint mSolidCirclePaint;
 
     private OnCountChangedListener mOnCountChangedListener;
-    private Context mContext;
     private int mCount = 0;
     private int mMaxCount = Integer.MAX_VALUE;
 
@@ -67,10 +56,11 @@ public class CountableRadioButton extends View {
 
     public CountableRadioButton(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        //初始化
-        mContext = context;
         mRectF = new RectF();
         mCenterPoint = new Point();
+        mTextPaint = new TextPaint();
+        mHollowCirclePaint = new Paint();
+        mSolidCirclePaint = new Paint();
         initAttrs(context, attrs, defStyleAttr, defStyleRes);
         initPaint();
         setOnClickListener(v -> increaseCount());
@@ -85,34 +75,35 @@ public class CountableRadioButton extends View {
     private void initAttrs(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CountableRadioButton, defStyleAttr, defStyleRes);
         try {
-            mAntiAlias = typedArray.getBoolean(R.styleable.CountableRadioButton_antiAlias, DEFAULT_ANTI_ALIAS);
-            mTextColor = typedArray.getColor(R.styleable.CountableRadioButton_textColor, DEFAULT_TEXT_COLOR);
-            mTextSize = typedArray.getDimension(R.styleable.CountableRadioButton_textSize, DEFAULT_TEXT_SIZE);
-            mHollowCircleColor = typedArray.getColor(R.styleable.CountableRadioButton_hollowCircleColor, DEFAULT_CIRCLE_COLOR);
-            mHollowCircleArcWidth = typedArray.getDimension(R.styleable.CountableRadioButton_hollowCircleArcWidth, DEFAULT_ARC_WIDTH);
-            mSolidCircleColor = typedArray.getColor(R.styleable.CountableRadioButton_solidCircleColor, DEFAULT_CIRCLE_BG_COLOR);
+            mAntiAlias = typedArray.getBoolean(
+                    R.styleable.CountableRadioButton_antiAlias, true);
+            mTextColor = typedArray.getColor(
+                    R.styleable.CountableRadioButton_textColor, Color.BLACK);
+            mTextSize = typedArray.getDimensionPixelSize(
+                    R.styleable.CountableRadioButton_textSize, -1);
+            mHollowCircleColor = typedArray.getColor(
+                    R.styleable.CountableRadioButton_hollowCircleColor, Color.BLACK);
+            mHollowCircleArcWidth = typedArray.getDimensionPixelSize(
+                    R.styleable.CountableRadioButton_hollowCircleArcWidth, 1);
+            mSolidCircleColor = typedArray.getColor(
+                    R.styleable.CountableRadioButton_solidCircleColor, Color.BLACK);
         } finally {
             typedArray.recycle();
         }
     }
 
     private void initPaint() {
-        mPaint = new Paint();
-        mPaint.setAntiAlias(mAntiAlias);
         // 文字Paint
-        mTextPaint = new TextPaint();
         mTextPaint.setAntiAlias(mAntiAlias);
         mTextPaint.setColor(mTextColor);
         mTextPaint.setTextSize(mTextSize);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
-        //  圆环Paint
-        mHollowCirclePaint = new Paint();
+        // 圆环Paint
         mHollowCirclePaint.setAntiAlias(mAntiAlias);
         mHollowCirclePaint.setColor(mHollowCircleColor);
         mHollowCirclePaint.setStrokeWidth(mHollowCircleArcWidth);
         mHollowCirclePaint.setStyle(Paint.Style.STROKE);
         // 背景圆Paint
-        mSolidCirclePaint = new Paint();
         mSolidCirclePaint.setAntiAlias(mAntiAlias);
         mSolidCirclePaint.setColor(mSolidCircleColor);
         mSolidCirclePaint.setStyle(Paint.Style.FILL);
@@ -121,10 +112,11 @@ public class CountableRadioButton extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        setMeasuredDimension(
-                measureSize(widthMeasureSpec, dipToPx(mContext, DEFAULT_SIZE)),
-                measureSize(heightMeasureSpec, dipToPx(mContext, DEFAULT_SIZE))
-        );
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        final int defaultSizeInPx = Math.round(TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, DEFAULT_SIZE_IN_DIP, metrics));
+        setMeasuredDimension(measureSize(widthMeasureSpec, defaultSizeInPx),
+                measureSize(heightMeasureSpec, defaultSizeInPx));
     }
 
     @Override
@@ -189,11 +181,6 @@ public class CountableRadioButton extends View {
             result = Math.min(result, specSize);
         }
         return result;
-    }
-
-    private int dipToPx(@NonNull Context context, float dip) {
-        float density = context.getResources().getDisplayMetrics().density;
-        return (int) (dip * density + 0.5f * (dip >= 0 ? 1 : -1));
     }
 
     public void setOnCountListener(OnCountChangedListener onCountChangedListener) {

@@ -3,12 +3,12 @@ package com.cyberlight.perfect.service;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioDeviceInfo;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -16,13 +16,14 @@ import android.os.IBinder;
 import android.widget.Toast;
 
 import androidx.annotation.IntDef;
-import androidx.core.app.NotificationManagerCompat;
 
 import com.cyberlight.perfect.R;
 import com.cyberlight.perfect.model.Summary;
+import com.cyberlight.perfect.test.DebugUtil;
 import com.cyberlight.perfect.ui.MainActivity;
 import com.cyberlight.perfect.util.DateTimeFormatUtil;
 import com.cyberlight.perfect.util.DbUtil;
+import com.cyberlight.perfect.util.NotificationUtil;
 import com.cyberlight.perfect.util.SettingManager;
 import com.cyberlight.perfect.util.SharedPrefSettingManager;
 import com.cyberlight.perfect.util.ToastUtil;
@@ -60,12 +61,11 @@ public class BedtimeAlarmService extends Service {
     private MediaPlayer mMediaPlayer;
     private AudioFocusRequest audioFocusRequest;
     private boolean mRunning = false;
-    private int volumeToReset;
-
+    private int mVolumeToReset;
+    private boolean mUseEarphone = false;
 
     public BedtimeAlarmService() {
     }
-
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -94,7 +94,8 @@ public class BedtimeAlarmService extends Service {
             ToastUtil.showToast(this, R.string.bedtime_cannot_adjust_volume_toast, Toast.LENGTH_SHORT);
         }
         // 恢复原媒体音量
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volumeToReset, AudioManager.FLAG_SHOW_UI);
+        if (!mUseEarphone)
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mVolumeToReset, AudioManager.FLAG_SHOW_UI);
         // 释放AudioFocus，让其他音乐继续播放
         if (audioFocusRequest != null) {
             audioManager.abandonAudioFocusRequest(audioFocusRequest);
@@ -110,7 +111,8 @@ public class BedtimeAlarmService extends Service {
         switch (mAlarmType) {
             case TYPE_WAKE_UP:
                 LocalDate date = LocalDate.now();
-                Summary yesterdaySummary = DbUtil.getSummary(this, DateTimeFormatUtil.getNeatDate(date.minusDays(1)));
+                Summary yesterdaySummary = DbUtil.getSummary(this,
+                        DateTimeFormatUtil.getNeatDate(date.minusDays(1)));
                 if (yesterdaySummary == null) return;// 无备忘录
                 title = getString(R.string.bedtime_notification_memo_title);
                 text = yesterdaySummary.memo;
@@ -124,16 +126,14 @@ public class BedtimeAlarmService extends Service {
         }
         Intent intent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-        Notification notification = new Notification.Builder(this, BEDTIME_CHANNEL_ID)
-                .setVisibility(Notification.VISIBILITY_PUBLIC)
-                .setContentTitle(title)
-                .setContentText(text)
-                .setContentIntent(pendingIntent)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setAutoCancel(true)
-                .build();
-        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
-        notificationManagerCompat.notify(AFTER_ALARM_NOTIFICATION_ID, notification);
+        Notification notification = NotificationUtil.buildNotification(this,
+                BEDTIME_CHANNEL_ID,
+                title,
+                text,
+                pendingIntent,
+                true,
+                false);
+        NotificationUtil.showNotification(this, AFTER_ALARM_NOTIFICATION_ID, notification);
     }
 
     /**
@@ -151,15 +151,16 @@ public class BedtimeAlarmService extends Service {
         if (pendingIntent != null && !update) return;
         // 初次设置闹钟，发送通知提醒用户
         if (pendingIntent == null) {
-            Notification notification = new Notification.Builder(context, BEDTIME_CHANNEL_ID)
-                    .setVisibility(Notification.VISIBILITY_PUBLIC)
-                    .setContentTitle(context.getText(R.string.bedtime_alarm_activated_title))
-                    .setContentText(context.getText(R.string.bedtime_alarm_activated_text))
-                    .setSmallIcon(R.drawable.ic_launcher_foreground)
-                    .setAutoCancel(true)
-                    .build();
-            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
-            notificationManagerCompat.notify(FIRST_SET_ALARM_NOTIFICATION_ID, notification);
+            Intent ni = new Intent(context, MainActivity.class);
+            PendingIntent npi = PendingIntent.getActivity(context, 0, ni, 0);
+            Notification notification = NotificationUtil.buildNotification(context,
+                    BEDTIME_CHANNEL_ID,
+                    context.getText(R.string.bedtime_alarm_activated_title),
+                    context.getText(R.string.bedtime_alarm_activated_text),
+                    npi,
+                    true,
+                    false);
+            NotificationUtil.showNotification(context, FIRST_SET_ALARM_NOTIFICATION_ID, notification);
         }
         SettingManager settingManager = SharedPrefSettingManager.getInstance(context);
         // 计算下一次闹钟的触发时间
@@ -201,6 +202,15 @@ public class BedtimeAlarmService extends Service {
         pendingIntent = PendingIntent.getService(context, 77,
                 intent, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        //TEST
+        if (DebugUtil.enableTestMode) {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
+                    System.currentTimeMillis() + 60000,
+                    pendingIntent);
+            return;
+        }
+
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTimeMillis, pendingIntent);
     }
 
@@ -243,30 +253,49 @@ public class BedtimeAlarmService extends Service {
         mMediaPlayer = MediaPlayer.create(this, resId);
         mMediaPlayer.setOnCompletionListener(mp -> stopSelf());
         mMediaPlayer.start();
+        // 判断是否佩戴耳机，如果是就不调节音量
+        AudioDeviceInfo[] audioDeviceInfo = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
+        for (AudioDeviceInfo info : audioDeviceInfo) {
+            final int type = info.getType();
+            switch (type) {
+                case AudioDeviceInfo.TYPE_WIRED_HEADSET:
+                case AudioDeviceInfo.TYPE_WIRED_HEADPHONES:
+                case AudioDeviceInfo.TYPE_BLUETOOTH_SCO:
+                case AudioDeviceInfo.TYPE_BLUETOOTH_A2DP:
+                case AudioDeviceInfo.TYPE_USB_HEADSET:
+                case AudioDeviceInfo.TYPE_HEARING_AID:
+                case AudioDeviceInfo.TYPE_BLE_HEADSET:
+                    mUseEarphone = true;
+                    break;
+                default:
+                    mUseEarphone = false;
+            }
+        }
         if (audioManager.isVolumeFixed()) {
             // 无法调节设备音量，提醒用户
             ToastUtil.showToast(this, R.string.bedtime_cannot_adjust_volume_toast, Toast.LENGTH_SHORT);
-        } else {
+        } else if (!mUseEarphone) {
             // 记录当前的媒体音量大小，用于闹铃播放结束后恢复
-            volumeToReset = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+            mVolumeToReset = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
             // 调节媒体音量至一半大小
             int volumeToSet = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC) / 2;
+
+            //TEST
+            if (DebugUtil.enableTestMode) volumeToSet /= 5;
+
             audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volumeToSet, AudioManager.FLAG_SHOW_UI);
         }
         // 创建停止闹钟的intent，使用户在轻触通知后停止闹钟
         Intent stopIntent = new Intent(this, BedtimeAlarmService.class);
         stopIntent.putExtra(EXTRA_STOP, true);
-        PendingIntent stopPendingIntent =
-                PendingIntent.getService(this, 7, stopIntent, 0);
-        Notification notification = new Notification.Builder(this, BEDTIME_CHANNEL_ID)
-                .setVisibility(Notification.VISIBILITY_PUBLIC)
-                .setContentTitle(title)
-                .setContentText(getString(R.string.bedtime_notification_stop_alarm_text))
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setContentIntent(stopPendingIntent)
-                .setAutoCancel(true)
-                .setOnlyAlertOnce(true)
-                .build();
+        PendingIntent stopPendingIntent = PendingIntent.getService(this, 7, stopIntent, 0);
+        Notification notification = NotificationUtil.buildNotification(this,
+                BEDTIME_CHANNEL_ID,
+                title,
+                getString(R.string.bedtime_notification_stop_alarm_text),
+                stopPendingIntent,
+                true,
+                true);
         startForeground(ALARM_NOTIFICATION_ID, notification);
     }
 }

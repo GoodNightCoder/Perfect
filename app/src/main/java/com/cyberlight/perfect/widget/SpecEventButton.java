@@ -21,7 +21,7 @@ import com.cyberlight.perfect.util.DbUtil;
 public class SpecEventButton extends androidx.appcompat.widget.AppCompatButton {
 
     private final Context mContext;
-    public SpecEvent mSpecEvent;
+    private final SpecEvent mSpecEvent;
     private boolean isFinished;
 
     public void toggleFinishState() {
@@ -60,4 +60,7 @@ public class SpecEventButton extends androidx.appcompat.widget.AppCompatButton {
         }
     }
 
+    public SpecEvent getSpecEvent() {
+        return mSpecEvent;
+    }
 }
