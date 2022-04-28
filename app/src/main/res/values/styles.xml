@@ -37,10 +37,6 @@
         <item name="curTimeLineWidth">2px</item>
         <item name="lineWidth">1px</item>
         <item name="timeTextSize">12sp</item>
-        <item name="remainBottom">10dp</item>
-        <item name="remainLeft">5dp</item>
-        <item name="remainRight">10dp</item>
-        <item name="remainTop">2dp</item>
     </style>
 
 

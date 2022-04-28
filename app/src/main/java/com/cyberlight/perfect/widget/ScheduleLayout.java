@@ -29,38 +29,37 @@ import java.time.ZoneId;
 import java.util.List;
 
 public class ScheduleLayout extends ViewGroup {
-    private static final int DEFAULT_WIDTH = 1080;// 整个layout的默认宽度
-    private static final int TABLE_HEIGHT = 24 * 60 * 2;// 第一条线到最后一条线之间的像素
+    private static final int DEFAULT_WIDTH = 1000;// 整个layout的默认宽度
+    private static final int DEFAULT_TABLE_HEIGHT = 24 * 60 * 2;// 第一条线到最后一条线之间的像素
 
     // 定义属性
-    private boolean antiAlias;
-    private int tableColor;
-    private int curTimeLineColor;
-    private int curTimeLineWidth;
-    private int lineWidth;
-    private int timeTextSize;
-    private int remainTop;
-    private int remainBottom;
-    private int remainLeft;
-    private int remainRight;
+    private boolean mAntiAlias;
+    private int mTableColor;
+    private int mCurTimeLineColor;
+    private int mCurTimeLineWidth;
+    private int mTimeLineWidth;
+    private int mTimeTextSize;
 
-    // 根据属性计算得到的数据、paint
-    private int timeTextWidth;
-    private int timeTextHeight;
-    private final Paint mLinePaint;
-    private final Paint mTimePaint;
-    private final Paint mCurTimePaint;
+    // Paint
+    private final Paint mTimeLinePaint;
+    private final Paint mTimeTextPaint;
+    private final Paint mCurTimeLinePaint;
 
-    //布局所使用的各种数据
+    // 绘制和布局数据
+    private final Rect mDrawRect;
+    private final float mTimeTextWidth;
+    private float mFirstTimeTextY;
+    private float mFirstTimeLineY;
+    private int mTableHeight;
+    private float mTimeLineStartX;
+
     private final Context mContext;
-    private int mWidth;
     private final int mTouchSlop;// 用于事件按钮手势判断
-    private LocalDate date;// 当前日期，由Activity通过setDate()赋值
     private boolean isToday = false;// 日期是否是今天
-    private List<Event> events;// 当前layout所使用的事件列表，通过setEvents()修改
-
+    private LocalDate mDate;// 当前日期，由Activity通过setDate()赋值
+    private List<Event> mEvents;// 当前layout所使用的事件列表，通过setEvents()修改
     private final Handler mHandler = new Handler();
-    private final Runnable mCurTimeRefreshRunnable = new Runnable() {
+    private final Runnable mCurTimeLineRunnable = new Runnable() {
         @Override
         public void run() {
             invalidate();
@@ -84,23 +83,24 @@ public class ScheduleLayout extends ViewGroup {
 
     public ScheduleLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        //初始化
         mContext = context;
+        mDrawRect = new Rect();
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
-        mLinePaint = new Paint();
-        mTimePaint = new Paint();
-        mCurTimePaint = new Paint();
+        mTimeLinePaint = new Paint();
+        mTimeTextPaint = new Paint();
+        mCurTimeLinePaint = new Paint();
         initAttrs(context, attrs, defStyleAttr, defStyleRes);
         initPaint();
-        initTimeTextBounds();
+        // 测量时间文字宽度
+        mTimeTextWidth = mTimeTextPaint.measureText("00:00");
     }
 
     public void setEvents(List<Event> events) {
-        this.events = events;
+        this.mEvents = events;
     }
 
     public void setDate(LocalDate date) {
-        this.date = LocalDate.ofEpochDay(date.toEpochDay());
+        this.mDate = LocalDate.ofEpochDay(date.toEpochDay());
     }
 
     /**
@@ -108,20 +108,20 @@ public class ScheduleLayout extends ViewGroup {
      */
     @SuppressLint("ClickableViewAccessibility")
     public void refresh() {
-        if (date != null && events != null) {
+        if (mDate != null && mEvents != null) {
             LocalDate today = LocalDate.now();
-            isToday = today.equals(date);
+            isToday = today.equals(mDate);
             if (isToday) {//启动定时刷新curTimeLine任务
-                mHandler.post(mCurTimeRefreshRunnable);
+                mHandler.post(mCurTimeLineRunnable);
             } else {
-                mHandler.removeCallbacks(mCurTimeRefreshRunnable);
+                mHandler.removeCallbacks(mCurTimeLineRunnable);
             }
             removeAllViews();
             // 查找发生在当前日期的事件
-            long startTime = date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            long startTime = mDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
             long endTime = startTime + 86399999;// 86399999 = 24*60*60*1000-1
-            for (int i = 0; i < events.size(); i++) {
-                Event event = events.get(i);
+            for (int i = 0; i < mEvents.size(); i++) {
+                Event event = mEvents.get(i);
                 List<SpecEvent> specEvents = event.getSpecEventsDuring(startTime, endTime);
                 // 为每个事件创建一个按钮，并为各个按钮设置长按监听
                 for (SpecEvent specEvent : specEvents) {
@@ -177,123 +177,72 @@ public class ScheduleLayout extends ViewGroup {
     }
 
     private void initAttrs(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-
         final DisplayMetrics metrics = getResources().getDisplayMetrics();
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ScheduleLayout, defStyleAttr, defStyleRes);
         try {
-            tableColor = a.getColor(R.styleable.ScheduleLayout_fgColor, Color.BLACK);
-            curTimeLineColor = a.getColor(R.styleable.ScheduleLayout_curTimeLineColor, Color.BLACK);
-            curTimeLineWidth = a.getDimensionPixelSize(R.styleable.ScheduleLayout_curTimeLineWidth, 1);
-            timeTextSize = a.getDimensionPixelSize(R.styleable.ScheduleLayout_timeTextSize,
+            mTableColor = a.getColor(R.styleable.ScheduleLayout_fgColor, Color.BLACK);
+            mCurTimeLineColor = a.getColor(R.styleable.ScheduleLayout_curTimeLineColor, Color.BLACK);
+            mCurTimeLineWidth = a.getDimensionPixelSize(R.styleable.ScheduleLayout_curTimeLineWidth, 1);
+            mTimeTextSize = a.getDimensionPixelSize(R.styleable.ScheduleLayout_timeTextSize,
                     (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 14, metrics));
-            lineWidth = a.getDimensionPixelSize(R.styleable.ScheduleLayout_lineWidth, 1);
-            remainTop = a.getDimensionPixelSize(R.styleable.ScheduleLayout_remainTop, 0);
-            remainBottom = a.getDimensionPixelSize(R.styleable.ScheduleLayout_remainBottom, 0);
-            remainLeft = a.getDimensionPixelSize(R.styleable.ScheduleLayout_remainLeft, 0);
-            remainRight = a.getDimensionPixelSize(R.styleable.ScheduleLayout_remainRight, 0);
-            antiAlias = a.getBoolean(R.styleable.ScheduleLayout_antiAlias, true);
+            mTimeLineWidth = a.getDimensionPixelSize(R.styleable.ScheduleLayout_lineWidth, 1);
+            mAntiAlias = a.getBoolean(R.styleable.ScheduleLayout_antiAlias, true);
         } finally {
             a.recycle();
         }
     }
 
     private void initPaint() {
-        //画线Paint设置
-        mLinePaint.setAntiAlias(antiAlias);
-        mLinePaint.setStrokeWidth(lineWidth);
-        mLinePaint.setStrokeCap(Paint.Cap.ROUND);
-        mLinePaint.setStyle(Paint.Style.STROKE);
-        mLinePaint.setColor(tableColor);
-        //画时间Paint设置
-        mTimePaint.setAntiAlias(antiAlias);
-        mTimePaint.setTextSize(timeTextSize);
-        mTimePaint.setColor(tableColor);
-        //画当前时间线的Paint设置
-        mCurTimePaint.setAntiAlias(antiAlias);
-        mCurTimePaint.setStrokeWidth(curTimeLineWidth);
-        mCurTimePaint.setStrokeCap(Paint.Cap.ROUND);
-        mCurTimePaint.setStyle(Paint.Style.FILL);
-        mCurTimePaint.setColor(curTimeLineColor);
+        mTimeLinePaint.setAntiAlias(mAntiAlias);
+        mTimeLinePaint.setStrokeWidth(mTimeLineWidth);
+        mTimeLinePaint.setStrokeCap(Paint.Cap.ROUND);
+        mTimeLinePaint.setStyle(Paint.Style.STROKE);
+        mTimeLinePaint.setColor(mTableColor);
+
+        mTimeTextPaint.setAntiAlias(mAntiAlias);
+        mTimeTextPaint.setTextSize(mTimeTextSize);
+        mTimeTextPaint.setColor(mTableColor);
+
+        mCurTimeLinePaint.setAntiAlias(mAntiAlias);
+        mCurTimeLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        mCurTimeLinePaint.setStrokeWidth(mCurTimeLineWidth);
+        mCurTimeLinePaint.setStrokeCap(Paint.Cap.ROUND);
+        mCurTimeLinePaint.setColor(mCurTimeLineColor);
     }
 
-    public void initTimeTextBounds() {
-        String baseText = "00:00";
-        Rect rect = new Rect();
-        mTimePaint.getTextBounds(baseText, 0, baseText.length(), rect);
-        timeTextWidth = rect.right - rect.left;
-        timeTextHeight = rect.bottom - rect.top;
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        Paint.FontMetrics fontMetrics = mTimeTextPaint.getFontMetrics();
+        int measuredWidth = resolveSize(DEFAULT_WIDTH, widthMeasureSpec);
+        int measuredHeight = resolveSize(Math.round(DEFAULT_TABLE_HEIGHT
+                        + getPaddingTop() + getPaddingBottom()
+                        - fontMetrics.top + fontMetrics.bottom),
+                heightMeasureSpec);
+        setMeasuredDimension(measuredWidth, measuredHeight);
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        mWidth = w;
-    }
-
-    @Override
-    protected void dispatchDraw(Canvas canvas) {//绘制Layout背景
-        super.dispatchDraw(canvas);
-        for (int i = 0; i < 25; i++) {
-            //绘制时间表左端时间
-            String timeText = i < 10 ? "0" + i + ":00" : i + ":00";
-            canvas.drawText(
-                    timeText,
-                    remainLeft,
-                    remainTop + timeTextHeight + i * TABLE_HEIGHT / 24.0f,
-                    mTimePaint);
-            //绘制时间表的线
-            canvas.drawLine(
-                    remainLeft + timeTextWidth + 20,
-                    remainTop + timeTextHeight / 2.0f + i * TABLE_HEIGHT / 24.0f,
-                    mWidth - remainRight,
-                    remainTop + timeTextHeight / 2.0f + i * TABLE_HEIGHT / 24.0f,
-                    mLinePaint);
-        }
-        if (date != null) {
-            if (isToday) {// 如果日期与当前日期一致，就画当前时间线
-                LocalTime curTime = LocalTime.now();
-                int curHour = curTime.getHour();
-                int curMinute = curTime.getMinute();
-                // 绘制当前时间线
-                canvas.drawLine(
-                        remainLeft + timeTextWidth + 20,
-                        remainTop + timeTextHeight / 2.0f + (curHour * 60 + curMinute) * TABLE_HEIGHT / 24.0f / 60.0f,
-                        mWidth - remainRight,
-                        remainTop + timeTextHeight / 2.0f + (curHour * 60 + curMinute) * TABLE_HEIGHT / 24.0f / 60.0f,
-                        mCurTimePaint
-                );
-                //绘制当前时间线左端的小圆点，让当前时间线的视觉效果更明显，小圆点的半径取：当前时间线宽*2
-                canvas.drawCircle(
-                        remainLeft + timeTextWidth + 20,
-                        remainTop + timeTextHeight / 2.0f + (curHour * 60 + curMinute) * TABLE_HEIGHT / 24.0f / 60.0f,
-                        curTimeLineWidth * 2,
-                        mCurTimePaint
-                );
-            }
-        }
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        // 测量width（高度不用测，根据常量指定）
-        int width;
-        int mode = MeasureSpec.getMode(widthMeasureSpec);
-        int size = MeasureSpec.getSize(widthMeasureSpec);
-        switch (mode) {
-            case MeasureSpec.AT_MOST:
-            case MeasureSpec.EXACTLY:
-                width = size;
-                break;
-            case MeasureSpec.UNSPECIFIED:
-            default:
-                width = DEFAULT_WIDTH;
-        }
-        setMeasuredDimension(width, TABLE_HEIGHT + timeTextHeight + remainTop + remainBottom);
+        // 计算整个控件绘制的区域
+        mDrawRect.set(getPaddingLeft(),
+                getPaddingTop(),
+                w - getPaddingRight(),
+                h - getPaddingBottom());
+        Paint.FontMetrics fontMetrics = mTimeTextPaint.getFontMetrics();
+        // 计算第一条时间线到最后一条时间线之间的距离
+        mTableHeight = Math.round(mDrawRect.height() + fontMetrics.top - fontMetrics.bottom);
+        // 计算时间线绘制起点x坐标
+        mTimeLineStartX = mDrawRect.left + mTimeTextWidth + 20;
+        // 计算第一个时间文字(00:00)绘制的y坐标
+        mFirstTimeTextY = mDrawRect.top - fontMetrics.top;
+        // 计算第一条时间线绘制的y坐标（位于00:00时间文字的y方向中点）
+        mFirstTimeLineY = mFirstTimeTextY + (fontMetrics.ascent + fontMetrics.descent) / 2.0f;
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        final long dayStart = date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        final long dayStart = mDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
         final long dayEnd = dayStart + 86399999;
         for (int i = 0; i < getChildCount(); i++) {
             View childView = getChildAt(i);
@@ -314,12 +263,50 @@ public class ScheduleLayout extends ViewGroup {
                 } else {
                     endMinOfDay = 1440;// 24 * 60
                 }
-                childView.layout(
-                        remainLeft + timeTextWidth + 20,
-                        remainTop + timeTextHeight / 2 + startMinOfDay * TABLE_HEIGHT / 1440,
-                        mWidth - remainRight,
-                        remainTop + timeTextHeight / 2 + endMinOfDay * TABLE_HEIGHT / 1440
-                );
+                childView.layout((int) mTimeLineStartX,
+                        (int) (mFirstTimeLineY + startMinOfDay * mTableHeight / 1440),
+                        mDrawRect.right,
+                        (int) (mFirstTimeLineY + endMinOfDay * mTableHeight / 1440));
+            }
+        }
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {// 绘制Layout背景
+        super.dispatchDraw(canvas);
+        float lineDistance = mTableHeight / 24.0f;
+        for (int i = 0; i < 25; i++) {
+            // 绘制时间表左端时间
+            String timeText = i < 10 ? "0" + i + ":00" : i + ":00";
+            canvas.drawText(timeText,
+                    mDrawRect.left,
+                    mFirstTimeTextY + i * lineDistance,
+                    mTimeTextPaint);
+            // 绘制时间表的线
+            canvas.drawLine(mTimeLineStartX,
+                    mFirstTimeLineY + i * lineDistance,
+                    mDrawRect.right,
+                    mFirstTimeLineY + i * lineDistance,
+                    mTimeLinePaint);
+        }
+        if (mDate != null) {
+            if (isToday) {// 如果日期与当前日期一致，就画当前时间线
+                LocalTime curTime = LocalTime.now();
+                int curHour = curTime.getHour();
+                int curMinute = curTime.getMinute();
+                float curTimeLineY = mFirstTimeLineY +
+                        (curHour * 60 + curMinute) * mTableHeight / 1440f;
+                // 绘制当前时间线
+                canvas.drawLine(mTimeLineStartX,
+                        curTimeLineY,
+                        mDrawRect.right,
+                        curTimeLineY,
+                        mCurTimeLinePaint);
+                // 绘制当前时间线左端的小圆点，让当前时间线的视觉效果更明显，小圆点的半径取：当前时间线宽*2
+                canvas.drawCircle(mTimeLineStartX,
+                        curTimeLineY,
+                        mCurTimeLineWidth * 2,
+                        mCurTimeLinePaint);
             }
         }
     }
@@ -327,6 +314,6 @@ public class ScheduleLayout extends ViewGroup {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mHandler.removeCallbacks(mCurTimeRefreshRunnable);
+        mHandler.removeCallbacks(mCurTimeLineRunnable);
     }
 }

@@ -54,10 +54,6 @@
         <attr name="curTimeLineWidth" format="dimension" />
         <attr name="lineWidth" format="dimension" />
         <attr name="timeTextSize" format="dimension" />
-        <attr name="remainTop" format="dimension" />
-        <attr name="remainBottom" format="dimension" />
-        <attr name="remainLeft" format="dimension" />
-        <attr name="remainRight" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="CircularProgressView">

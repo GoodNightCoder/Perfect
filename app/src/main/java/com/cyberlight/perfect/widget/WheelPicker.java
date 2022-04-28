@@ -398,13 +398,14 @@ public class WheelPicker<T> extends View {
         // 计算文字绘制的X坐标，使文字在item里水平居中
         mTextDrawX = mDrawRect.centerX();
         // 计算文字绘制的Y坐标，使文字在item里垂直居中
-        mFirstTextDrawY = (int) ((mItemHeight - (mSelectedItemTextPaint.ascent() + mSelectedItemTextPaint.descent())) / 2);
+        mFirstTextDrawY = mDrawRect.top + (int) ((mItemHeight - (mSelectedItemTextPaint.ascent() +
+                mSelectedItemTextPaint.descent())) / 2);
         mCenterTextDrawY = mFirstTextDrawY + mItemHeight * mHalfVisibleItemCount;
         // 计算selectedItem的边框位置
-        mSelectedItemRect.set(getPaddingLeft(),
-                mItemHeight * mHalfVisibleItemCount,
-                getWidth() - getPaddingRight(),
-                mItemHeight + mItemHeight * mHalfVisibleItemCount);
+        mSelectedItemRect.set(mDrawRect.left,
+                mItemHeight * mHalfVisibleItemCount + mDrawRect.top,
+                mDrawRect.right,
+                mItemHeight * mHalfVisibleItemCount + mDrawRect.top + mItemHeight);
         // 计算Fling极限
         computeFlingLimitY();
         // 计算offsetY
@@ -446,11 +447,10 @@ public class WheelPicker<T> extends View {
             // 文字透明度渐变
             if (mIsTextAlphaGradual) {
                 float alphaRatio;
-                if (itemDrawY > mCenterTextDrawY) {
-                    alphaRatio = (float) (mDrawRect.height() - itemDrawY) /
-                            (mDrawRect.height() - mCenterTextDrawY);
-                } else {
-                    alphaRatio = (float) itemDrawY / mCenterTextDrawY;
+                if (itemDrawY > mCenterTextDrawY) {// item在绘制区域下半部分
+                    alphaRatio = (float) (mDrawRect.bottom - itemDrawY) / (mDrawRect.bottom - mCenterTextDrawY);
+                } else {// item在绘制区域上半部分
+                    alphaRatio = (float) (itemDrawY - mDrawRect.top) / (mCenterTextDrawY - mDrawRect.top);
                 }
                 alphaRatio = alphaRatio < 0 ? 0 : alphaRatio;
                 mSelectedItemTextPaint.setAlpha((int) (alphaRatio * 255));
@@ -468,14 +468,28 @@ public class WheelPicker<T> extends View {
             // 绘制文字
             String drawText = mDataFormat == null ? data.toString() : mDataFormat.format(data);
             if (drawPos == selectedPos) {
+                // 绘制选中项
                 canvas.drawText(drawText, mTextDrawX, itemDrawY, mSelectedItemTextPaint);
             } else {
+                // 绘制未选中项
                 canvas.drawText(drawText, mTextDrawX, itemDrawY, mItemTextPaint);
             }
         }
         if (!TextUtils.isEmpty(mIndicatorText)) {
             canvas.drawText(mIndicatorText, mTextDrawX + mTextMaxWidth / 2.0f, mCenterTextDrawY, mIndicatorTextPaint);
         }
+
+        //TEST
+        Rect tempRect = new Rect();
+        tempRect.left = mDrawRect.left + 1;
+        tempRect.top = mDrawRect.top + 1;
+        tempRect.right = mDrawRect.right;
+        tempRect.bottom = mDrawRect.bottom;
+        Paint p = new Paint();
+        p.setColor(Color.BLUE);
+        p.setStyle(Paint.Style.STROKE);
+        p.setStrokeWidth(1);
+        canvas.drawRect(tempRect, p);
     }
 
     @Override

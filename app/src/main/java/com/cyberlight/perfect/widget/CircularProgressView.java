@@ -168,7 +168,7 @@ public class CircularProgressView extends View {
         mArcRectF.right = mCenterPoint.x + r;
         mArcRectF.bottom = mCenterPoint.y + r;
         // 计算文字绘制时的y坐标
-        mTextY = mCenterPoint.y + getBaselineOffsetFromY(mTextPaint);
+        mTextY = mCenterPoint.y - (mTextPaint.ascent() + mTextPaint.descent()) / 2;
     }
 
     @Override
@@ -200,14 +200,6 @@ public class CircularProgressView extends View {
             mShowText = showText;
             invalidate();
         }
-    }
-
-    /**
-     * 根据paint获取text字体高度的y方向的中点
-     */
-    private float getBaselineOffsetFromY(Paint paint) {
-        Paint.FontMetrics fontMetrics = paint.getFontMetrics();
-        return (Math.abs(fontMetrics.ascent) - fontMetrics.descent) / 2;
     }
 
     /**
