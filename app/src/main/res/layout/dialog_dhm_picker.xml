@@ -32,8 +32,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:digitsEnable="true"
             app:digits="2"
+            app:digitsEnable="true"
             app:maxValue="23"
             app:minValue="0" />
 
@@ -42,10 +42,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:digitsEnable="true"
             app:digits="2"
+            app:digitsEnable="true"
             app:maxValue="59"
-            app:minValue="0"/>
+            app:minValue="0" />
     </LinearLayout>
 
     <LinearLayout

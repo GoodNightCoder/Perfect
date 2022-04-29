@@ -28,7 +28,9 @@
 
     <style name="DefaultCircularProgressView">
         <item name="bgArcColor">@color/focus_bg_arc_color</item>
-        <item name="fgArcColor">?attr/colorPrimary</item>
+        <item name="fgArcColor">@color/focus_fg_arc_color</item>
+        <item name="bgArcWidth">7dp</item>
+        <item name="fgArcWidth">7dp</item>
     </style>
 
     <style name="DefaultScheduleLayout">

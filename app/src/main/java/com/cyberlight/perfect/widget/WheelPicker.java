@@ -1,5 +1,6 @@
 package com.cyberlight.perfect.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -362,27 +363,13 @@ public class WheelPicker<T> extends View {
         mMeasureTextPaint.setTextAlign(Paint.Align.CENTER);
     }
 
-    /**
-     * 计算实际的大小，用于onMeasure里测量
-     */
-    private int measureSize(int specMode, int specSize, int size) {
-        if (specMode == MeasureSpec.EXACTLY) {
-            return specSize;
-        } else {
-            return Math.min(specSize, size);
-        }
-    }
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int specWidthSize = MeasureSpec.getSize(widthMeasureSpec);
-        int specWidthMode = MeasureSpec.getMode(widthMeasureSpec);
-        int specHeightSize = MeasureSpec.getSize(heightMeasureSpec);
-        int specHeightMode = MeasureSpec.getMode(heightMeasureSpec);
-        int width = mTextMaxWidth + mItemWidthSpace + getPaddingLeft() + getPaddingRight();
-        int height = (mTextMaxHeight + mItemHeightSpace) * getVisibleItemCount() + getPaddingTop() + getPaddingBottom();
-        setMeasuredDimension(measureSize(specWidthMode, specWidthSize, width),
-                measureSize(specHeightMode, specHeightSize, height));
+        int measuredWidth = resolveSize(mTextMaxWidth + mItemWidthSpace
+                + getPaddingLeft() + getPaddingRight(), widthMeasureSpec);
+        int measuredHeight = resolveSize((mTextMaxHeight + mItemHeightSpace)
+                * getVisibleItemCount() + getPaddingTop() + getPaddingBottom(), heightMeasureSpec);
+        setMeasuredDimension(measuredWidth, measuredHeight);
     }
 
     @Override
@@ -478,18 +465,6 @@ public class WheelPicker<T> extends View {
         if (!TextUtils.isEmpty(mIndicatorText)) {
             canvas.drawText(mIndicatorText, mTextDrawX + mTextMaxWidth / 2.0f, mCenterTextDrawY, mIndicatorTextPaint);
         }
-
-        //TEST
-        Rect tempRect = new Rect();
-        tempRect.left = mDrawRect.left + 1;
-        tempRect.top = mDrawRect.top + 1;
-        tempRect.right = mDrawRect.right;
-        tempRect.bottom = mDrawRect.bottom;
-        Paint p = new Paint();
-        p.setColor(Color.BLUE);
-        p.setStyle(Paint.Style.STROKE);
-        p.setStrokeWidth(1);
-        canvas.drawRect(tempRect, p);
     }
 
     @Override
@@ -499,6 +474,7 @@ public class WheelPicker<T> extends View {
         super.onDetachedFromWindow();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {

@@ -65,7 +65,8 @@ public class PlanRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             PlanViewHolder planViewHolder = (PlanViewHolder) holder;
             SpecPlan specPlan = specPlans.get(position);
             planViewHolder.mContentTv.setText(specPlan.planContent);
-            planViewHolder.mCrbtn.initCountAndMaxCount(specPlan.completionCount, specPlan.targetNum);
+            planViewHolder.mCrbtn.setMaxCount(specPlan.targetNum);
+            planViewHolder.mCrbtn.setCount(specPlan.completionCount);
             planViewHolder.mCrbtn.setOnCountListener(count -> {
                 if (DbUtil.getPlanRecordCompletionCountByDate(mContext, specPlan.dateStr, specPlan.planId) != -1) {
                     DbUtil.updatePlanRecordCompletionCount(mContext, specPlan.dateStr, specPlan.planId, count);

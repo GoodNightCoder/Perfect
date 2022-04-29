@@ -22,9 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        app:bgArcColor="@color/focus_bg_arc_color"
         app:bgArcWidth="9dp"
-        app:fgArcColor="@color/focus_fg_arc_color"
         app:fgArcWidth="9dp" />
 
     <TextView
