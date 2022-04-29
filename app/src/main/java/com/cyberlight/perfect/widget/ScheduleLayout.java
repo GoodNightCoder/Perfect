@@ -83,8 +83,6 @@ public class ScheduleLayout extends ViewGroup {
 
     public ScheduleLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        // ViewGroup重写onDraw需要调用该方法使onDraw生效
-        setWillNotDraw(false);
         mContext = context;
         mDrawRect = new Rect();
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
@@ -274,8 +272,8 @@ public class ScheduleLayout extends ViewGroup {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+    protected void dispatchDraw(Canvas canvas) {
+        super.dispatchDraw(canvas);
         float lineDistance = mTableHeight / 24.0f;
         for (int i = 0; i < 25; i++) {
             // 绘制时间表左端时间

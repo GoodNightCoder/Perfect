@@ -192,7 +192,8 @@ public class CircularProgressView extends View {
     }
 
     private void startAnimator(float start, float end, long animTime) {
-        mAnimator.pause();
+        if (mAnimator != null)
+            mAnimator.pause();
         mAnimator = ValueAnimator.ofFloat(start, end);
         mAnimator.setDuration(animTime);
         mAnimator.setInterpolator(new LinearInterpolator());// 动画匀速
