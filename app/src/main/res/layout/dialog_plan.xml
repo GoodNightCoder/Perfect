@@ -88,7 +88,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_toStartOf="@id/plan_target_stepper"
                 android:gravity="center_vertical"
-                android:text="@string/plan_target_num"
+                android:text="@string/plan_target"
                 android:textAppearance="@style/TextAppearance.Perfect.DialogContent" />
 
             <LinearLayout

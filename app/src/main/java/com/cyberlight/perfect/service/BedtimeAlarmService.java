@@ -155,8 +155,8 @@ public class BedtimeAlarmService extends Service {
             PendingIntent npi = PendingIntent.getActivity(context, 0, ni, 0);
             Notification notification = NotificationUtil.buildNotification(context,
                     BEDTIME_CHANNEL_ID,
-                    context.getText(R.string.bedtime_alarm_activated_title),
-                    context.getText(R.string.bedtime_alarm_activated_text),
+                    context.getText(R.string.bedtime_notification_alarm_activated_title),
+                    context.getText(R.string.bedtime_notification_alarm_activated_text),
                     npi,
                     true,
                     false);

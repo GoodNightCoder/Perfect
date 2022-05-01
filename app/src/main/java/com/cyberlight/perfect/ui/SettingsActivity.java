@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -170,7 +169,7 @@ public class SettingsActivity extends AppCompatActivity {
                         startActivity(intent);
                     } catch (ActivityNotFoundException e) {
                         ToastUtil.showToast(mContext,
-                                R.string.no_matching_activity_toast,
+                                R.string.settings_no_matching_activity_toast,
                                 Toast.LENGTH_SHORT);
                     }
                 }
@@ -183,7 +182,7 @@ public class SettingsActivity extends AppCompatActivity {
                     startActivity(intent);
                 } catch (ActivityNotFoundException e) {
                     ToastUtil.showToast(mContext,
-                            R.string.no_matching_activity_toast,
+                            R.string.settings_no_matching_activity_toast,
                             Toast.LENGTH_SHORT);
                 }
                 return true;

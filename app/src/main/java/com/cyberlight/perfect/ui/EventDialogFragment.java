@@ -168,7 +168,7 @@ public class EventDialogFragment extends DialogFragment {
             // title不能为空
             if (mTitle.equals("")) {
                 ToastUtil.showToast(context,
-                        R.string.event_incomplete_info_toast,
+                        R.string.event_incomplete_toast,
                         Toast.LENGTH_SHORT);
                 return;
             }
@@ -289,10 +289,10 @@ public class EventDialogFragment extends DialogFragment {
 
     private String getIntervalStr() {
         if (mIntervalUnit == UnitWheelPicker.UNIT_WEEK)
-            return getResources().getQuantityString(R.plurals.interval_week_format,
+            return getResources().getQuantityString(R.plurals.event_interval_week_format,
                     mIntervalValue, mIntervalValue);
         else
-            return getResources().getQuantityString(R.plurals.interval_day_format,
+            return getResources().getQuantityString(R.plurals.event_interval_day_format,
                     mIntervalValue, mIntervalValue);
     }
 

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Perfect</string>
+    <string name="app_name">Perfect</string>
 
     <!--  Dialog button text  -->
     <string name="dialog_btn_confirm">Confirm</string>
@@ -25,12 +25,13 @@
     <string name="settings_reset_confirm_dialog_content">Are you sure you want to reset all settings?</string>
     <string name="settings_help_header">Help</string>
     <string name="settings_ignore_battery_optimization_title">Ignore Battery Optimization</string>
-    <string name="settings_manage_startup_apps_title">Manage Startup Apps</string>
-    <string name="settings_manage_startup_apps_summary"><![CDATA[Settings -> App & services -> App launch -> Manage Perfect manually -> Check the "Auto-launch" and the "Run in background" options]]></string>
+    <string name="settings_manage_app_launch_settings_title">Manage App Launch Settings</string>
+    <string name="settings_manage_app_launch_settings_summary"><![CDATA[App info -> Power usage details -> Launch settings -> Manage manually -> Check all options]]></string>
     <string name="settings_clear_title">Clear Data</string>
     <string name="settings_clear_confirm_dialog_title">The following data will be deleted: </string>
     <string name="settings_flashlight_title">Flashlight</string>
     <string name="settings_manage_bedtime_title">Manage Bedtime</string>
+    <string name="settings_no_matching_activity_toast">No matching activity</string>
 
     <!--  MainActivity  -->
     <string name="main_event_header">Events</string>
@@ -45,7 +46,7 @@
     <string name="main_rating_title">Rating</string>
     <string name="main_review_title">Review</string>
     <string name="main_memo_title">Memo</string>
-    <string name="main_no_summary_tv_text">No summary</string>
+    <string name="main_no_summary">No summary</string>
     <string name="main_have_sum_toast">You\'ve already summarized this day</string>
     <string name="main_sum_not_today_toast">The day you summarize is not today</string>
 
@@ -58,11 +59,19 @@
     <string name="event_repeat">Repeat</string>
     <string name="event_fail_toast">Add event failed</string>
     <string name="event_success_toast">Add event succeeded</string>
-    <string name="event_incomplete_info_toast">Incomplete info</string>
+    <string name="event_incomplete_toast">Incomplete info</string>
     <string name="event_duration_invalid_toast">Duration cannot be less than 5 minutes</string>
     <string name="event_start_time_invalid_toast">Invalid start time</string>
     <string name="event_interval_less_than_duration_toast">Repeat interval must be greater than or equal to duration</string>
     <string name="event_duration_pattern">%1$dh %2$dm</string>
+    <plurals name="event_interval_day_format">
+        <item quantity="one">Every %d day</item>
+        <item quantity="other">Every %d days</item>
+    </plurals>
+    <plurals name="event_interval_week_format">
+        <item quantity="one">Every %d week</item>
+        <item quantity="other">Every %d weeks</item>
+    </plurals>
 
     <!--  SummaryDialogFragment  -->
     <string name="summary_dialog_title">Summary</string>
@@ -71,14 +80,14 @@
     <string name="summary_review_hint">Review today\'s life</string>
     <string name="summary_success_toast">Add summary succeeded</string>
     <string name="summary_fail_toast">Add summary failed</string>
-    <string name="summary_no_text_toast">You haven\'t written review text yet</string>
+    <string name="summary_no_review_toast">You haven\'t written review text yet</string>
     <string name="summary_no_rating_toast">You haven\'t rated yet</string>
 
     <!--  PlanDialogFragment  -->
     <string name="plan_dialog_title">New Plan</string>
     <string name="plan_incomplete_toast">Incomplete info</string>
     <string name="plan_content_hint">Content</string>
-    <string name="plan_target_num">Target</string>
+    <string name="plan_target">Target</string>
     <string name="plan_success_toast">Add plan succeeded</string>
     <string name="plan_fail_toast">Add plan failed</string>
 
@@ -87,6 +96,7 @@
     <string name="focus_focusing_state">Focusing</string>
     <string name="focus_relaxing_state">Relaxing</string>
     <string name="focus_exit_btn_text">Exit</string>
+    <string name="focus_new_settings_applied_toast">New settings applied to focus task</string>
 
     <!--  HourMinuteDialogFragment  -->
     <string name="hm_picker_minute_indicator">m</string>
@@ -99,34 +109,28 @@
     <string name="clear_plans_option">Plans</string>
     <string name="clear_summary_option">Summary</string>
 
-    <string name="event_reminder_activated_text">Event reminder activated</string>
-    <string name="event_reminder_activated_title">Event Reminder</string>
-    <string name="no_matching_activity_toast">No matching activity</string>
+    <!--  EventReminder  -->
+    <string name="event_notification_reminder_activated_title">Event Reminder</string>
+    <string name="event_notification_reminder_activated_text">Event reminder activated</string>
 
-    <string name="bedtime_alarm_activated_text">Bedtime alarm activated</string>
-    <string name="bedtime_alarm_activated_title">Bedtime Alarm</string>
-    <string name="bedtime_notification_stop_alarm_text">Tap to stop alarm</string>
+    <!--  BedtimeAlarm  -->
     <string name="bedtime_cannot_adjust_volume_toast">Your device\'s volume cannot be adjusted</string>
+    <string name="bedtime_notification_alarm_activated_title">Bedtime Alarm</string>
+    <string name="bedtime_notification_alarm_activated_text">Bedtime alarm activated</string>
+    <string name="bedtime_notification_stop_alarm_text">Tap to stop alarm</string>
     <string name="bedtime_notification_wake_up_title">Wake Up Alarm</string>
     <string name="bedtime_notification_fall_asleep_title">Fall Asleep Alarm</string>
-    <string name="focus_new_settings_applied_toast">New settings applied to focus task</string>
-
-    <string name="dtf_readable_date">MMM d, yyyy</string>
-    <string name="dtf_readable_date_and_day_of_week">E, MMM d, yyyy</string>
-    <string name="dtf_readable_month_and_day_of_month">MMM d</string>
-    <string name="dtf_readable_date_hour_minute">MMM d, yyyy HH:mm</string>
     <string name="bedtime_notification_summary_text">Let\'s summarize today</string>
     <string name="bedtime_notification_summary_title">Summary</string>
     <string name="bedtime_notification_memo_title">Memo</string>
 
-    <plurals name="interval_day_format">
-        <item quantity="one">Every %d day</item>
-        <item quantity="other">Every %d days</item>
-    </plurals>
-    <plurals name="interval_week_format">
-        <item quantity="one">Every %d week</item>
-        <item quantity="other">Every %d weeks</item>
-    </plurals>
+    <!--  DateTimeFormatUtil  -->
+    <string name="dtf_readable_date">MMM d, yyyy</string>
+    <string name="dtf_readable_date_and_day_of_week">E, MMM d, yyyy</string>
+    <string name="dtf_readable_month_and_day_of_month">MMM d</string>
+    <string name="dtf_readable_date_hour_minute">MMM d, yyyy HH:mm</string>
+
+    <!--  UnitWheelPicker  -->
     <plurals name="unit_day">
         <item quantity="one">Day</item>
         <item quantity="other">Days</item>

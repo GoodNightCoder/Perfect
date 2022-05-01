@@ -66,13 +66,7 @@ public class DateTimeFormatUtil {
      * @return 易读的格式化日期
      */
     public static String getReadableDate(Context context, LocalDate date) {
-//        String language = Locale.getDefault().getLanguage();
         String pattern = context.getString(R.string.dtf_readable_date);
-//        if (language.equals(new Locale("zh").getLanguage())) {
-//            pattern = "yyyy年M月d日";
-//        } else {
-//            pattern =;
-//        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         return date.format(formatter);
     }
@@ -87,13 +81,7 @@ public class DateTimeFormatUtil {
      * @return 易读的格式化日期
      */
     public static String getReadableDateAndDayOfWeek(Context context, LocalDate date) {
-//        String language = Locale.getDefault().getLanguage();
         String pattern = context.getString(R.string.dtf_readable_date_and_day_of_week);
-//        if (language.equals(new Locale("zh").getLanguage())) {
-//            pattern = "yyyy年M月d日E";
-//        } else {
-//            pattern = "E, MMM d, yyyy";
-//        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         return date.format(formatter);
     }
@@ -108,13 +96,7 @@ public class DateTimeFormatUtil {
      * @return 日期的月和日字符串
      */
     public static String getReadableMonthAndDayOfMonth(Context context, LocalDate date) {
-//        String language = Locale.getDefault().getLanguage();
         String pattern = context.getString(R.string.dtf_readable_month_and_day_of_month);
-//        if (language.equals(new Locale("zh").getLanguage())) {
-//            pattern = "M月d日";
-//        } else {
-//            pattern = "MMM d";
-//        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         return date.format(formatter);
     }
@@ -128,13 +110,7 @@ public class DateTimeFormatUtil {
      * @return 易读的日期时间
      */
     public static String getReadableDateHourMinute(Context context, LocalDateTime dateTime) {
-        String language = Locale.getDefault().getLanguage();
         String pattern = context.getString(R.string.dtf_readable_date_hour_minute);
-//        if (language.equals(new Locale("zh").getLanguage())) {
-//            pattern = "yyyy年M月d日 HH:mm";
-//        } else {
-//            pattern = "MMM d, yyyy HH:mm";
-//        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         return dateTime.format(formatter);
     }

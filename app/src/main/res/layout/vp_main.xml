@@ -326,7 +326,7 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="30dp"
                     android:gravity="center"
-                    android:text="@string/main_no_summary_tv_text"
+                    android:text="@string/main_no_summary"
                     android:textAppearance="@style/TextAppearance.Perfect.HomepageBody"
                     android:visibility="gone" />
 

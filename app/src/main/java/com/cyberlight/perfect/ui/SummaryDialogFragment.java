@@ -100,7 +100,7 @@ public class SummaryDialogFragment extends DialogFragment {
             String memo = mMemoEt.getText().toString();
             if (review.equals("")) {
                 ToastUtil.showToast(context,
-                        R.string.summary_no_text_toast,
+                        R.string.summary_no_review_toast,
                         Toast.LENGTH_SHORT);
                 return;
             }

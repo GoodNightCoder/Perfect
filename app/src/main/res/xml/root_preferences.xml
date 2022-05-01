@@ -79,8 +79,8 @@
 
         <Preference
             app:key="manage_startup_apps"
-            app:summary="@string/settings_manage_startup_apps_summary"
-            app:title="@string/settings_manage_startup_apps_title" />
+            app:summary="@string/settings_manage_app_launch_settings_summary"
+            app:title="@string/settings_manage_app_launch_settings_title" />
 
     </PreferenceCategory>
 
