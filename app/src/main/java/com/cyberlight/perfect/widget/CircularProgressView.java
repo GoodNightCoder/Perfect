@@ -165,6 +165,13 @@ public class CircularProgressView extends View {
         }
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        if (mAnimator != null)
+            mAnimator.cancel();
+        super.onDetachedFromWindow();
+    }
+
     public void setShowProgress(boolean showProgress) {
         if (mShowProgress != showProgress) {
             mShowProgress = showProgress;

@@ -34,7 +34,6 @@ import com.cyberlight.perfect.model.SpecPlan;
 import com.cyberlight.perfect.model.Summary;
 import com.cyberlight.perfect.receiver.EventReminderReceiver;
 import com.cyberlight.perfect.service.BedtimeAlarmService;
-import com.cyberlight.perfect.test.DebugUtil;
 import com.cyberlight.perfect.util.DateTimeFormatUtil;
 import com.cyberlight.perfect.util.DbUtil;
 import com.cyberlight.perfect.util.SettingManager;
@@ -50,9 +49,6 @@ import java.util.List;
 
 @SuppressLint({"NotifyDataSetChanged", "UnspecifiedImmutableFlag"})
 public class MainActivity extends AppCompatActivity implements DialogInterface.OnDismissListener {
-
-    private static final String TAG = "MainActivity";
-
     private static final String PICK_D_REQUEST_KEY = "pick_d_request_key";
 
     // 状态恢复用
@@ -377,11 +373,6 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
                 });
                 // 对添加总结按钮设置监听
                 mAddSummaryIv.setOnClickListener(v1 -> {
-                    if (DebugUtil.enableTestMode) {
-                        DebugUtil.addTestSummary(MainActivity.this, date);
-                        mPagerAdapter.notifyDataSetChanged();
-                        return;
-                    }
                     if (hasSummarized) {
                         ToastUtil.showToast(MainActivity.this,
                                 R.string.main_have_sum_toast,

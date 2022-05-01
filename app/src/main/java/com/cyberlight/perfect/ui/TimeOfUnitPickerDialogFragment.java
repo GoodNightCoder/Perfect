@@ -1,5 +1,6 @@
 package com.cyberlight.perfect.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -67,7 +68,7 @@ public class TimeOfUnitPickerDialogFragment extends DialogFragment {
         zhLanguage = new Locale("zh").getLanguage();
         //设置布局
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_tu_picker, null);
+        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.dialog_tu_picker, null);
         //初始化两个选择器
         IntegerWheelPicker mValueWp = view.findViewById(R.id.dialog_tu_value_wp);
         UnitWheelPicker mUnitWp = view.findViewById(R.id.dialog_tu_unit_wp);

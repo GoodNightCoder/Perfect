@@ -1,5 +1,6 @@
 package com.cyberlight.perfect.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,7 +22,6 @@ import androidx.fragment.app.FragmentManager;
 import com.cyberlight.perfect.R;
 import com.cyberlight.perfect.model.Event;
 import com.cyberlight.perfect.receiver.EventReminderReceiver;
-import com.cyberlight.perfect.test.DebugUtil;
 import com.cyberlight.perfect.util.DateTimeFormatUtil;
 import com.cyberlight.perfect.util.DbUtil;
 import com.cyberlight.perfect.util.ToastUtil;
@@ -85,7 +85,7 @@ public class EventDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // 设置对话框布局
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_event, null);
+        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.dialog_event, null);
         Context context = requireContext();
         // 获取fragmentManager准备用于对话框操作
         FragmentManager fragmentManager = getChildFragmentManager();
@@ -180,7 +180,7 @@ public class EventDialogFragment extends DialogFragment {
                 return;
             }
             // duration必须大于等于5分钟
-            if (mDuration < 300000 && !DebugUtil.enableTestMode) {
+            if (mDuration < 300000) {
                 ToastUtil.showToast(context,
                         R.string.event_duration_invalid_toast,
                         Toast.LENGTH_SHORT);
@@ -276,15 +276,7 @@ public class EventDialogFragment extends DialogFragment {
         int min = (int) (mDuration / 60000);
         int hour = min / 60;
         int minute = min % 60;
-//        String language = Locale.getDefault().getLanguage();
-//        String pattern;
-//        if (language.equals(new Locale("zh").getLanguage())) {
-//            pattern = "%d小时%d分钟";
-//        } else {
-//            pattern = "%dh %dm";
-//        }
-        String durationStr = getString(R.string.event_duration_pattern, hour, minute);
-        return durationStr;
+        return getString(R.string.event_duration_pattern, hour, minute);
     }
 
     private String getIntervalStr() {

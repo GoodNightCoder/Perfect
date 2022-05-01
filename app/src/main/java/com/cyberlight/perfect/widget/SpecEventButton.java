@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.Gravity;
 
 import androidx.annotation.NonNull;

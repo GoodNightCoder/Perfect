@@ -313,7 +313,7 @@ public class ScheduleLayout extends ViewGroup {
 
     @Override
     protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
         mHandler.removeCallbacks(mCurTimeLineRunnable);
+        super.onDetachedFromWindow();
     }
 }

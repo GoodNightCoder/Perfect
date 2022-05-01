@@ -19,14 +19,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreferenceCompat;
 
 import com.cyberlight.perfect.R;
 import com.cyberlight.perfect.constant.SettingConstants;
 import com.cyberlight.perfect.service.BedtimeAlarmService;
 import com.cyberlight.perfect.service.FocusService;
-import com.cyberlight.perfect.test.DebugUtil;
 import com.cyberlight.perfect.util.DateTimeFormatUtil;
 import com.cyberlight.perfect.util.SettingManager;
 import com.cyberlight.perfect.util.SharedPrefSettingManager;
@@ -34,9 +32,6 @@ import com.cyberlight.perfect.util.ToastUtil;
 
 @SuppressLint("BatteryLife")
 public class SettingsActivity extends AppCompatActivity {
-
-    private static final String TAG = "SettingsActivity";
-
     private static final String RESET_ALL_SETTINGS_REQUEST_KEY = "reset_all_settings_request_key";
     private static final String PICK_WAKE_UP_REQUEST_KEY = "pick_wake_up_request_key";
     private static final String PICK_FALL_ASLEEP_REQUEST_KEY = "pick_fall_asleep_request_key";
@@ -54,9 +49,6 @@ public class SettingsActivity extends AppCompatActivity {
         //对自定义返回键设置监听
         ImageView mBackIv = findViewById(R.id.settings_back_iv);
         mBackIv.setOnClickListener(v -> finish());
-
-        //TEST:
-        DebugUtil.setToggleView(this, findViewById(R.id.settings_title_tv), new Handler());
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -88,9 +80,6 @@ public class SettingsActivity extends AppCompatActivity {
             mContext = getContext();
             if (mContext == null)
                 return;
-            // 获取SharedPreferences
-            SharedPreferences sharedPreferences =
-                    PreferenceManager.getDefaultSharedPreferences(mContext);
             // 获取各个Preference
             ListPreference focusDurationPref = findPreference(SettingConstants.KEY_FOCUS_DURATION);
             SwitchPreferenceCompat soundPref = findPreference(SettingConstants.KEY_SOUND);

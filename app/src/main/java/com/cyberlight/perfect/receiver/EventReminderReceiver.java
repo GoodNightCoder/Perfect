@@ -25,13 +25,16 @@ public class EventReminderReceiver extends BroadcastReceiver {
     public static final CharSequence EVENT_CHANNEL_NAME = "Event notifications";
     public static final String EVENT_CHANNEL_ID = "event_channel";
     public static final int EVENT_CHANNEL_IMPORTANCE = NotificationManager.IMPORTANCE_HIGH;
-    private static final int EVENT_NOTIFICATION_ID = 10;
+
+    private static final int EVENT_NOTIFICATION_ID = 83;
+    private static final int EVENT_NOTIFICATION_REQUEST_CODE = 883;
+
+    private static final int EVENT_ALARM_REQUEST_CODE = 8881;
 
     private static final String EXTRA_EVENT_TITLE = "extra_event_title";
     private static final String EXTRA_EVENT_TIME = "extra_event_time";
 
     private static final String EVENT_REMINDER_ACTION = "event_reminder_action";
-    private static final int EVENT_REMINDER_REQUEST_CODE = 6;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -40,7 +43,10 @@ public class EventReminderReceiver extends BroadcastReceiver {
         String eventTime = intent.getStringExtra(EXTRA_EVENT_TIME);
         if (!TextUtils.isEmpty(eventTitle) && !TextUtils.isEmpty(eventTime)) {
             Intent ni = new Intent(context, MainActivity.class);
-            PendingIntent npi = PendingIntent.getActivity(context, 0, ni, 0);
+            PendingIntent npi = PendingIntent.getActivity(context,
+                    EVENT_NOTIFICATION_REQUEST_CODE,
+                    ni,
+                    PendingIntent.FLAG_IMMUTABLE);
             Notification notification = NotificationUtil.buildNotification(context,
                     EVENT_CHANNEL_ID,
                     eventTitle,
@@ -65,7 +71,7 @@ public class EventReminderReceiver extends BroadcastReceiver {
         Intent intent = new Intent(context, EventReminderReceiver.class);
         intent.setAction(EVENT_REMINDER_ACTION);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
-                EVENT_REMINDER_REQUEST_CODE,
+                EVENT_ALARM_REQUEST_CODE,
                 intent,
                 PendingIntent.FLAG_NO_CREATE);
         if (pendingIntent == null) {
@@ -73,7 +79,10 @@ public class EventReminderReceiver extends BroadcastReceiver {
             boolean firstSet = setNextReminder(context);
             if (firstSet) {
                 Intent ni = new Intent(context, MainActivity.class);
-                PendingIntent npi = PendingIntent.getActivity(context, 0, ni, 0);
+                PendingIntent npi = PendingIntent.getActivity(context,
+                        EVENT_NOTIFICATION_REQUEST_CODE,
+                        ni,
+                        PendingIntent.FLAG_IMMUTABLE);
                 Notification notification = NotificationUtil.buildNotification(context,
                         EVENT_CHANNEL_ID,
                         context.getText(R.string.event_notification_reminder_activated_title),
@@ -95,9 +104,12 @@ public class EventReminderReceiver extends BroadcastReceiver {
      * @param context 可用的Context对象
      */
     public static void cancelReminder(Context context) {
-        Intent remindIntent = new Intent(context, EventReminderReceiver.class);
-        remindIntent.setAction(EVENT_REMINDER_ACTION);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, EVENT_REMINDER_REQUEST_CODE, remindIntent, PendingIntent.FLAG_NO_CREATE);
+        Intent intent = new Intent(context, EventReminderReceiver.class);
+        intent.setAction(EVENT_REMINDER_ACTION);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
+                EVENT_ALARM_REQUEST_CODE,
+                intent,
+                PendingIntent.FLAG_NO_CREATE);
         if (pendingIntent != null) {
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             alarmManager.cancel(pendingIntent);
@@ -142,7 +154,10 @@ public class EventReminderReceiver extends BroadcastReceiver {
         intent.putExtra(EXTRA_EVENT_TITLE, eventTitle);
         intent.putExtra(EXTRA_EVENT_TIME, eventTime);
         intent.setAction(EVENT_REMINDER_ACTION);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, EVENT_REMINDER_REQUEST_CODE, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
+                EVENT_ALARM_REQUEST_CODE,
+                intent,
+                PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
     }
 

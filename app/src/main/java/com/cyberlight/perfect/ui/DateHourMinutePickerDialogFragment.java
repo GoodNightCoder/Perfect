@@ -1,5 +1,6 @@
 package com.cyberlight.perfect.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -11,7 +12,6 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 
 import com.cyberlight.perfect.R;
@@ -88,7 +88,7 @@ public class DateHourMinutePickerDialogFragment extends DialogFragment {
         }
         // 设置对话框布局
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_dhm_picker, null);
+        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.dialog_dhm_picker, null);
         // 将初始日期赋给日期指示textView
         TextView mIndicatorTv =
                 view.findViewById(R.id.dialog_dhm_indicator_tv);

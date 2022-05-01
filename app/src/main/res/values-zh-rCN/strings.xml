@@ -27,8 +27,11 @@
     <string name="settings_clear_title">清除数据</string>
     <string name="settings_clear_confirm_dialog_title">以下数据将被清除：</string>
     <string name="settings_flashlight_title">闪光灯</string>
+    <string name="settings_bedtime_header">作息</string>
     <string name="settings_manage_bedtime_title">作息管理</string>
     <string name="settings_no_matching_activity_toast">无匹配活动</string>
+    <string name="settings_wake_up_title">起床时间</string>
+    <string name="settings_fall_asleep_title">睡觉时间</string>
     <string name="main_event_header">事件</string>
     <string name="main_focus_header">专注</string>
     <string name="main_no_focus_record">无记录</string>

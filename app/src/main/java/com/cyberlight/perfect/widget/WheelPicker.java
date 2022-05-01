@@ -469,7 +469,7 @@ public class WheelPicker<T> extends View {
 
     @Override
     protected void onDetachedFromWindow() {
-        //停止滚动释放资源
+        // 停止滚动释放资源
         mHandler.removeCallbacks(mScrollRunnable);
         super.onDetachedFromWindow();
     }

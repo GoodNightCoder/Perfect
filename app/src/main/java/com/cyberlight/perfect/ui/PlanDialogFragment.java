@@ -1,5 +1,6 @@
 package com.cyberlight.perfect.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -59,7 +60,7 @@ public class PlanDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // 设置对话框布局
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_plan, null);
+        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.dialog_plan, null);
 
         Context context = getContext();
         // 获取fragmentManager准备用于对话框操作

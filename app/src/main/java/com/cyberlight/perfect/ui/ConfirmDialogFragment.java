@@ -1,5 +1,6 @@
 package com.cyberlight.perfect.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -72,7 +73,7 @@ public class ConfirmDialogFragment extends DialogFragment {
         }
         // 设置布局
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_confirm, null);
+        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.dialog_confirm, null);
         TextView mTitleTv = view.findViewById(R.id.dialog_confirm_title_tv);
         TextView mContentTv = view.findViewById(R.id.dialog_confirm_content_tv);
         TextView mNegativeTv = view.findViewById(R.id.dialog_confirm_negative_tv);

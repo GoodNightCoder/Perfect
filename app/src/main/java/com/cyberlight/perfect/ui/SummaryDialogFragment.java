@@ -1,5 +1,6 @@
 package com.cyberlight.perfect.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -25,7 +26,6 @@ import com.cyberlight.perfect.util.ToastUtil;
 import java.time.LocalDate;
 
 public class SummaryDialogFragment extends DialogFragment {
-
     public static final String TAG = "SummaryDialogFragment";
 
     private static final String SUMMARY_DATE_KEY = "summary_date_key";
@@ -67,7 +67,7 @@ public class SummaryDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // 设置对话框布局
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_summary, null);
+        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.dialog_summary, null);
 
         Context context = getContext();
         if (savedInstanceState != null) {

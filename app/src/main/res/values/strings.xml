@@ -30,8 +30,11 @@
     <string name="settings_clear_title">Clear Data</string>
     <string name="settings_clear_confirm_dialog_title">The following data will be deleted: </string>
     <string name="settings_flashlight_title">Flashlight</string>
+    <string name="settings_bedtime_header">Bedtime</string>
     <string name="settings_manage_bedtime_title">Manage Bedtime</string>
     <string name="settings_no_matching_activity_toast">No matching activity</string>
+    <string name="settings_wake_up_title">Wake Up</string>
+    <string name="settings_fall_asleep_title">Fall Asleep</string>
 
     <!--  MainActivity  -->
     <string name="main_event_header">Events</string>

@@ -1,16 +1,11 @@
 package com.cyberlight.perfect.model;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
-
-import com.cyberlight.perfect.util.DateTimeFormatUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Event {
-    private static final String TAG = "Event";
     public final int eventId;
     public final String title;
     public final long start;
@@ -91,21 +86,6 @@ public class Event {
         long nextStart = start + getEventOccurNum(specTime) * interval;
         return new SpecEvent(this, nextStart, occurNum + 1);
     }
-
-//    /**
-//     * 获取指定时间正在进行的具体事件
-//     *
-//     * @param specTime 指定时间(ms)
-//     * @return 指定时间正在进行的具体事件, 若无具体事件正在进行返回null
-//     */
-//    public SpecEvent getOnGoingSpecEvent(long specTime) {
-//        int occurNum = getEventOccurNum(specTime);
-//        if (occurNum == 0) return null;// 事件还没开始
-//        long lastStart = start + (occurNum - 1) * interval;
-//        if (specTime < lastStart + duration)
-//            return new SpecEvent(this, lastStart, occurNum);
-//        return null;
-//    }
 
     /**
      * 判断事件与指定事件时间是否冲突

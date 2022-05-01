@@ -31,9 +31,6 @@ import com.cyberlight.perfect.widget.CircularProgressView;
 
 @SuppressLint("ClickableViewAccessibility")
 public class FocusActivity extends AppCompatActivity {
-
-    private static final String TAG = "FocusActivity";
-
     // 显示模式
     public static final int DISPLAY_MODES_COUNT = 5;
     public static final int SHOW_TIME_PROGRESS_STATE_EXIT = 0;

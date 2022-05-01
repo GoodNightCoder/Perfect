@@ -51,7 +51,7 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="Bedtime">
+    <PreferenceCategory app:title="@string/settings_bedtime_header">
 
         <SwitchPreferenceCompat
             app:defaultValue="false"
@@ -62,13 +62,13 @@
             app:defaultValue="25200"
             app:dependency="manage_bedtime"
             app:key="wake_up"
-            app:title="Wake Up" />
+            app:title="@string/settings_wake_up_title" />
 
         <Preference
             app:defaultValue="82800"
             app:dependency="manage_bedtime"
             app:key="fall_asleep"
-            app:title="Fall Asleep" />
+            app:title="@string/settings_fall_asleep_title" />
 
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_help_header">

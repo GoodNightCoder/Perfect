@@ -1,5 +1,6 @@
 package com.cyberlight.perfect.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -50,7 +51,7 @@ public class PlanTargetPickerDialogFragment extends DialogFragment {
         }
         // 设置布局
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_pt_picker, null);
+        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.dialog_pt_picker, null);
         // 初始化两个选择器
         IntegerWheelPicker mTargetWp = view.findViewById(R.id.dialog_pt_target_wp);
         mTargetWp.setSelectedValue(mSelectedTarget, false);

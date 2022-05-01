@@ -21,7 +21,6 @@ import android.os.Vibrator;
 import android.widget.Toast;
 
 import com.cyberlight.perfect.R;
-import com.cyberlight.perfect.test.DebugUtil;
 import com.cyberlight.perfect.ui.FocusActivity;
 import com.cyberlight.perfect.util.DbUtil;
 import com.cyberlight.perfect.util.FlashlightUtil;
@@ -34,7 +33,6 @@ import java.text.NumberFormat;
 
 @SuppressLint("UnspecifiedImmutableFlag")
 public class FocusService extends Service {
-
     // 闪光、振动时间
     private static final long[] RELAX_VIBRATION_FLASHLIGHT_TIMINGS = {0, 100, 100, 100, 100, 100, 100, 100};
     private static final long[] FOCUS_VIBRATION_FLASHLIGHT_TIMINGS = {0, 800, 100, 800};
@@ -43,7 +41,11 @@ public class FocusService extends Service {
     public static final CharSequence FOCUS_CHANNEL_NAME = "Focus notifications";
     public static final String FOCUS_CHANNEL_ID = "focus_channel";
     public static final int FOCUS_CHANNEL_IMPORTANCE = NotificationManager.IMPORTANCE_DEFAULT;
-    private static final int FOCUS_NOTIFICATION_ID = 8;
+
+    private static final int FOCUS_NOTIFICATION_ID = 84;
+    private static final int FOCUS_NOTIFICATION_REQUEST_CODE = 884;
+
+    private static final int FOCUS_ALARM_REQUEST_CODE = 8880;
 
     // 定时任务相关的信息
     private long mCurStart;
@@ -79,7 +81,10 @@ public class FocusService extends Service {
             String mRemainTimeStr = mNumberFormat.format(min) + ":" + mNumberFormat.format(sec);
             // 更新通知
             Intent ni = new Intent(FocusService.this, FocusActivity.class);
-            PendingIntent npi = PendingIntent.getActivity(FocusService.this, 0, ni, 0);
+            PendingIntent npi = PendingIntent.getActivity(FocusService.this,
+                    FOCUS_NOTIFICATION_REQUEST_CODE,
+                    ni,
+                    PendingIntent.FLAG_IMMUTABLE);
             Notification notification = NotificationUtil.buildNotification(FocusService.this,
                     FOCUS_CHANNEL_ID,
                     mFocusStateStr,
@@ -115,7 +120,10 @@ public class FocusService extends Service {
         setReminder(mNextStart);
         // 设置为前台服务
         Intent ni = new Intent(FocusService.this, FocusActivity.class);
-        PendingIntent npi = PendingIntent.getActivity(FocusService.this, 0, ni, 0);
+        PendingIntent npi = PendingIntent.getActivity(FocusService.this,
+                FOCUS_NOTIFICATION_REQUEST_CODE,
+                ni,
+                PendingIntent.FLAG_IMMUTABLE);
         Notification notification = NotificationUtil.buildNotification(FocusService.this,
                 FOCUS_CHANNEL_ID,
                 "",
@@ -174,12 +182,6 @@ public class FocusService extends Service {
         mSound = settingManager.getSound();
         mFlashlight = settingManager.getFlashlight();
         mStrictTime = settingManager.getStrictTime();
-
-        if (DebugUtil.enableTestMode) {
-            mFocusDuration = 12987;
-            mRelaxDuration = 5000;
-            mStrictTime = false;
-        }
     }
 
     /**
@@ -227,7 +229,10 @@ public class FocusService extends Service {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent();
         intent.setAction(FocusReceiver.FOCUS_REMIND_ACTION);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this,
+                FOCUS_ALARM_REQUEST_CODE,
+                intent,
+                PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
     }
 
@@ -237,7 +242,10 @@ public class FocusService extends Service {
     private void cancelReminder() {
         Intent intent = new Intent();
         intent.setAction(FocusReceiver.FOCUS_REMIND_ACTION);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, PendingIntent.FLAG_NO_CREATE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this,
+                FOCUS_ALARM_REQUEST_CODE,
+                intent,
+                PendingIntent.FLAG_NO_CREATE);
         if (pendingIntent != null) {
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             alarmManager.cancel(pendingIntent);
