@@ -290,3 +290,40 @@ MediaPlayer使用完后必须调用release释放资源
 **优化设置**
 
 使用SettingManager接口抽象出设置访问行为
+
+## 常量
+
+通知ID、requestCode如下：
+
+**BedtimeAlarmService.java**
+
+```java
+private static final int ACTIVATE_ALARM_NOTIFICATION_ID = 80;
+private static final int ALARM_NOTIFICATION_ID = 81;
+private static final int AFTER_ALARM_NOTIFICATION_ID = 82;
+
+private static final int ACTIVATE_ALARM_NOTIFICATION_REQUEST_CODE = 880;
+private static final int ALARM_NOTIFICATION_REQUEST_CODE = 881;
+private static final int AFTER_ALARM_NOTIFICATION_REQUEST_CODE = 882;
+
+private static final int BEDTIME_ALARM_REQUEST_CODE = 8882;
+```
+
+**EventReminderReceiver.java**
+
+```java
+private static final int EVENT_NOTIFICATION_ID = 83;
+private static final int EVENT_NOTIFICATION_REQUEST_CODE = 883;
+
+private static final int EVENT_ALARM_REQUEST_CODE = 8881;
+```
+
+**FocusService.java**
+
+```java
+private static final int FOCUS_NOTIFICATION_ID = 84;
+private static final int FOCUS_NOTIFICATION_REQUEST_CODE = 884;
+
+private static final int FOCUS_ALARM_REQUEST_CODE = 8880;
+```
+

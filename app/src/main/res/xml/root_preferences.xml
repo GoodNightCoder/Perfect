@@ -2,7 +2,6 @@
 
     <PreferenceCategory app:title="@string/settings_focus_mode_header">
 
-
         <ListPreference
             app:defaultValue="1500000"
             app:entries="@array/settings_focus_duration_entries"

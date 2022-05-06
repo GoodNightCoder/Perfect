@@ -113,8 +113,10 @@ public class DateHourMinutePickerDialogFragment extends DialogFragment {
         mHourWp.setOnValueSelectedListener(value -> mSelectedHour = value);
         mMinuteWp.setOnValueSelectedListener(value -> mSelectedMinute = value);
         // 设置对话框的取消、确认按钮
-        TextView mCancelTv = view.findViewById(R.id.dialog_dhm_cancel_tv);
-        TextView mConfirmTv = view.findViewById(R.id.dialog_dhm_confirm_tv);
+        TextView mCancelTv = view.findViewById(R.id.dialog_negative_tv);
+        TextView mConfirmTv = view.findViewById(R.id.dialog_positive_tv);
+        mConfirmTv.setText(R.string.dialog_btn_confirm);
+        mCancelTv.setText(R.string.dialog_btn_cancel);
         mCancelTv.setOnClickListener(v -> dismiss());
         mConfirmTv.setOnClickListener(v -> {
             // 将对话框选择结果通过setFragmentResult返回给Activity

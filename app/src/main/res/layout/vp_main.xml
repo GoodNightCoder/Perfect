@@ -1,5 +1,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_sv"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -47,7 +48,8 @@
                         android:layout_toEndOf="@+id/main_schedule_header_tv"
                         android:background="@drawable/bg_vp_add_btn"
                         android:padding="1dp"
-                        android:src="@drawable/ic_baseline_add_22" />
+                        android:src="@drawable/ic_baseline_add_22"
+                        tools:ignore="ContentDescription" />
                 </RelativeLayout>
 
 
@@ -97,7 +99,8 @@
                         android:layout_toEndOf="@+id/main_focus_records_header_tv"
                         android:background="@drawable/bg_vp_add_btn"
                         android:padding="1dp"
-                        android:src="@drawable/ic_baseline_add_22" />
+                        android:src="@drawable/ic_baseline_add_22"
+                        tools:ignore="ContentDescription" />
                 </RelativeLayout>
 
 
@@ -148,7 +151,8 @@
                         android:layout_toEndOf="@+id/main_plans_header_tv"
                         android:background="@drawable/bg_vp_add_btn"
                         android:padding="1dp"
-                        android:src="@drawable/ic_baseline_add_22" />
+                        android:src="@drawable/ic_baseline_add_22"
+                        tools:ignore="ContentDescription" />
                 </RelativeLayout>
 
 
@@ -199,7 +203,8 @@
                         android:layout_toEndOf="@+id/main_summary_header_tv"
                         android:background="@drawable/bg_vp_add_btn"
                         android:padding="1dp"
-                        android:src="@drawable/ic_baseline_add_22" />
+                        android:src="@drawable/ic_baseline_add_22"
+                        tools:ignore="ContentDescription" />
                 </RelativeLayout>
 
                 <!--Summary卡片的内容-->
@@ -229,7 +234,8 @@
                         android:layout_height="20dp"
                         android:layout_below="@id/main_rating_title_tv"
                         android:layout_alignParentStart="true"
-                        android:src="@drawable/ic_baseline_thumb_up_24" />
+                        android:src="@drawable/ic_baseline_thumb_up_24"
+                        tools:ignore="ContentDescription" />
 
                     <ImageView
                         android:id="@+id/main_thumb_up_iv2"
@@ -238,7 +244,8 @@
                         android:layout_alignBottom="@id/main_thumb_up_iv1"
                         android:layout_marginStart="1dp"
                         android:layout_toEndOf="@id/main_thumb_up_iv1"
-                        android:src="@drawable/ic_baseline_thumb_up_24" />
+                        android:src="@drawable/ic_baseline_thumb_up_24"
+                        tools:ignore="ContentDescription" />
 
                     <ImageView
                         android:id="@+id/main_thumb_up_iv3"
@@ -247,7 +254,8 @@
                         android:layout_alignBottom="@id/main_thumb_up_iv1"
                         android:layout_marginStart="1dp"
                         android:layout_toEndOf="@id/main_thumb_up_iv2"
-                        android:src="@drawable/ic_baseline_thumb_up_24" />
+                        android:src="@drawable/ic_baseline_thumb_up_24"
+                        tools:ignore="ContentDescription" />
 
                     <ImageView
                         android:id="@+id/main_thumb_up_iv4"
@@ -256,7 +264,8 @@
                         android:layout_alignBottom="@id/main_thumb_up_iv1"
                         android:layout_marginStart="1dp"
                         android:layout_toEndOf="@id/main_thumb_up_iv3"
-                        android:src="@drawable/ic_baseline_thumb_up_24" />
+                        android:src="@drawable/ic_baseline_thumb_up_24"
+                        tools:ignore="ContentDescription" />
 
                     <ImageView
                         android:id="@+id/main_thumb_up_iv5"
@@ -265,7 +274,8 @@
                         android:layout_alignBottom="@id/main_thumb_up_iv1"
                         android:layout_marginStart="1dp"
                         android:layout_toEndOf="@id/main_thumb_up_iv4"
-                        android:src="@drawable/ic_baseline_thumb_up_24" />
+                        android:src="@drawable/ic_baseline_thumb_up_24"
+                        tools:ignore="ContentDescription" />
 
                     <View
                         android:id="@+id/main_rating_comment_divider"
@@ -273,7 +283,8 @@
                         android:layout_height="1px"
                         android:layout_below="@id/main_thumb_up_iv1"
                         android:layout_marginVertical="8dp"
-                        android:background="@color/gray_a50" />
+                        android:background="@color/gray_a50"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:id="@+id/main_comment_title_tv"

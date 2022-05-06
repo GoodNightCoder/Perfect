@@ -41,8 +41,10 @@ public class ClearDialogFragment extends DialogFragment {
         CheckBox mFocusRecordsCheckBox = view.findViewById(R.id.dialog_clear_focus_records_check_box);
         CheckBox mPlansCheckBox = view.findViewById(R.id.dialog_clear_plans_check_box);
         CheckBox mSummaryCheckBox = view.findViewById(R.id.dialog_clear_summary_check_box);
-        TextView mConfirmTv = view.findViewById(R.id.dialog_clear_confirm_tv);
-        TextView mCancelTv = view.findViewById(R.id.dialog_clear_cancel_tv);
+        TextView mConfirmTv = view.findViewById(R.id.dialog_positive_tv);
+        TextView mCancelTv = view.findViewById(R.id.dialog_negative_tv);
+        mConfirmTv.setText(R.string.dialog_btn_confirm);
+        mCancelTv.setText(R.string.dialog_btn_cancel);
         mConfirmTv.setOnClickListener(v -> {
             boolean eventsChecked = mEventsCheckBox.isChecked();
             boolean focusRecordsChecked = mFocusRecordsCheckBox.isChecked();

@@ -76,18 +76,18 @@ public class ConfirmDialogFragment extends DialogFragment {
         @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.dialog_confirm, null);
         TextView mTitleTv = view.findViewById(R.id.dialog_confirm_title_tv);
         TextView mContentTv = view.findViewById(R.id.dialog_confirm_content_tv);
-        TextView mNegativeTv = view.findViewById(R.id.dialog_confirm_negative_tv);
-        TextView mPositiveTv = view.findViewById(R.id.dialog_confirm_positive_tv);
+        TextView mNegativeTv = view.findViewById(R.id.dialog_negative_tv);
+        TextView mPositiveTv = view.findViewById(R.id.dialog_positive_tv);
         mTitleTv.setText(mTitle);
         mContentTv.setText(mContent);
         mPositiveTv.setText(mPositiveText);
+        mNegativeTv.setText(mNegativeText);
         mPositiveTv.setOnClickListener(v -> {
             Bundle result = new Bundle();
             result.putInt(CONFIRM_WHICH_KEY, CONFIRM_POSITIVE);
             getParentFragmentManager().setFragmentResult(mRequestKey, result);
             dismiss();
         });
-        mNegativeTv.setText(mNegativeText);
         mNegativeTv.setOnClickListener(v -> {
             Bundle result = new Bundle();
             result.putInt(CONFIRM_WHICH_KEY, CONFIRM_NEGATIVE);

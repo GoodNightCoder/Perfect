@@ -16,42 +16,5 @@
         app:maxValue="99"
         app:minValue="1" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginBottom="10dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/dialog_pt_cancel_tv"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="15dp"
-            android:layout_weight="1"
-            android:background="@drawable/bg_btn_rc_100"
-            android:gravity="center"
-            android:paddingVertical="6dp"
-            android:text="@string/dialog_btn_cancel"
-            android:textAppearance="@style/TextAppearance.Perfect.DialogButton" />
-
-        <View
-            android:layout_width="1px"
-            android:layout_height="match_parent"
-            android:layout_marginVertical="5dp"
-            android:background="@color/gray" />
-
-        <TextView
-            android:id="@+id/dialog_pt_confirm_tv"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="15dp"
-            android:layout_weight="1"
-            android:background="@drawable/bg_btn_rc_100"
-            android:gravity="center"
-            android:paddingVertical="6dp"
-            android:text="@string/dialog_btn_confirm"
-            android:textAppearance="@style/TextAppearance.Perfect.DialogButton" />
-
-    </LinearLayout>
+    <include layout="@layout/dialog_text_btn_bar" />
 </LinearLayout>
