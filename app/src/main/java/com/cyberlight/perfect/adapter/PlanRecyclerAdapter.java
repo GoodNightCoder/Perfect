@@ -22,7 +22,7 @@ public class PlanRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private static final int TYPE_NO_PLAN = 1;
 
     private final Context mContext;
-    private final List<SpecPlan> specPlans;
+    private final List<SpecPlan> mSpecPlans;
 
     private static class PlanViewHolder extends RecyclerView.ViewHolder {
         private final TextView mContentTv;
@@ -44,17 +44,19 @@ public class PlanRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     public PlanRecyclerAdapter(Context context, List<SpecPlan> specPlans) {
         mContext = context;
-        this.specPlans = specPlans;
+        mSpecPlans = specPlans;
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == TYPE_PLAN) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_plan, parent, false);
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.rv_plan, parent, false);
             return new PlanViewHolder(v);
         } else {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_no_plan, parent, false);
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.rv_no_plan, parent, false);
             return new NoPlanViewHolder(v);
         }
     }
@@ -63,13 +65,15 @@ public class PlanRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof PlanViewHolder) {
             PlanViewHolder planViewHolder = (PlanViewHolder) holder;
-            SpecPlan specPlan = specPlans.get(position);
+            SpecPlan specPlan = mSpecPlans.get(position);
             planViewHolder.mContentTv.setText(specPlan.planContent);
             planViewHolder.mCrbtn.setMaxCount(specPlan.targetNum);
             planViewHolder.mCrbtn.setCount(specPlan.completionCount);
             planViewHolder.mCrbtn.setOnCountListener(count -> {
-                if (DbUtil.getPlanRecordCompletionCountByDate(mContext, specPlan.dateStr, specPlan.planId) != -1) {
-                    DbUtil.updatePlanRecordCompletionCount(mContext, specPlan.dateStr, specPlan.planId, count);
+                if (DbUtil.getPlanRecordCompletionCountByDate(
+                        mContext, specPlan.dateStr, specPlan.planId) != -1) {
+                    DbUtil.updatePlanRecordCompletionCount(
+                            mContext, specPlan.dateStr, specPlan.planId, count);
                 } else {
                     DbUtil.addPlanRecord(mContext, specPlan.dateStr, specPlan.planId, count);
                 }
@@ -79,11 +83,11 @@ public class PlanRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemCount() {
-        return specPlans.size() > 0 ? specPlans.size() : 1;
+        return mSpecPlans.size() > 0 ? mSpecPlans.size() : 1;
     }
 
     @Override
     public int getItemViewType(int position) {
-        return specPlans.size() > 0 ? TYPE_PLAN : TYPE_NO_PLAN;
+        return mSpecPlans.size() > 0 ? TYPE_PLAN : TYPE_NO_PLAN;
     }
 }

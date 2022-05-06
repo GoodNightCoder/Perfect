@@ -113,7 +113,8 @@ public class Event {
         //把更早的事件向更晚的事件以intervalGCD为单位平移距离，平移到两事件时间跨度中点距离最近
         long translationTimes = (laterMidTime - earlyMidTime) / intervalGCD;
         long distance = laterMidTime - (earlyMidTime + intervalGCD * translationTimes);
-        if (Math.abs(laterMidTime - (earlyMidTime + intervalGCD * (translationTimes + 1))) < distance) {
+        if (Math.abs(laterMidTime - (earlyMidTime + intervalGCD * (translationTimes + 1)))
+                < distance) {
             translationTimes++;
         }
         long earlyStartNearest = early.start + intervalGCD * translationTimes;

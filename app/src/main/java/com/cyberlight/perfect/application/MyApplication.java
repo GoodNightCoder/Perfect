@@ -15,9 +15,18 @@ public class MyApplication extends Application {
         super.onCreate();
         Context context = getApplicationContext();
         // 创建应用所需的所有Notification Channel
-        NotificationUtil.createNotificationChannel(context, FocusService.FOCUS_CHANNEL_ID, FocusService.FOCUS_CHANNEL_NAME, FocusService.FOCUS_CHANNEL_IMPORTANCE);
-        NotificationUtil.createNotificationChannel(context, BedtimeAlarmService.BEDTIME_CHANNEL_ID, BedtimeAlarmService.BEDTIME_CHANNEL_NAME, BedtimeAlarmService.BEDTIME_CHANNEL_IMPORTANCE);
-        NotificationUtil.createNotificationChannel(context, EventReminderReceiver.EVENT_CHANNEL_ID, EventReminderReceiver.EVENT_CHANNEL_NAME, EventReminderReceiver.EVENT_CHANNEL_IMPORTANCE);
+        NotificationUtil.createNotificationChannel(context,
+                FocusService.FOCUS_CHANNEL_ID,
+                FocusService.FOCUS_CHANNEL_NAME,
+                FocusService.FOCUS_CHANNEL_IMPORTANCE);
+        NotificationUtil.createNotificationChannel(context,
+                BedtimeAlarmService.BEDTIME_CHANNEL_ID,
+                BedtimeAlarmService.BEDTIME_CHANNEL_NAME,
+                BedtimeAlarmService.BEDTIME_CHANNEL_IMPORTANCE);
+        NotificationUtil.createNotificationChannel(context,
+                EventReminderReceiver.EVENT_CHANNEL_ID,
+                EventReminderReceiver.EVENT_CHANNEL_NAME,
+                EventReminderReceiver.EVENT_CHANNEL_IMPORTANCE);
     }
 
 }

@@ -30,7 +30,8 @@ public class SharedPrefSettingManager implements SettingManager {
 
     @Override
     public long getFocusDuration() {
-        String str = mSharedPreferences.getString(SettingConstants.KEY_FOCUS_DURATION, SettingConstants.DEFAULT_FOCUS_DURATION_VALUE);
+        String str = mSharedPreferences.getString(
+                SettingConstants.KEY_FOCUS_DURATION, SettingConstants.DEFAULT_FOCUS_DURATION);
         return Long.parseLong(str);
     }
 
@@ -43,7 +44,8 @@ public class SharedPrefSettingManager implements SettingManager {
 
     @Override
     public boolean getSound() {
-        return mSharedPreferences.getBoolean(SettingConstants.KEY_SOUND, SettingConstants.DEFAULT_SOUND_VALUE);
+        return mSharedPreferences.getBoolean(
+                SettingConstants.KEY_SOUND, SettingConstants.DEFAULT_SOUND);
     }
 
     @Override
@@ -55,7 +57,8 @@ public class SharedPrefSettingManager implements SettingManager {
 
     @Override
     public boolean getVibration() {
-        return mSharedPreferences.getBoolean(SettingConstants.KEY_VIBRATION, SettingConstants.DEFAULT_VIBRATION_VALUE);
+        return mSharedPreferences.getBoolean(
+                SettingConstants.KEY_VIBRATION, SettingConstants.DEFAULT_VIBRATION);
     }
 
     @Override
@@ -67,7 +70,8 @@ public class SharedPrefSettingManager implements SettingManager {
 
     @Override
     public boolean getFlashlight() {
-        return mSharedPreferences.getBoolean(SettingConstants.KEY_FLASHLIGHT, SettingConstants.DEFAULT_FLASHLIGHT_VALUE);
+        return mSharedPreferences.getBoolean(
+                SettingConstants.KEY_FLASHLIGHT, SettingConstants.DEFAULT_FLASHLIGHT);
     }
 
     @Override
@@ -79,7 +83,8 @@ public class SharedPrefSettingManager implements SettingManager {
 
     @Override
     public boolean getStrictTime() {
-        return mSharedPreferences.getBoolean(SettingConstants.KEY_STRICT_TIME, SettingConstants.DEFAULT_STRICT_TIME_VALUE);
+        return mSharedPreferences.getBoolean(
+                SettingConstants.KEY_STRICT_TIME, SettingConstants.DEFAULT_STRICT_TIME);
     }
 
     @Override
@@ -91,7 +96,8 @@ public class SharedPrefSettingManager implements SettingManager {
 
     @Override
     public boolean getKeepScreenOn() {
-        return mSharedPreferences.getBoolean(SettingConstants.KEY_KEEP_SCREEN_ON, SettingConstants.DEFAULT_KEEP_SCREEN_ON_VALUE);
+        return mSharedPreferences.getBoolean(
+                SettingConstants.KEY_KEEP_SCREEN_ON, SettingConstants.DEFAULT_KEEP_SCREEN_ON);
     }
 
     @Override
@@ -103,7 +109,8 @@ public class SharedPrefSettingManager implements SettingManager {
 
     @Override
     public boolean getManageBedtime() {
-        return mSharedPreferences.getBoolean(SettingConstants.KEY_MANAGE_BEDTIME, SettingConstants.DEFAULT_MANAGE_BEDTIME_VALUE);
+        return mSharedPreferences.getBoolean(
+                SettingConstants.KEY_MANAGE_BEDTIME, SettingConstants.DEFAULT_MANAGE_BEDTIME);
     }
 
     @Override
@@ -115,7 +122,8 @@ public class SharedPrefSettingManager implements SettingManager {
 
     @Override
     public long getWakeUp() {
-        return mSharedPreferences.getLong(SettingConstants.KEY_WAKE_UP, SettingConstants.DEFAULT_WAKE_UP_VALUE);
+        return mSharedPreferences.getLong(
+                SettingConstants.KEY_WAKE_UP, SettingConstants.DEFAULT_WAKE_UP);
     }
 
     @Override
@@ -127,7 +135,8 @@ public class SharedPrefSettingManager implements SettingManager {
 
     @Override
     public long getFallAsleep() {
-        return mSharedPreferences.getLong(SettingConstants.KEY_FALL_ASLEEP, SettingConstants.DEFAULT_FALL_ASLEEP_VALUE);
+        return mSharedPreferences.getLong(
+                SettingConstants.KEY_FALL_ASLEEP, SettingConstants.DEFAULT_FALL_ASLEEP);
     }
 
     @Override

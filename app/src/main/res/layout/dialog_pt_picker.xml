@@ -16,5 +16,5 @@
         app:maxValue="99"
         app:minValue="1" />
 
-    <include layout="@layout/dialog_text_btn_bar" />
+    <include layout="@layout/dialog_btn_bar" />
 </LinearLayout>

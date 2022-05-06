@@ -51,7 +51,8 @@ public class SettingsActivity extends AppCompatActivity {
         mBackIv.setOnClickListener(v -> finish());
     }
 
-    public static class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
+    public static class SettingsFragment extends PreferenceFragmentCompat
+            implements SharedPreferences.OnSharedPreferenceChangeListener {
         private Context mContext;
         private final Handler mHandler = new Handler();
         private final Runnable mApplyRunnable = new Runnable() {
@@ -64,13 +65,17 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onResume() {
             super.onResume();
-            getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+            getPreferenceManager()
+                    .getSharedPreferences()
+                    .registerOnSharedPreferenceChangeListener(this);
         }
 
         @Override
         public void onPause() {
             super.onPause();
-            getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+            getPreferenceManager()
+                    .getSharedPreferences()
+                    .unregisterOnSharedPreferenceChangeListener(this);
         }
 
         @Override
@@ -81,19 +86,32 @@ public class SettingsActivity extends AppCompatActivity {
             if (mContext == null)
                 return;
             // 获取各个Preference
-            ListPreference focusDurationPref = findPreference(SettingConstants.KEY_FOCUS_DURATION);
-            SwitchPreferenceCompat soundPref = findPreference(SettingConstants.KEY_SOUND);
-            SwitchPreferenceCompat vibrationPref = findPreference(SettingConstants.KEY_VIBRATION);
-            SwitchPreferenceCompat flashlightPref = findPreference(SettingConstants.KEY_FLASHLIGHT);
-            SwitchPreferenceCompat strictTimePref = findPreference(SettingConstants.KEY_STRICT_TIME);
-            SwitchPreferenceCompat keepScreenOnPref = findPreference(SettingConstants.KEY_KEEP_SCREEN_ON);
-            SwitchPreferenceCompat manageBedtimePref = findPreference(SettingConstants.KEY_MANAGE_BEDTIME);
-            Preference wakeUpPref = findPreference(SettingConstants.KEY_WAKE_UP);
-            Preference fallAsleepPref = findPreference(SettingConstants.KEY_FALL_ASLEEP);
-            Preference clearDataPref = findPreference(SettingConstants.KEY_CLEAR_DATA);
-            Preference resetPref = findPreference(SettingConstants.KEY_RESET_ALL_SETTINGS);
-            Preference ignoreBatteryOptimizationPref = findPreference(SettingConstants.KEY_IGNORE_BATTERY_OPTIMIZATION);
-            Preference manageStartupAppsPref = findPreference(SettingConstants.KEY_MANAGE_STARTUP_APPS);
+            ListPreference focusDurationPref = findPreference(
+                    SettingConstants.KEY_FOCUS_DURATION);
+            SwitchPreferenceCompat soundPref = findPreference(
+                    SettingConstants.KEY_SOUND);
+            SwitchPreferenceCompat vibrationPref = findPreference(
+                    SettingConstants.KEY_VIBRATION);
+            SwitchPreferenceCompat flashlightPref = findPreference(
+                    SettingConstants.KEY_FLASHLIGHT);
+            SwitchPreferenceCompat strictTimePref = findPreference(
+                    SettingConstants.KEY_STRICT_TIME);
+            SwitchPreferenceCompat keepScreenOnPref = findPreference(
+                    SettingConstants.KEY_KEEP_SCREEN_ON);
+            SwitchPreferenceCompat manageBedtimePref = findPreference(
+                    SettingConstants.KEY_MANAGE_BEDTIME);
+            Preference wakeUpPref = findPreference(
+                    SettingConstants.KEY_WAKE_UP);
+            Preference fallAsleepPref = findPreference(
+                    SettingConstants.KEY_FALL_ASLEEP);
+            Preference clearDataPref = findPreference(
+                    SettingConstants.KEY_CLEAR_DATA);
+            Preference resetPref = findPreference(
+                    SettingConstants.KEY_RESET_ALL_SETTINGS);
+            Preference ignoreBatteryOptimizationPref = findPreference(
+                    SettingConstants.KEY_IGNORE_BATTERY_OPTIMIZATION);
+            Preference manageStartupAppsPref = findPreference(
+                    SettingConstants.KEY_MANAGE_STARTUP_APPS);
             // 检查各个Preference是否存在
             if (focusDurationPref == null || soundPref == null || vibrationPref == null ||
                     flashlightPref == null || strictTimePref == null || keepScreenOnPref == null ||
@@ -181,20 +199,20 @@ public class SettingsActivity extends AppCompatActivity {
                         if (result.getInt(ConfirmDialogFragment.CONFIRM_WHICH_KEY) ==
                                 ConfirmDialogFragment.CONFIRM_POSITIVE) {
                             // 恢复默认设置
-                            focusDurationPref.setValue(SettingConstants.DEFAULT_FOCUS_DURATION_VALUE);
-                            soundPref.setChecked(SettingConstants.DEFAULT_SOUND_VALUE);
-                            vibrationPref.setChecked(SettingConstants.DEFAULT_VIBRATION_VALUE);
-                            flashlightPref.setChecked(SettingConstants.DEFAULT_FLASHLIGHT_VALUE);
-                            strictTimePref.setChecked(SettingConstants.DEFAULT_STRICT_TIME_VALUE);
-                            keepScreenOnPref.setChecked(SettingConstants.DEFAULT_KEEP_SCREEN_ON_VALUE);
-                            manageBedtimePref.setChecked(SettingConstants.DEFAULT_MANAGE_BEDTIME_VALUE);
+                            focusDurationPref.setValue(SettingConstants.DEFAULT_FOCUS_DURATION);
+                            soundPref.setChecked(SettingConstants.DEFAULT_SOUND);
+                            vibrationPref.setChecked(SettingConstants.DEFAULT_VIBRATION);
+                            flashlightPref.setChecked(SettingConstants.DEFAULT_FLASHLIGHT);
+                            strictTimePref.setChecked(SettingConstants.DEFAULT_STRICT_TIME);
+                            keepScreenOnPref.setChecked(SettingConstants.DEFAULT_KEEP_SCREEN_ON);
+                            manageBedtimePref.setChecked(SettingConstants.DEFAULT_MANAGE_BEDTIME);
                             // 恢复默认起床、睡觉时间
-                            settingManager.setWakeUp(SettingConstants.DEFAULT_WAKE_UP_VALUE);
-                            settingManager.setFallAsleep(SettingConstants.DEFAULT_FALL_ASLEEP_VALUE);
+                            settingManager.setWakeUp(SettingConstants.DEFAULT_WAKE_UP);
+                            settingManager.setFallAsleep(SettingConstants.DEFAULT_FALL_ASLEEP);
                             wakeUpPref.setSummary(DateTimeFormatUtil.getNeatHourMinute(
-                                    SettingConstants.DEFAULT_WAKE_UP_VALUE));
+                                    SettingConstants.DEFAULT_WAKE_UP));
                             fallAsleepPref.setSummary(DateTimeFormatUtil.getNeatHourMinute(
-                                    SettingConstants.DEFAULT_FALL_ASLEEP_VALUE));
+                                    SettingConstants.DEFAULT_FALL_ASLEEP));
                         }
                     });
             fragmentManager.setFragmentResultListener(PICK_WAKE_UP_REQUEST_KEY,

@@ -30,5 +30,5 @@
             android:layout_weight="1" />
     </LinearLayout>
 
-    <include layout="@layout/dialog_text_btn_bar" />
+    <include layout="@layout/dialog_btn_bar" />
 </LinearLayout>

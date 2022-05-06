@@ -76,7 +76,8 @@ public class CountableRadioButton extends View {
     }
 
     private void initAttrs(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CountableRadioButton, defStyleAttr, defStyleRes);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs,
+                R.styleable.CountableRadioButton, defStyleAttr, defStyleRes);
         try {
             mAntiAlias = typedArray.getBoolean(
                     R.styleable.CountableRadioButton_antiAlias, true);

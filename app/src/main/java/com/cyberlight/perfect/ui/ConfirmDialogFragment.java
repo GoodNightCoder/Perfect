@@ -73,11 +73,12 @@ public class ConfirmDialogFragment extends DialogFragment {
         }
         // 设置布局
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.dialog_confirm, null);
+        @SuppressLint("InflateParams")
+        View view = inflater.inflate(R.layout.dialog_confirm, null);
         TextView mTitleTv = view.findViewById(R.id.dialog_confirm_title_tv);
         TextView mContentTv = view.findViewById(R.id.dialog_confirm_content_tv);
-        TextView mNegativeTv = view.findViewById(R.id.dialog_negative_tv);
-        TextView mPositiveTv = view.findViewById(R.id.dialog_positive_tv);
+        TextView mNegativeTv = view.findViewById(R.id.dialog_btn_bar_negative_tv);
+        TextView mPositiveTv = view.findViewById(R.id.dialog_btn_bar_positive_tv);
         mTitleTv.setText(mTitle);
         mContentTv.setText(mContent);
         mPositiveTv.setText(mPositiveText);

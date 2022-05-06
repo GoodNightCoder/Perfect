@@ -30,7 +30,8 @@ public class DateWheelPicker extends WheelPicker<String> {
         });
     }
 
-    public void setStartAndEnd(int startYear, int startMonth, int startDayOfMonth, int endYear, int endMonth, int endDayOfMonth) {
+    public void setStartAndEnd(int startYear, int startMonth, int startDayOfMonth,
+                               int endYear, int endMonth, int endDayOfMonth) {
         mStartDate = LocalDate.of(startYear, startMonth, startDayOfMonth);
         mEndDate = LocalDate.of(endYear, endMonth, endDayOfMonth);
         updateDataList();

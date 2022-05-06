@@ -80,11 +80,16 @@ public class DbUtil {
                 , null, null, null, null);
         if (cursor.moveToFirst()) {
             do {
-                int eventIdColIndex = cursor.getColumnIndex(DbContract.EventsTable._ID);
-                int eventTitleColIndex = cursor.getColumnIndex(DbContract.EventsTable.COLUMN_NAME_TITLE);
-                int eventStartColIndex = cursor.getColumnIndex(DbContract.EventsTable.COLUMN_NAME_START);
-                int eventDurationColIndex = cursor.getColumnIndex(DbContract.EventsTable.COLUMN_NAME_DURATION);
-                int eventIntervalColIndex = cursor.getColumnIndex(DbContract.EventsTable.COLUMN_NAME_INTERVAL);
+                int eventIdColIndex = cursor.getColumnIndex(
+                        DbContract.EventsTable._ID);
+                int eventTitleColIndex = cursor.getColumnIndex(
+                        DbContract.EventsTable.COLUMN_NAME_TITLE);
+                int eventStartColIndex = cursor.getColumnIndex(
+                        DbContract.EventsTable.COLUMN_NAME_START);
+                int eventDurationColIndex = cursor.getColumnIndex(
+                        DbContract.EventsTable.COLUMN_NAME_DURATION);
+                int eventIntervalColIndex = cursor.getColumnIndex(
+                        DbContract.EventsTable.COLUMN_NAME_INTERVAL);
                 if (eventIdColIndex >= 0 && eventTitleColIndex >= 0 && eventStartColIndex >= 0
                         && eventDurationColIndex >= 0 && eventIntervalColIndex >= 0) {
                     int eventId = cursor.getInt(eventIdColIndex);
@@ -149,7 +154,8 @@ public class DbUtil {
         String selection = DbContract.PlanRecordsTable.COLUMN_NAME_PLAN_RECORD_DATE + " = ? AND "
                 + DbContract.PlanRecordsTable.COLUMN_NAME_PLAN_ID + " = ?";
         String[] selectionArgs = {dateStr, String.valueOf(planId)};
-        int count = db.update(DbContract.PlanRecordsTable.TABLE_NAME, values, selection, selectionArgs);
+        int count = db.update(
+                DbContract.PlanRecordsTable.TABLE_NAME, values, selection, selectionArgs);
         return count > 0;
     }
 
@@ -175,9 +181,12 @@ public class DbUtil {
                 , null, null, null, null);
         if (cursor.moveToFirst()) {
             do {
-                int planIdColIndex = cursor.getColumnIndex(DbContract.PlansTable._ID);
-                int planContentColIndex = cursor.getColumnIndex(DbContract.PlansTable.COLUMN_NAME_CONTENT);
-                int targetNumColIndex = cursor.getColumnIndex(DbContract.PlansTable.COLUMN_NAME_TARGET_NUM);
+                int planIdColIndex = cursor.getColumnIndex(
+                        DbContract.PlansTable._ID);
+                int planContentColIndex = cursor.getColumnIndex(
+                        DbContract.PlansTable.COLUMN_NAME_CONTENT);
+                int targetNumColIndex = cursor.getColumnIndex(
+                        DbContract.PlansTable.COLUMN_NAME_TARGET_NUM);
                 if (planIdColIndex >= 0 && planContentColIndex >= 0 && targetNumColIndex >= 0) {
                     int planId = cursor.getInt(planIdColIndex);
                     String planContent = cursor.getString(planContentColIndex);
@@ -217,11 +226,16 @@ public class DbUtil {
         Cursor cursor = db.query(DbContract.SummaryTable.TABLE_NAME, null, selection
                 , selectionArgs, null, null, null);
         if (cursor.moveToFirst()) {
-            int summaryIdCol = cursor.getColumnIndex(DbContract.SummaryTable._ID);
-            int ratingCol = cursor.getColumnIndex(DbContract.SummaryTable.COLUMN_NAME_RATING);
-            int summaryTextCol = cursor.getColumnIndex(DbContract.SummaryTable.COLUMN_NAME_SUMMARY_TEXT);
-            int summaryMemoCol = cursor.getColumnIndex(DbContract.SummaryTable.COLUMN_NAME_SUMMARY_MEMO);
-            int summaryDateCol = cursor.getColumnIndex(DbContract.SummaryTable.COLUMN_NAME_SUMMARY_DATE);
+            int summaryIdCol = cursor.getColumnIndex(
+                    DbContract.SummaryTable._ID);
+            int ratingCol = cursor.getColumnIndex(
+                    DbContract.SummaryTable.COLUMN_NAME_RATING);
+            int summaryTextCol = cursor.getColumnIndex(
+                    DbContract.SummaryTable.COLUMN_NAME_SUMMARY_TEXT);
+            int summaryMemoCol = cursor.getColumnIndex(
+                    DbContract.SummaryTable.COLUMN_NAME_SUMMARY_MEMO);
+            int summaryDateCol = cursor.getColumnIndex(
+                    DbContract.SummaryTable.COLUMN_NAME_SUMMARY_DATE);
             if (summaryIdCol >= 0 && ratingCol >= 0 && summaryTextCol >= 0
                     && summaryMemoCol >= 0 && summaryDateCol >= 0) {
                 int summaryId = cursor.getInt(summaryIdCol);
@@ -264,10 +278,10 @@ public class DbUtil {
                 , null, null, null, null);
         if (cursor.moveToFirst()) {
             do {
-                int completionTimeCol =
-                        cursor.getColumnIndex(DbContract.FocusRecordsTable.COLUMN_NAME_COMPLETION_TIME);
-                int focusDurationCol =
-                        cursor.getColumnIndex(DbContract.FocusRecordsTable.COLUMN_NAME_FOCUS_DURATION);
+                int completionTimeCol = cursor.getColumnIndex(
+                        DbContract.FocusRecordsTable.COLUMN_NAME_COMPLETION_TIME);
+                int focusDurationCol = cursor.getColumnIndex(
+                        DbContract.FocusRecordsTable.COLUMN_NAME_FOCUS_DURATION);
                 if (completionTimeCol >= 0 && focusDurationCol >= 0) {
                     long completionTime = cursor.getLong(completionTimeCol);
                     long focusDuration = cursor.getLong(focusDurationCol);

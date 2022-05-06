@@ -39,7 +39,9 @@ public class NotificationUtil {
                 .build();
     }
 
-    public static void showNotification(Context context, int notificationId, Notification notification) {
+    public static void showNotification(Context context,
+                                        int notificationId,
+                                        Notification notification) {
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
         notificationManagerCompat.notify(notificationId, notification);
     }

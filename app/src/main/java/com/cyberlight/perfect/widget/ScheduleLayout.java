@@ -178,14 +178,20 @@ public class ScheduleLayout extends ViewGroup {
 
     private void initAttrs(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         final DisplayMetrics metrics = getResources().getDisplayMetrics();
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ScheduleLayout, defStyleAttr, defStyleRes);
+        TypedArray a = context.obtainStyledAttributes(attrs,
+                R.styleable.ScheduleLayout, defStyleAttr, defStyleRes);
         try {
-            mTableColor = a.getColor(R.styleable.ScheduleLayout_fgColor, Color.BLACK);
-            mCurTimeLineColor = a.getColor(R.styleable.ScheduleLayout_curTimeLineColor, Color.BLACK);
-            mCurTimeLineWidth = a.getDimensionPixelSize(R.styleable.ScheduleLayout_curTimeLineWidth, 1);
-            mTimeTextSize = a.getDimensionPixelSize(R.styleable.ScheduleLayout_timeTextSize,
+            mTableColor = a.getColor(
+                    R.styleable.ScheduleLayout_fgColor, Color.BLACK);
+            mCurTimeLineColor = a.getColor(
+                    R.styleable.ScheduleLayout_curTimeLineColor, Color.BLACK);
+            mCurTimeLineWidth = a.getDimensionPixelSize(
+                    R.styleable.ScheduleLayout_curTimeLineWidth, 1);
+            mTimeTextSize = a.getDimensionPixelSize(
+                    R.styleable.ScheduleLayout_timeTextSize,
                     (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 14, metrics));
-            mTimeLineWidth = a.getDimensionPixelSize(R.styleable.ScheduleLayout_lineWidth, 1);
+            mTimeLineWidth = a.getDimensionPixelSize(
+                    R.styleable.ScheduleLayout_lineWidth, 1);
             mAntiAlias = a.getBoolean(R.styleable.ScheduleLayout_antiAlias, true);
         } finally {
             a.recycle();

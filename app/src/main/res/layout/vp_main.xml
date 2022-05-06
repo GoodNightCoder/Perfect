@@ -14,7 +14,7 @@
         android:padding="15dp">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/main_schedule_card_view"
+            android:id="@+id/main_schedule_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
@@ -54,7 +54,7 @@
 
 
                 <com.cyberlight.perfect.widget.ScheduleLayout
-                    android:id="@+id/main_schedule_layout"
+                    android:id="@+id/main_schedule"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
@@ -65,7 +65,7 @@
 
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/main_focus_records_card_view"
+            android:id="@+id/main_focus_records_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
@@ -117,7 +117,7 @@
 
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/main_plans_card_view"
+            android:id="@+id/main_plans_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
@@ -169,7 +169,7 @@
 
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/main_summary_card_view"
+            android:id="@+id/main_summary_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="10dp"

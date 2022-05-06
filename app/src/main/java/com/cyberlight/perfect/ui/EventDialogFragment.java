@@ -85,7 +85,8 @@ public class EventDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // 设置对话框布局
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.dialog_event, null);
+        @SuppressLint("InflateParams")
+        View view = inflater.inflate(R.layout.dialog_event, null);
         Context context = requireContext();
         // 获取fragmentManager准备用于对话框操作
         FragmentManager fragmentManager = getChildFragmentManager();
@@ -108,9 +109,6 @@ public class EventDialogFragment extends DialogFragment {
             mIntervalValue = 1;
             mIntervalUnit = UnitWheelPicker.UNIT_DAY;
         }
-        // 设置返回按钮
-        ImageView mCancelIv = view.findViewById(R.id.dialog_event_cancel_iv);
-        mCancelIv.setOnClickListener(v -> dismiss());
         // 获取title输入框
         mTitleContentEt = view.findViewById(R.id.dialog_event_title_content_et);
         // 获取并设置start输入框
@@ -159,8 +157,10 @@ public class EventDialogFragment extends DialogFragment {
                         TimeOfUnitPickerDialogFragment.TAG);
             }
         });
-        // 设置确定按钮监听
-        ImageView mConfirmIv = view.findViewById(R.id.dialog_event_confirm_iv);
+        // 设置按钮栏
+        TextView dialogTitleTv = view.findViewById(R.id.dialog_action_bar_title_tv);
+        dialogTitleTv.setText(R.string.event_dialog_title);
+        ImageView mConfirmIv = view.findViewById(R.id.dialog_action_bar_confirm_iv);
         mConfirmIv.setOnClickListener(v -> {
             String mTitle = mTitleContentEt != null ? mTitleContentEt.getText().toString() : "";
             long mStart = mStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
@@ -220,16 +220,24 @@ public class EventDialogFragment extends DialogFragment {
             }
             dismiss();
         });
+        ImageView mCancelIv = view.findViewById(R.id.dialog_action_bar_cancel_iv);
+        mCancelIv.setOnClickListener(v -> dismiss());
         // 设置FragmentResultListener获取选择结果
         fragmentManager.setFragmentResultListener(PICK_DHM_REQUEST_KEY, this,
                 (requestKey, result) -> {
-                    int year = result.getInt(DateHourMinutePickerDialogFragment.DHM_YEAR_KEY);
-                    int month = result.getInt(DateHourMinutePickerDialogFragment.DHM_MONTH_KEY);
-                    int dayOfMonth = result.getInt(DateHourMinutePickerDialogFragment.DHM_DAY_OF_MONTH_KEY);
-                    int hour = result.getInt(DateHourMinutePickerDialogFragment.DHM_HOUR_KEY);
-                    int minute = result.getInt(DateHourMinutePickerDialogFragment.DHM_MINUTE_KEY);
+                    int year = result.getInt(
+                            DateHourMinutePickerDialogFragment.DHM_YEAR_KEY);
+                    int month = result.getInt(
+                            DateHourMinutePickerDialogFragment.DHM_MONTH_KEY);
+                    int dayOfMonth = result.getInt(
+                            DateHourMinutePickerDialogFragment.DHM_DAY_OF_MONTH_KEY);
+                    int hour = result.getInt(
+                            DateHourMinutePickerDialogFragment.DHM_HOUR_KEY);
+                    int minute = result.getInt(
+                            DateHourMinutePickerDialogFragment.DHM_MINUTE_KEY);
                     mStartDateTime = LocalDateTime.of(year, month, dayOfMonth, hour, minute);
-                    mStartContentTv.setText(DateTimeFormatUtil.getReadableDateHourMinute(context, mStartDateTime));
+                    mStartContentTv.setText(DateTimeFormatUtil.getReadableDateHourMinute(
+                            context, mStartDateTime));
                 }
         );
         fragmentManager.setFragmentResultListener(PICK_HM_REQUEST_KEY,

@@ -25,19 +25,23 @@ public class TimeOfUnitPickerDialogFragment extends DialogFragment {
     public static final String TU_VALUE_KEY = "tu_value_key";
     public static final String TU_UNIT_KEY = "tu_unit_key";
 
-
     private String mRequestKey;
     private int mSelectedValue;
     private int mSelectedUnit;
 
-    //借助内存优化语法规则支持性能
-    private String mLanguage;
-    private String zhLanguage;
+    // 借助内存优化语法规则支持性能
+    private final String mLanguage;
+    private final String mZhLanguage;
 
     public TimeOfUnitPickerDialogFragment() {
+        // 保存经常要判断的两个字符串，优化性能
+        mLanguage = Locale.getDefault().getLanguage();
+        mZhLanguage = new Locale("zh").getLanguage();
     }
 
-    public static TimeOfUnitPickerDialogFragment newInstance(String requestKey, int initValue, int initUnit) {
+    public static TimeOfUnitPickerDialogFragment newInstance(String requestKey,
+                                                             int initValue,
+                                                             int initUnit) {
         TimeOfUnitPickerDialogFragment fragment = new TimeOfUnitPickerDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putString(TU_REQUEST_KEY, requestKey);
@@ -63,12 +67,11 @@ public class TimeOfUnitPickerDialogFragment extends DialogFragment {
             mSelectedValue = savedInstanceState.getInt(TU_VALUE_KEY);
             mSelectedUnit = savedInstanceState.getInt(TU_UNIT_KEY);
         }
-        //保存经常要判断的两个字符串，优化性能
-        mLanguage = Locale.getDefault().getLanguage();
-        zhLanguage = new Locale("zh").getLanguage();
+
         //设置布局
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.dialog_tu_picker, null);
+        @SuppressLint("InflateParams")
+        View view = inflater.inflate(R.layout.dialog_tu_picker, null);
         //初始化两个选择器
         IntegerWheelPicker mValueWp = view.findViewById(R.id.dialog_tu_value_wp);
         UnitWheelPicker mUnitWp = view.findViewById(R.id.dialog_tu_unit_wp);
@@ -78,19 +81,19 @@ public class TimeOfUnitPickerDialogFragment extends DialogFragment {
         //对两个选择器设置选中监听
         mValueWp.setOnValueSelectedListener(value -> {
             //只有在系统为英语并且原来选中1或即将选中1，才更新UnitPicker数据集
-            if (!mLanguage.equals(zhLanguage) && (value == 1 || mSelectedValue == 1)) {
+            if (!mLanguage.equals(mZhLanguage) && (value == 1 || mSelectedValue == 1)) {
                 mUnitWp.updateDataList(value);
             }
             mSelectedValue = value;
         });
         mUnitWp.setOnUnitSelectedListener(unit -> mSelectedUnit = unit);
         //把初始值告知UnitPicker，以保证复数等语法规则一开始就正确生效
-        if (!mLanguage.equals(zhLanguage)) {
+        if (!mLanguage.equals(mZhLanguage)) {
             mUnitWp.updateDataList(mSelectedValue);
         }
         //获取取消和确认按钮
-        TextView mCancelTv = view.findViewById(R.id.dialog_negative_tv);
-        TextView mConfirmTv = view.findViewById(R.id.dialog_positive_tv);
+        TextView mCancelTv = view.findViewById(R.id.dialog_btn_bar_negative_tv);
+        TextView mConfirmTv = view.findViewById(R.id.dialog_btn_bar_positive_tv);
         mConfirmTv.setText(R.string.dialog_btn_confirm);
         mCancelTv.setText(R.string.dialog_btn_cancel);
         mCancelTv.setOnClickListener(v -> dismiss());

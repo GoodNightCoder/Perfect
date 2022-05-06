@@ -16,13 +16,13 @@ public final class SettingConstants {
     public static final String KEY_IGNORE_BATTERY_OPTIMIZATION = "ignore_battery_optimization";
     public static final String KEY_MANAGE_STARTUP_APPS = "manage_startup_apps";
     // 设置的默认值
-    public static final String DEFAULT_FOCUS_DURATION_VALUE = "1500000";
-    public static final boolean DEFAULT_SOUND_VALUE = true;
-    public static final boolean DEFAULT_VIBRATION_VALUE = true;
-    public static final boolean DEFAULT_FLASHLIGHT_VALUE = true;
-    public static final boolean DEFAULT_STRICT_TIME_VALUE = true;
-    public static final boolean DEFAULT_KEEP_SCREEN_ON_VALUE = true;
-    public static final boolean DEFAULT_MANAGE_BEDTIME_VALUE = false;
-    public static final long DEFAULT_WAKE_UP_VALUE = 25200;
-    public static final long DEFAULT_FALL_ASLEEP_VALUE = 82800;
+    public static final String DEFAULT_FOCUS_DURATION = "1500000";
+    public static final boolean DEFAULT_SOUND = true;
+    public static final boolean DEFAULT_VIBRATION = true;
+    public static final boolean DEFAULT_FLASHLIGHT = true;
+    public static final boolean DEFAULT_STRICT_TIME = true;
+    public static final boolean DEFAULT_KEEP_SCREEN_ON = true;
+    public static final boolean DEFAULT_MANAGE_BEDTIME = false;
+    public static final long DEFAULT_WAKE_UP = 25200;
+    public static final long DEFAULT_FALL_ASLEEP = 82800;
 }

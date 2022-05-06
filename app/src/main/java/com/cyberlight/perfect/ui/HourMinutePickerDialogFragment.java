@@ -56,7 +56,8 @@ public class HourMinutePickerDialogFragment extends DialogFragment {
         }
         // 设置布局
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.dialog_hm_picker, null);
+        @SuppressLint("InflateParams")
+        View view = inflater.inflate(R.layout.dialog_hm_picker, null);
         // 初始化两个选择器
         IntegerWheelPicker mHourWp = view.findViewById(R.id.dialog_hm_hour_wp);
         IntegerWheelPicker mMinuteWp = view.findViewById(R.id.dialog_hm_minute_wp);
@@ -65,8 +66,8 @@ public class HourMinutePickerDialogFragment extends DialogFragment {
         mHourWp.setOnValueSelectedListener(value -> mSelectedHour = value);
         mMinuteWp.setOnValueSelectedListener(value -> mSelectedMinute = value);
         // 设置取消和确认按钮
-        TextView mCancelTv = view.findViewById(R.id.dialog_negative_tv);
-        TextView mConfirmTv = view.findViewById(R.id.dialog_positive_tv);
+        TextView mCancelTv = view.findViewById(R.id.dialog_btn_bar_negative_tv);
+        TextView mConfirmTv = view.findViewById(R.id.dialog_btn_bar_positive_tv);
         mConfirmTv.setText(R.string.dialog_btn_confirm);
         mCancelTv.setText(R.string.dialog_btn_cancel);
         mCancelTv.setOnClickListener(v -> dismiss());

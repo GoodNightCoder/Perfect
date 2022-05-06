@@ -37,19 +37,19 @@ public class ClearDialogFragment extends DialogFragment {
         // 设置布局
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.dialog_clear, null);
-        CheckBox mEventsCheckBox = view.findViewById(R.id.dialog_clear_events_check_box);
-        CheckBox mFocusRecordsCheckBox = view.findViewById(R.id.dialog_clear_focus_records_check_box);
-        CheckBox mPlansCheckBox = view.findViewById(R.id.dialog_clear_plans_check_box);
-        CheckBox mSummaryCheckBox = view.findViewById(R.id.dialog_clear_summary_check_box);
-        TextView mConfirmTv = view.findViewById(R.id.dialog_positive_tv);
-        TextView mCancelTv = view.findViewById(R.id.dialog_negative_tv);
-        mConfirmTv.setText(R.string.dialog_btn_confirm);
-        mCancelTv.setText(R.string.dialog_btn_cancel);
-        mConfirmTv.setOnClickListener(v -> {
-            boolean eventsChecked = mEventsCheckBox.isChecked();
-            boolean focusRecordsChecked = mFocusRecordsCheckBox.isChecked();
-            boolean plansChecked = mPlansCheckBox.isChecked();
-            boolean summaryChecked = mSummaryCheckBox.isChecked();
+        CheckBox eventsCheckBox = view.findViewById(R.id.dialog_clear_events_cb);
+        CheckBox focusRecordsCheckBox = view.findViewById(R.id.dialog_clear_focus_records_cb);
+        CheckBox plansCheckBox = view.findViewById(R.id.dialog_clear_plans_cb);
+        CheckBox summaryCheckBox = view.findViewById(R.id.dialog_clear_summary_cb);
+        TextView confirmTv = view.findViewById(R.id.dialog_btn_bar_positive_tv);
+        TextView cancelTv = view.findViewById(R.id.dialog_btn_bar_negative_tv);
+        confirmTv.setText(R.string.dialog_btn_confirm);
+        cancelTv.setText(R.string.dialog_btn_cancel);
+        confirmTv.setOnClickListener(v -> {
+            boolean eventsChecked = eventsCheckBox.isChecked();
+            boolean focusRecordsChecked = focusRecordsCheckBox.isChecked();
+            boolean plansChecked = plansCheckBox.isChecked();
+            boolean summaryChecked = summaryCheckBox.isChecked();
             if (!eventsChecked && !focusRecordsChecked &&
                     !plansChecked && !summaryChecked) {
                 // 没有一项选中
@@ -76,25 +76,25 @@ public class ClearDialogFragment extends DialogFragment {
                 confirmDialogFragment.show(fragmentManager, ConfirmDialogFragment.TAG);
             }
         });
-        mCancelTv.setOnClickListener(v -> dismiss());
+        cancelTv.setOnClickListener(v -> dismiss());
         // 监听确认对话框的返回结果
         fragmentManager.setFragmentResultListener(CLEAR_DATA_REQUEST_KEY,
                 this, (requestKey, result) -> {
                     if (result.getInt(ConfirmDialogFragment.CONFIRM_WHICH_KEY) ==
                             ConfirmDialogFragment.CONFIRM_POSITIVE) {
-                        if (mEventsCheckBox.isChecked()) {
+                        if (eventsCheckBox.isChecked()) {
                             DbUtil.truncateTable(context, DbContract.EventsTable.TABLE_NAME);
                             DbUtil.truncateTable(context, DbContract.EventRecordsTable.TABLE_NAME);
                             // 取消已有事件提醒
                             EventReminderReceiver.cancelReminder(context);
                         }
-                        if (mFocusRecordsCheckBox.isChecked())
+                        if (focusRecordsCheckBox.isChecked())
                             DbUtil.truncateTable(context, DbContract.FocusRecordsTable.TABLE_NAME);
-                        if (mPlansCheckBox.isChecked()) {
+                        if (plansCheckBox.isChecked()) {
                             DbUtil.truncateTable(context, DbContract.PlansTable.TABLE_NAME);
                             DbUtil.truncateTable(context, DbContract.PlanRecordsTable.TABLE_NAME);
                         }
-                        if (mSummaryCheckBox.isChecked())
+                        if (summaryCheckBox.isChecked())
                             DbUtil.truncateTable(context, DbContract.SummaryTable.TABLE_NAME);
                         dismiss();
                     }

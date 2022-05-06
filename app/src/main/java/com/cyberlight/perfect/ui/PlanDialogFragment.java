@@ -60,7 +60,8 @@ public class PlanDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // 设置对话框布局
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.dialog_plan, null);
+        @SuppressLint("InflateParams")
+        View view = inflater.inflate(R.layout.dialog_plan, null);
 
         Context context = getContext();
         // 获取fragmentManager准备用于对话框操作
@@ -100,10 +101,13 @@ public class PlanDialogFragment extends DialogFragment {
                     mTarget = result.getInt(PlanTargetPickerDialogFragment.PT_TARGET_KEY);
                     mStepperValueTv.setText(String.valueOf(mTarget));
                 });
-        ImageView mCancelIv = view.findViewById(R.id.dialog_plan_cancel_iv);
-        mCancelIv.setOnClickListener(v -> dismiss());
-        ImageView mConfirmIv = view.findViewById(R.id.dialog_plan_confirm_iv);
-        mConfirmIv.setOnClickListener(v -> {
+        // 设置按钮栏
+        TextView dialogTitleTv = view.findViewById(R.id.dialog_action_bar_title_tv);
+        dialogTitleTv.setText(R.string.plan_dialog_title);
+        ImageView cancelIv = view.findViewById(R.id.dialog_action_bar_cancel_iv);
+        cancelIv.setOnClickListener(v -> dismiss());
+        ImageView confirmIv = view.findViewById(R.id.dialog_action_bar_confirm_iv);
+        confirmIv.setOnClickListener(v -> {
             EditText mContentEt = view.findViewById(R.id.dialog_plan_content_et);
             String planContent = mContentEt.getText().toString();
             if (planContent.equals("")) {

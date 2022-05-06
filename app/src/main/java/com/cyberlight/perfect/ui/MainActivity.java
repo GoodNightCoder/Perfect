@@ -93,8 +93,8 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         FragmentManager fragmentManager = getSupportFragmentManager();
         // 初始化控件
         mDateTv = findViewById(R.id.main_date_tv);
-        mPager = findViewById(R.id.main_pager);
-        mFab = findViewById(R.id.main_fab);
+        mPager = findViewById(R.id.main_vp);
+        mFab = findViewById(R.id.main_today_fab);
         ImageView mFocusIv = findViewById(R.id.main_focus_iv);
         ImageView mSettingsIv = findViewById(R.id.main_settings_iv);
         // 设置fab
@@ -288,7 +288,8 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
             if (savedInstanceState != null) {
                 mRequestKey = savedInstanceState.getString(D_REQUEST_KEY);
             }
-            return new DatePickerDialog(getActivity(), this, initYear, initMonth, initDayOfMonth);
+            return new DatePickerDialog(getActivity(), this,
+                    initYear, initMonth, initDayOfMonth);
         }
 
         @Override
@@ -333,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
             public PageViewHolder(View v) {
                 super(v);
                 // 获取控件
-                mScheduleLayout = v.findViewById(R.id.main_schedule_layout);
+                mScheduleLayout = v.findViewById(R.id.main_schedule);
                 mSummaryContentLayout = v.findViewById(R.id.main_summary_content_layout);
                 mThumbUpIv1 = v.findViewById(R.id.main_thumb_up_iv1);
                 mThumbUpIv2 = v.findViewById(R.id.main_thumb_up_iv2);
@@ -389,17 +390,20 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
                     }
                 });
                 // 初始化FocusRecordsRv，通过LayoutManager禁止其滚动
-                RecyclerView.LayoutManager focusRecordsRvLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false) {
+                RecyclerView.LayoutManager focusRecordsRvLayoutManager = new LinearLayoutManager(
+                        MainActivity.this, LinearLayoutManager.VERTICAL, false) {
                     @Override
                     public boolean canScrollVertically() {
                         return false;
                     }
                 };
                 mFocusRecordsRv.setLayoutManager(focusRecordsRvLayoutManager);
-                focusRecordRecyclerAdapter = new FocusRecordRecyclerAdapter(MainActivity.this, focusRecords);
+                focusRecordRecyclerAdapter = new FocusRecordRecyclerAdapter(
+                        MainActivity.this, focusRecords);
                 mFocusRecordsRv.setAdapter(focusRecordRecyclerAdapter);
                 // 初始化PlansRv，通过LayoutManager禁止其滚动
-                RecyclerView.LayoutManager plansRvLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false) {
+                RecyclerView.LayoutManager plansRvLayoutManager = new LinearLayoutManager(
+                        MainActivity.this, LinearLayoutManager.VERTICAL, false) {
                     @Override
                     public boolean canScrollVertically() {
                         return false;
@@ -409,13 +413,15 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
                 planRecyclerAdapter = new PlanRecyclerAdapter(MainActivity.this, specPlans);
                 mPlansRv.setAdapter(planRecyclerAdapter);
                 // scrollView监听
-                mSv.setOnScrollChangeListener((v15, scrollX, scrollY, oldScrollX, oldScrollY) -> mCurScrollY = scrollY);
+                mSv.setOnScrollChangeListener((v15, scrollX, scrollY, oldScrollX, oldScrollY)
+                        -> mCurScrollY = scrollY);
             }
 
             private void setRating(int rating) {
                 int purpleA50 = ContextCompat.getColor(MainActivity.this, R.color.purple_a50);
                 int grayA50 = ContextCompat.getColor(MainActivity.this, R.color.gray_a50);
-                ImageView[] imageViews = {mThumbUpIv1, mThumbUpIv2, mThumbUpIv3, mThumbUpIv4, mThumbUpIv5};
+                final ImageView[] imageViews =
+                        {mThumbUpIv1, mThumbUpIv2, mThumbUpIv3, mThumbUpIv4, mThumbUpIv5};
                 for (int i = 0; i < imageViews.length; i++) {
                     imageViews[i].setColorFilter(i < rating ? purpleA50 : grayA50);
                 }

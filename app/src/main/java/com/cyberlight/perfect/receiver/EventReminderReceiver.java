@@ -148,7 +148,10 @@ public class EventReminderReceiver extends BroadcastReceiver {
      * @param eventTime       事件时间信息
      * @param triggerAtMillis 提醒触发时间
      */
-    private static void setReminder(Context context, String eventTitle, String eventTime, long triggerAtMillis) {
+    private static void setReminder(Context context,
+                                    String eventTitle,
+                                    String eventTime,
+                                    long triggerAtMillis) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, EventReminderReceiver.class);
         intent.putExtra(EXTRA_EVENT_TITLE, eventTitle);

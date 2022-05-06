@@ -270,12 +270,17 @@ public class WheelPicker<T> extends View {
 
     public WheelPicker(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        mItemTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
-        mSelectedItemTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
-        mIndicatorTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
-        mCurtainPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
-        mSelectedItemDividerPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
-        mMeasureTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
+        mItemTextPaint = new TextPaint(
+                Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
+        mSelectedItemTextPaint = new TextPaint(
+                Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
+        mIndicatorTextPaint = new TextPaint(
+                Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
+        mCurtainPaint = new Paint(
+                Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+        mSelectedItemDividerPaint = new Paint(
+                Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+        mMeasureTextPaint = new Paint();
         mDrawRect = new Rect();
         mSelectedItemRect = new Rect();
         mScroller = new Scroller(context);
@@ -406,8 +411,10 @@ public class WheelPicker<T> extends View {
             canvas.drawRect(mSelectedItemRect, mCurtainPaint);
         }
         if (mIsShowSelectedItemDivider) {
-            canvas.drawLine(mSelectedItemRect.left, mSelectedItemRect.top, mSelectedItemRect.right, mSelectedItemRect.top, mSelectedItemDividerPaint);
-            canvas.drawLine(mSelectedItemRect.left, mSelectedItemRect.bottom, mSelectedItemRect.right, mSelectedItemRect.bottom, mSelectedItemDividerPaint);
+            canvas.drawLine(mSelectedItemRect.left, mSelectedItemRect.top,
+                    mSelectedItemRect.right, mSelectedItemRect.top, mSelectedItemDividerPaint);
+            canvas.drawLine(mSelectedItemRect.left, mSelectedItemRect.bottom,
+                    mSelectedItemRect.right, mSelectedItemRect.bottom, mSelectedItemDividerPaint);
         }
         int selectedPos = computePosition(mOffsetY);
         // 首尾各多绘制一个用于缓冲
@@ -425,8 +432,10 @@ public class WheelPicker<T> extends View {
             // 文字颜色渐变(文字颜色渐变要在设置透明度上边，否则会被覆盖)
             if (mIsTextColorGradual && distanceY < mItemHeight) {
                 float colorRatio = 1 - (distanceY / (float) mItemHeight);
-                mSelectedItemTextPaint.setColor(getGradientColor(mItemTextColor, mSelectedItemTextColor, colorRatio));
-                mItemTextPaint.setColor(getGradientColor(mItemTextColor, mSelectedItemTextColor, colorRatio));
+                mSelectedItemTextPaint.setColor(
+                        getGradientColor(mItemTextColor, mSelectedItemTextColor, colorRatio));
+                mItemTextPaint.setColor(
+                        getGradientColor(mItemTextColor, mSelectedItemTextColor, colorRatio));
             } else {
                 mSelectedItemTextPaint.setColor(mSelectedItemTextColor);
                 mItemTextPaint.setColor(mItemTextColor);
@@ -435,9 +444,11 @@ public class WheelPicker<T> extends View {
             if (mIsTextAlphaGradual) {
                 float alphaRatio;
                 if (itemDrawY > mCenterTextDrawY) {// item在绘制区域下半部分
-                    alphaRatio = (float) (mDrawRect.bottom - itemDrawY) / (mDrawRect.bottom - mCenterTextDrawY);
+                    alphaRatio = (float) (mDrawRect.bottom - itemDrawY) /
+                            (mDrawRect.bottom - mCenterTextDrawY);
                 } else {// item在绘制区域上半部分
-                    alphaRatio = (float) (itemDrawY - mDrawRect.top) / (mCenterTextDrawY - mDrawRect.top);
+                    alphaRatio = (float) (itemDrawY - mDrawRect.top) /
+                            (mCenterTextDrawY - mDrawRect.top);
                 }
                 alphaRatio = alphaRatio < 0 ? 0 : alphaRatio;
                 mSelectedItemTextPaint.setAlpha((int) (alphaRatio * 255));
@@ -445,7 +456,8 @@ public class WheelPicker<T> extends View {
             }
             // 文字大小渐变
             if (mIsTextSizeGradual && distanceY < mItemHeight) {
-                float addedSize = (mItemHeight - distanceY) / (float) mItemHeight * (mSelectedItemTextSize - mItemTextSize);
+                float addedSize = (mItemHeight - distanceY) /
+                        (float) mItemHeight * (mSelectedItemTextSize - mItemTextSize);
                 mSelectedItemTextPaint.setTextSize(mItemTextSize + addedSize);
                 mItemTextPaint.setTextSize(mItemTextSize + addedSize);
             } else {
@@ -463,7 +475,8 @@ public class WheelPicker<T> extends View {
             }
         }
         if (!TextUtils.isEmpty(mIndicatorText)) {
-            canvas.drawText(mIndicatorText, mTextDrawX + mTextMaxWidth / 2.0f, mCenterTextDrawY, mIndicatorTextPaint);
+            canvas.drawText(mIndicatorText, mTextDrawX + mTextMaxWidth / 2.0f,
+                    mCenterTextDrawY, mIndicatorTextPaint);
         }
     }
 
@@ -512,7 +525,8 @@ public class WheelPicker<T> extends View {
                     //用户点击后滚动到所点击item的位置
                     if (event.getY() > mSelectedItemRect.bottom) {
                         //用户点击selectedItemRect下方
-                        int scrollItem = (int) (event.getY() - mSelectedItemRect.bottom) / mItemHeight + 1;
+                        int scrollItem =
+                                (int) (event.getY() - mSelectedItemRect.bottom) / mItemHeight + 1;
                         mScroller.startScroll(
                                 0,
                                 mOffsetY,
@@ -521,7 +535,8 @@ public class WheelPicker<T> extends View {
                         );
                     } else if (event.getY() < mSelectedItemRect.top) {
                         //用户点击selectedItemRect上方
-                        int scrollItem = (int) (mSelectedItemRect.top - event.getY()) / mItemHeight + 1;
+                        int scrollItem =
+                                (int) (mSelectedItemRect.top - event.getY()) / mItemHeight + 1;
                         mScroller.startScroll(
                                 0,
                                 mOffsetY,
@@ -831,7 +846,8 @@ public class WheelPicker<T> extends View {
             }
             //如果mItemHeight=0代表还没有绘制完成，无需滚动
             if (scroll && mItemHeight != 0) {
-                mScroller.startScroll(0, mOffsetY, 0, (mSelectedItemPosition - position) * mItemHeight);
+                mScroller.startScroll(0, mOffsetY, 0,
+                        (mSelectedItemPosition - position) * mItemHeight);
                 //保证滚动到对齐位置，因为不一定是从对齐位置开始滚动的
                 int finalY = -position * mItemHeight;
                 mScroller.setFinalY(finalY);

@@ -15,7 +15,8 @@ public class FlashlightUtil {
             mRunning = true;
             try {
                 // 获取相机管理器
-                CameraManager cameraManager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
+                CameraManager cameraManager =
+                        (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
                 // 获取摄像头
                 String[] cameraIds = cameraManager.getCameraIdList();
                 // 遍历摄像头，找有闪光灯的摄像头

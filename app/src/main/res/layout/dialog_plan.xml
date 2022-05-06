@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_dialog_rc_tl30_tr30"
@@ -10,44 +8,7 @@
     android:paddingTop="5dp"
     android:paddingBottom="20dp">
 
-    <RelativeLayout
-        android:id="@+id/plan_action_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/dialog_plan_cancel_iv"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:layout_alignParentStart="true"
-            android:background="@drawable/bg_btn_rc_8"
-            android:padding="8dp"
-            android:src="@drawable/ic_baseline_close_24"
-            app:tint="?attr/colorOnSurface"
-            tools:ignore="ContentDescription" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_alignTop="@+id/dialog_plan_cancel_iv"
-            android:layout_alignBottom="@+id/dialog_plan_cancel_iv"
-            android:layout_toStartOf="@id/dialog_plan_confirm_iv"
-            android:layout_toEndOf="@id/dialog_plan_cancel_iv"
-            android:gravity="center"
-            android:text="@string/plan_dialog_title"
-            android:textAppearance="@style/TextAppearance.Perfect.DialogTitle" />
-
-        <ImageView
-            android:id="@+id/dialog_plan_confirm_iv"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:layout_alignParentEnd="true"
-            android:background="@drawable/bg_btn_rc_8"
-            android:padding="8dp"
-            android:src="@drawable/ic_baseline_check_24"
-            app:tint="?attr/colorOnSurface"
-            tools:ignore="ContentDescription" />
-    </RelativeLayout>
+    <include layout="@layout/dialog_action_bar" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -72,7 +33,7 @@
                 android:textAppearance="@style/TextAppearance.Perfect.DialogContent" />
 
             <View
-                android:id="@+id/plan_content_target_divider"
+                android:id="@+id/dialog_plan_content_target_divider"
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_below="@id/dialog_plan_content_et"
@@ -80,22 +41,22 @@
 
 
             <TextView
-                android:id="@+id/plan_target_title_tv"
+                android:id="@+id/dialog_plan_target_title_tv"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_alignTop="@id/plan_target_stepper"
-                android:layout_alignBottom="@id/plan_target_stepper"
+                android:layout_alignTop="@id/dialog_plan_target_stepper"
+                android:layout_alignBottom="@id/dialog_plan_target_stepper"
                 android:layout_alignParentStart="true"
-                android:layout_toStartOf="@id/plan_target_stepper"
+                android:layout_toStartOf="@id/dialog_plan_target_stepper"
                 android:gravity="center_vertical"
                 android:text="@string/plan_target"
                 android:textAppearance="@style/TextAppearance.Perfect.DialogContent" />
 
             <LinearLayout
-                android:id="@+id/plan_target_stepper"
+                android:id="@+id/dialog_plan_target_stepper"
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
-                android:layout_below="@id/plan_content_target_divider"
+                android:layout_below="@id/dialog_plan_content_target_divider"
                 android:layout_alignParentEnd="true"
                 android:layout_marginVertical="10dp"
                 android:layout_marginEnd="10dp"

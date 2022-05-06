@@ -96,11 +96,15 @@ public class BedtimeAlarmService extends Service {
     public void onDestroy() {
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         if (audioManager.isVolumeFixed()) {
-            ToastUtil.showToast(this, R.string.bedtime_cannot_adjust_volume_toast, Toast.LENGTH_SHORT);
+            ToastUtil.showToast(this,
+                    R.string.bedtime_cannot_adjust_volume_toast,
+                    Toast.LENGTH_SHORT);
         }
         // 恢复原媒体音量
         if (!mUseEarphone)
-            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mVolumeToReset, AudioManager.FLAG_SHOW_UI);
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
+                    mVolumeToReset,
+                    AudioManager.FLAG_SHOW_UI);
         // 释放AudioFocus，让其他音乐继续播放
         if (audioFocusRequest != null) {
             audioManager.abandonAudioFocusRequest(audioFocusRequest);
@@ -281,13 +285,17 @@ public class BedtimeAlarmService extends Service {
         }
         if (audioManager.isVolumeFixed()) {
             // 无法调节设备音量，提醒用户
-            ToastUtil.showToast(this, R.string.bedtime_cannot_adjust_volume_toast, Toast.LENGTH_SHORT);
+            ToastUtil.showToast(this,
+                    R.string.bedtime_cannot_adjust_volume_toast,
+                    Toast.LENGTH_SHORT);
         } else if (!mUseEarphone) {
             // 记录当前的媒体音量大小，用于闹铃播放结束后恢复
             mVolumeToReset = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
             // 调节媒体音量至一半大小
             int volumeToSet = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC) / 2;
-            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volumeToSet, AudioManager.FLAG_SHOW_UI);
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
+                    volumeToSet,
+                    AudioManager.FLAG_SHOW_UI);
         }
         // 创建停止闹钟的intent，使用户在轻触通知后停止闹钟
         Intent stopNi = new Intent(this, BedtimeAlarmService.class);

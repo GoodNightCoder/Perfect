@@ -69,7 +69,8 @@ public class CircularProgressView extends View {
     }
 
     private void initAttrs(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CircularProgressView, defStyleAttr, defStyleRes);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CircularProgressView,
+                defStyleAttr, defStyleRes);
         try {
             mShowProgress = a.getBoolean(
                     R.styleable.CircularProgressView_showProgress, true);
@@ -161,7 +162,8 @@ public class CircularProgressView extends View {
             // 画背景圆弧
             canvas.drawArc(mArcRectF, mStartAngle, mSweepAngle, false, mBgArcPaint);
             // 画圆弧
-            canvas.drawArc(mArcRectF, mStartAngle, mSweepAngle * mProgress, false, mArcPaint);
+            canvas.drawArc(mArcRectF, mStartAngle, mSweepAngle * mProgress,
+                    false, mArcPaint);
         }
     }
 

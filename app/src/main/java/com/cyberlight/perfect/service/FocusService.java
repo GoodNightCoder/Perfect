@@ -92,7 +92,9 @@ public class FocusService extends Service {
                     npi,
                     false,
                     true);
-            NotificationUtil.showNotification(FocusService.this, FOCUS_NOTIFICATION_ID, notification);
+            NotificationUtil.showNotification(FocusService.this,
+                    FOCUS_NOTIFICATION_ID,
+                    notification);
             // 为保证秒数显示稳定、不会跳数，计算下次刷新的延迟，
             // 控制每次在一秒的中间刷新
             long delayMillis = 1000 + (500 - (curTimeMillis % 1000));
@@ -177,7 +179,8 @@ public class FocusService extends Service {
     private void loadSettings() {
         SettingManager settingManager = SharedPrefSettingManager.getInstance(this);
         mFocusDuration = settingManager.getFocusDuration();
-        mRelaxDuration = mFocusDuration < 1800000 ? 1800000 - mFocusDuration : 3600000 - mFocusDuration;
+        mRelaxDuration = mFocusDuration < 1800000 ?
+                1800000 - mFocusDuration : 3600000 - mFocusDuration;
         mVibration = settingManager.getVibration();
         mSound = settingManager.getSound();
         mFlashlight = settingManager.getFlashlight();
@@ -286,7 +289,9 @@ public class FocusService extends Service {
                 setReminder(mNextStart);
             } else if (action.equals(FOCUS_UPDATE_ACTION)) {
                 // 刷新设置与专注数据，重新设置专注任务
-                ToastUtil.showToast(context, R.string.focus_new_settings_applied_toast, Toast.LENGTH_SHORT);
+                ToastUtil.showToast(context,
+                        R.string.focus_new_settings_applied_toast,
+                        Toast.LENGTH_SHORT);
                 loadSettings();
                 initReminderData();
                 setReminder(mNextStart);
@@ -294,8 +299,13 @@ public class FocusService extends Service {
         }
 
         // 专注提醒
-        private void remind(Context context, boolean focusing, boolean sound, boolean vibration, boolean flashlight) {
-            final long[] timings = focusing ? FOCUS_VIBRATION_FLASHLIGHT_TIMINGS : RELAX_VIBRATION_FLASHLIGHT_TIMINGS;
+        private void remind(Context context,
+                            boolean focusing,
+                            boolean sound,
+                            boolean vibration,
+                            boolean flashlight) {
+            final long[] timings = focusing ?
+                    FOCUS_VIBRATION_FLASHLIGHT_TIMINGS : RELAX_VIBRATION_FLASHLIGHT_TIMINGS;
             final int resId = R.raw.focus_reminder_sound;
             if (sound) {
                 MediaPlayer mediaPlayer = MediaPlayer.create(context.getApplicationContext(), resId);

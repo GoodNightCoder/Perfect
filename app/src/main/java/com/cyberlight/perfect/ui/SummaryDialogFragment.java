@@ -12,6 +12,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,8 +38,8 @@ public class SummaryDialogFragment extends DialogFragment {
     private ImageView mThumbUpIv4;
     private ImageView mThumbUpIv5;
 
-    private LocalDate date;
-    private int rating;
+    private LocalDate mDate;
+    private int mRating;
 
     public SummaryDialogFragment() {
     }
@@ -67,51 +68,54 @@ public class SummaryDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // 设置对话框布局
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.dialog_summary, null);
+        @SuppressLint("InflateParams")
+        View view = inflater.inflate(R.layout.dialog_summary, null);
 
         Context context = getContext();
         if (savedInstanceState != null) {
-            rating = savedInstanceState.getInt(SUMMARY_RATING_KEY);
-            date = LocalDate.ofEpochDay(savedInstanceState.getLong(SUMMARY_DATE_KEY));
+            mRating = savedInstanceState.getInt(SUMMARY_RATING_KEY);
+            mDate = LocalDate.ofEpochDay(savedInstanceState.getLong(SUMMARY_DATE_KEY));
         } else {
-            rating = 0;
-            date = LocalDate.now();
+            mRating = 0;
+            mDate = LocalDate.now();
         }
-        //为关闭图片添加点击监听
-        ImageView mCancelIv = view.findViewById(R.id.summary_cancel_iv);
-        mCancelIv.setOnClickListener(v -> dismiss());
         //初始化5个评分图片
-        mThumbUpIv1 = view.findViewById(R.id.summary_thumb_up_iv1);
-        mThumbUpIv2 = view.findViewById(R.id.summary_thumb_up_iv2);
-        mThumbUpIv3 = view.findViewById(R.id.summary_thumb_up_iv3);
-        mThumbUpIv4 = view.findViewById(R.id.summary_thumb_up_iv4);
-        mThumbUpIv5 = view.findViewById(R.id.summary_thumb_up_iv5);
-        setRating(rating);
+        mThumbUpIv1 = view.findViewById(R.id.dialog_summary_thumb_up_iv1);
+        mThumbUpIv2 = view.findViewById(R.id.dialog_summary_thumb_up_iv2);
+        mThumbUpIv3 = view.findViewById(R.id.dialog_summary_thumb_up_iv3);
+        mThumbUpIv4 = view.findViewById(R.id.dialog_summary_thumb_up_iv4);
+        mThumbUpIv5 = view.findViewById(R.id.dialog_summary_thumb_up_iv5);
+        setRating(mRating);
         mThumbUpIv1.setOnClickListener(v -> setRating(1));
         mThumbUpIv2.setOnClickListener(v -> setRating(2));
         mThumbUpIv3.setOnClickListener(v -> setRating(3));
         mThumbUpIv4.setOnClickListener(v -> setRating(4));
         mThumbUpIv5.setOnClickListener(v -> setRating(5));
-        ImageView mConfirmIv = view.findViewById(R.id.summary_confirm_iv);
-        mConfirmIv.setOnClickListener(v -> {
-            EditText mReviewEt = view.findViewById(R.id.summary_review_et);
-            EditText mMemoEt = view.findViewById(R.id.summary_memo_et);
-            String review = mReviewEt.getText().toString();
-            String memo = mMemoEt.getText().toString();
+        // 设置按钮栏
+        TextView dialogTitleTv = view.findViewById(R.id.dialog_action_bar_title_tv);
+        dialogTitleTv.setText(R.string.summary_dialog_title);
+        ImageView cancelIv = view.findViewById(R.id.dialog_action_bar_cancel_iv);
+        cancelIv.setOnClickListener(v -> dismiss());
+        ImageView confirmIv = view.findViewById(R.id.dialog_action_bar_confirm_iv);
+        confirmIv.setOnClickListener(v -> {
+            EditText reviewEt = view.findViewById(R.id.dialog_summary_review_et);
+            EditText memoEt = view.findViewById(R.id.dialog_summary_memo_et);
+            String review = reviewEt.getText().toString();
+            String memo = memoEt.getText().toString();
             if (review.equals("")) {
                 ToastUtil.showToast(context,
                         R.string.summary_no_review_toast,
                         Toast.LENGTH_SHORT);
                 return;
             }
-            if (rating == 0) {
+            if (mRating == 0) {
                 ToastUtil.showToast(context,
                         R.string.summary_no_rating_toast,
                         Toast.LENGTH_SHORT);
                 return;
             }
-            if (DbUtil.addSummary(context, rating, review, memo,
-                    DateTimeFormatUtil.getNeatDate(date))) {
+            if (DbUtil.addSummary(context, mRating, review, memo,
+                    DateTimeFormatUtil.getNeatDate(mDate))) {
                 ToastUtil.showToast(context,
                         R.string.summary_success_toast,
                         Toast.LENGTH_SHORT);
@@ -138,13 +142,13 @@ public class SummaryDialogFragment extends DialogFragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         //保存对话框状态
-        outState.putInt(SUMMARY_RATING_KEY, rating);
-        outState.putLong(SUMMARY_DATE_KEY, date.toEpochDay());
+        outState.putInt(SUMMARY_RATING_KEY, mRating);
+        outState.putLong(SUMMARY_DATE_KEY, mDate.toEpochDay());
         super.onSaveInstanceState(outState);
     }
 
     private void setRating(int rating) {
-        this.rating = rating;
+        this.mRating = rating;
         Context context = requireContext();
         int purpleA50 = ContextCompat.getColor(context, R.color.purple_a50);
         int grayA50 = ContextCompat.getColor(context, R.color.gray_a50);

@@ -34,7 +34,10 @@ public class IntegerWheelPicker extends WheelPicker<Integer> {
         this(context, attrs, defStyleAttr, R.style.DefaultWheelPicker);
     }
 
-    public IntegerWheelPicker(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public IntegerWheelPicker(Context context,
+                              @Nullable AttributeSet attrs,
+                              int defStyleAttr,
+                              int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         //初始化
         initAttrs(context, attrs, defStyleAttr, defStyleRes);
@@ -54,8 +57,12 @@ public class IntegerWheelPicker extends WheelPicker<Integer> {
         });
     }
 
-    private void initAttrs(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.IntegerWheelPicker, defStyleAttr, defStyleRes);
+    private void initAttrs(Context context,
+                           @Nullable AttributeSet attrs,
+                           int defStyleAttr,
+                           int defStyleRes) {
+        TypedArray a = context.obtainStyledAttributes(attrs,
+                R.styleable.IntegerWheelPicker, defStyleAttr, defStyleRes);
         try {
             mMaxValue = a.getInt(R.styleable.IntegerWheelPicker_maxValue, 10);
             mMinValue = a.getInt(R.styleable.IntegerWheelPicker_minValue, -10);

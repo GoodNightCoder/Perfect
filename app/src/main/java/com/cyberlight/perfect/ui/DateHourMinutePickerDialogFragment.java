@@ -88,12 +88,13 @@ public class DateHourMinutePickerDialogFragment extends DialogFragment {
         }
         // 设置对话框布局
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.dialog_dhm_picker, null);
+        @SuppressLint("InflateParams")
+        View view = inflater.inflate(R.layout.dialog_dhm_picker, null);
         // 将初始日期赋给日期指示textView
         TextView mIndicatorTv =
                 view.findViewById(R.id.dialog_dhm_indicator_tv);
-        mIndicatorTv.setText(DateTimeFormatUtil
-                .getReadableDateAndDayOfWeek(context, mSelectedYear, mSelectedMonth, mSelectedDayOfMonth));
+        mIndicatorTv.setText(DateTimeFormatUtil.getReadableDateAndDayOfWeek(
+                context, mSelectedYear, mSelectedMonth, mSelectedDayOfMonth));
         // 获取三个选择器
         DateWheelPicker mDateWp = view.findViewById(R.id.dialog_dhm_date_wp);
         IntegerWheelPicker mHourWp = view.findViewById(R.id.dialog_dhm_hour_wp);
@@ -107,14 +108,14 @@ public class DateHourMinutePickerDialogFragment extends DialogFragment {
             mSelectedYear = year;
             mSelectedMonth = month;
             mSelectedDayOfMonth = dayOfMonth;
-            mIndicatorTv.setText(DateTimeFormatUtil
-                    .getReadableDateAndDayOfWeek(context, mSelectedYear, mSelectedMonth, mSelectedDayOfMonth));
+            mIndicatorTv.setText(DateTimeFormatUtil.getReadableDateAndDayOfWeek(
+                    context, mSelectedYear, mSelectedMonth, mSelectedDayOfMonth));
         });
         mHourWp.setOnValueSelectedListener(value -> mSelectedHour = value);
         mMinuteWp.setOnValueSelectedListener(value -> mSelectedMinute = value);
         // 设置对话框的取消、确认按钮
-        TextView mCancelTv = view.findViewById(R.id.dialog_negative_tv);
-        TextView mConfirmTv = view.findViewById(R.id.dialog_positive_tv);
+        TextView mCancelTv = view.findViewById(R.id.dialog_btn_bar_negative_tv);
+        TextView mConfirmTv = view.findViewById(R.id.dialog_btn_bar_positive_tv);
         mConfirmTv.setText(R.string.dialog_btn_confirm);
         mCancelTv.setText(R.string.dialog_btn_cancel);
         mCancelTv.setOnClickListener(v -> dismiss());

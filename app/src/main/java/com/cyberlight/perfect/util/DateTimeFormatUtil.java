@@ -154,7 +154,12 @@ public class DateTimeFormatUtil {
      * @param second     秒
      * @return 位数统一、样式唯一的格式化日期与时间
      */
-    public static String getNeatDateTime(int year, int month, int dayOfMonth, int hour, int minute, int second) {
+    public static String getNeatDateTime(int year,
+                                         int month,
+                                         int dayOfMonth,
+                                         int hour,
+                                         int minute,
+                                         int second) {
         LocalDateTime dateTime = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second);
         return getNeatDateTime(dateTime);
     }
@@ -186,7 +191,10 @@ public class DateTimeFormatUtil {
      * @param dayOfMonth 日
      * @return 易读的格式化日期
      */
-    public static String getReadableDateAndDayOfWeek(Context context, int year, int month, int dayOfMonth) {
+    public static String getReadableDateAndDayOfWeek(Context context,
+                                                     int year,
+                                                     int month,
+                                                     int dayOfMonth) {
         LocalDate date = LocalDate.of(year, month, dayOfMonth);
         return getReadableDateAndDayOfWeek(context, date);
     }
@@ -202,7 +210,10 @@ public class DateTimeFormatUtil {
      * @param dayOfMonth 日
      * @return 日期的月和日字符串
      */
-    public static String getReadableMonthAndDayOfMonth(Context context, int year, int month, int dayOfMonth) {
+    public static String getReadableMonthAndDayOfMonth(Context context,
+                                                       int year,
+                                                       int month,
+                                                       int dayOfMonth) {
         LocalDate date = LocalDate.of(year, month, dayOfMonth);
         return getReadableMonthAndDayOfMonth(context, date);
     }
@@ -219,7 +230,12 @@ public class DateTimeFormatUtil {
      * @param minute     分
      * @return 易读的日期时间
      */
-    public static String getReadableDateHourMinute(Context context, int year, int month, int dayOfMonth, int hour, int minute) {
+    public static String getReadableDateHourMinute(Context context,
+                                                   int year,
+                                                   int month,
+                                                   int dayOfMonth,
+                                                   int hour,
+                                                   int minute) {
         LocalDateTime dateTime =
                 LocalDateTime.of(year, month, dayOfMonth, hour, minute);
         return getReadableDateHourMinute(context, dateTime);
