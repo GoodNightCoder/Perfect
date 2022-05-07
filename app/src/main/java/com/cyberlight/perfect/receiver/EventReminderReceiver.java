@@ -124,7 +124,7 @@ public class EventReminderReceiver extends BroadcastReceiver {
      * @return 是否存在下次事件
      */
     private static boolean setNextReminder(Context context) {
-        List<Event> events = DbUtil.getDbEvents(context);
+        List<Event> events = DbUtil.getEvents(context);
         if (events.size() > 0) {
             long curTimeMillis = System.currentTimeMillis();
             SpecEvent next = events.get(0).getNextSpecEvent(curTimeMillis);

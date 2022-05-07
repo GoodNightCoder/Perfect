@@ -71,7 +71,7 @@ public class DbUtil {
      * @param context 用于创建DbHelper的context对象
      * @return 包含事件表中所有事件的List
      */
-    public static List<Event> getDbEvents(Context context) {
+    public static List<Event> getEvents(Context context) {
         DbHelper dbHelper = new DbHelper(context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         List<Event> events = new ArrayList<>();
@@ -133,8 +133,8 @@ public class DbUtil {
         Cursor cursor = db.query(DbContract.PlanRecordsTable.TABLE_NAME, null, selection
                 , selectionArgs, null, null, null);
         if (cursor.moveToFirst()) {
-            int completionCountCol =
-                    cursor.getColumnIndex(DbContract.PlanRecordsTable.COLUMN_NAME_COMPLETION_COUNT);
+            int completionCountCol = cursor.getColumnIndex(
+                    DbContract.PlanRecordsTable.COLUMN_NAME_COMPLETION_COUNT);
             if (completionCountCol >= 0) {
                 completionCount = cursor.getInt(completionCountCol);
             }
@@ -159,9 +159,7 @@ public class DbUtil {
         return count > 0;
     }
 
-    public static boolean addPlan(Context context,
-                                  String planContent,
-                                  int targetNum) {
+    public static boolean addPlan(Context context, String planContent, int targetNum) {
         DbHelper dbHelper = new DbHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         //添加Event到数据库

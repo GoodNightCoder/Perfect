@@ -3,7 +3,6 @@ package com.cyberlight.perfect.ui;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -28,6 +27,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.cyberlight.perfect.R;
 import com.cyberlight.perfect.adapter.FocusRecordRecyclerAdapter;
 import com.cyberlight.perfect.adapter.PlanRecyclerAdapter;
+import com.cyberlight.perfect.model.Event;
 import com.cyberlight.perfect.model.FocusRecord;
 import com.cyberlight.perfect.model.Plan;
 import com.cyberlight.perfect.model.SpecPlan;
@@ -36,6 +36,7 @@ import com.cyberlight.perfect.receiver.EventReminderReceiver;
 import com.cyberlight.perfect.service.BedtimeAlarmService;
 import com.cyberlight.perfect.util.DateTimeFormatUtil;
 import com.cyberlight.perfect.util.DbUtil;
+import com.cyberlight.perfect.util.OnDataAddedListener;
 import com.cyberlight.perfect.util.SettingManager;
 import com.cyberlight.perfect.util.SharedPrefSettingManager;
 import com.cyberlight.perfect.util.ToastUtil;
@@ -48,7 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressLint({"NotifyDataSetChanged", "UnspecifiedImmutableFlag"})
-public class MainActivity extends AppCompatActivity implements DialogInterface.OnDismissListener {
+public class MainActivity extends AppCompatActivity implements OnDataAddedListener {
     private static final String PICK_D_REQUEST_KEY = "pick_d_request_key";
 
     // 状态恢复用
@@ -65,6 +66,10 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     private int mCurScrollY;
     // 各页的日期
     private final LocalDate[] mPageDates = new LocalDate[PAGES_COUNT];
+    // 事件集
+    private List<Event> mEvents;
+    // 计划集
+    private List<Plan> mPlans;
 
     private TextView mDateTv;
     private ViewPager2 mPager;
@@ -192,6 +197,8 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     protected void onResume() {
         super.onResume();
         // 保证数据能及时更新，比如去SettingsActivity删除数据后
+        mEvents = DbUtil.getEvents(this);
+        mPlans = DbUtil.getPlans(this);
         mPagerAdapter.notifyDataSetChanged();
     }
 
@@ -234,10 +241,14 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         }
     }
 
-    // 添加事件、计划、总结对话框dismiss监听
     @Override
-    public void onDismiss(DialogInterface dialog) {
+    public void onDataAdded(String tag) {
         // 保证数据在添加事件、计划、总结对话框关闭后能及时更新
+        if (tag.equals(EventDialogFragment.TAG)) {
+            mEvents = DbUtil.getEvents(this);
+        } else if (tag.equals(PlanDialogFragment.TAG)) {
+            mPlans = DbUtil.getPlans(this);
+        }
         mPagerAdapter.notifyDataSetChanged();
     }
 
@@ -435,7 +446,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
             }
 
             private void refreshSchedule() {
-                mScheduleLayout.setEvents(DbUtil.getDbEvents(MainActivity.this));
+                mScheduleLayout.setEvents(mEvents);
                 mScheduleLayout.setDate(date);
                 mScheduleLayout.refresh();
             }
@@ -444,8 +455,8 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
                 focusRecords.clear();
                 long start = date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
                 long end = start + 86399999;
-                List<FocusRecord> frs = DbUtil.getFocusRecordsDuring(MainActivity.this,
-                        start, end);
+                List<FocusRecord> frs = DbUtil.getFocusRecordsDuring(
+                        MainActivity.this, start, end);
                 focusRecords.addAll(frs);
                 focusRecordRecyclerAdapter.notifyDataSetChanged();
             }
@@ -453,8 +464,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
             private void refreshPlans() {
                 String dateStr = DateTimeFormatUtil.getNeatDate(date);
                 specPlans.clear();
-                List<Plan> plans = DbUtil.getPlans(MainActivity.this);
-                for (Plan plan : plans) {
+                for (Plan plan : mPlans) {
                     int completionCount = DbUtil.getPlanRecordCompletionCountByDate(
                             MainActivity.this, dateStr, plan.planId);
                     if (completionCount > -1) {
@@ -468,8 +478,8 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
             }
 
             private void refreshSummary() {
-                Summary summary = DbUtil.getSummary(MainActivity.this,
-                        DateTimeFormatUtil.getNeatDate(date));
+                Summary summary = DbUtil.getSummary(
+                        MainActivity.this, DateTimeFormatUtil.getNeatDate(date));
                 if (summary != null) {
                     hasSummarized = true;
                     mSummaryContentLayout.setVisibility(View.VISIBLE);
@@ -509,7 +519,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
             super.onViewAttachedToWindow(holder);
             // 页面可见时才刷新数据，是为了在跨天事件完成状态改变时，相邻页该事件的完成状态也能及时改变
             holder.refreshData();
-            // scrollView绘制完后scrollTo到当前viewPager滚动到的位置
+            // scrollView绘制完后滚动到之前已滚到的位置
             holder.mSv.post(() -> {
                 holder.mSv.scrollTo(0, mCurScrollY);
                 mCurScrollY = holder.mSv.getScrollY();

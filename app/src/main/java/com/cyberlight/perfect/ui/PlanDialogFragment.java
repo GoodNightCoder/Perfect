@@ -3,7 +3,6 @@ package com.cyberlight.perfect.ui;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,6 +20,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.cyberlight.perfect.R;
 import com.cyberlight.perfect.util.DbUtil;
+import com.cyberlight.perfect.util.OnDataAddedListener;
 import com.cyberlight.perfect.util.ToastUtil;
 
 public class PlanDialogFragment extends DialogFragment {
@@ -36,23 +36,17 @@ public class PlanDialogFragment extends DialogFragment {
     public PlanDialogFragment() {
     }
 
-    private DialogInterface.OnDismissListener mOnDismissListener;
+    private OnDataAddedListener mOnDataAddedListener;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            mOnDismissListener = (DialogInterface.OnDismissListener) context;
+            mOnDataAddedListener = (OnDataAddedListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(requireActivity()
-                    + " must implement DialogInterface.OnDismissListener");
+                    + " must implement OnDataAddedListener");
         }
-    }
-
-    @Override
-    public void onDismiss(@NonNull DialogInterface dialog) {
-        mOnDismissListener.onDismiss(dialog);
-        super.onDismiss(dialog);
     }
 
     @NonNull
@@ -120,6 +114,8 @@ public class PlanDialogFragment extends DialogFragment {
                 ToastUtil.showToast(context,
                         R.string.plan_success_toast,
                         Toast.LENGTH_SHORT);
+                if (mOnDataAddedListener != null)
+                    mOnDataAddedListener.onDataAdded(TAG);
             } else {
                 ToastUtil.showToast(context,
                         R.string.plan_fail_toast,

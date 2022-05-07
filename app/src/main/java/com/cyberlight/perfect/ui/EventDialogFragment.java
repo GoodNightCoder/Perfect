@@ -3,7 +3,6 @@ package com.cyberlight.perfect.ui;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -24,6 +23,7 @@ import com.cyberlight.perfect.model.Event;
 import com.cyberlight.perfect.receiver.EventReminderReceiver;
 import com.cyberlight.perfect.util.DateTimeFormatUtil;
 import com.cyberlight.perfect.util.DbUtil;
+import com.cyberlight.perfect.util.OnDataAddedListener;
 import com.cyberlight.perfect.util.ToastUtil;
 import com.cyberlight.perfect.widget.UnitWheelPicker;
 
@@ -61,23 +61,17 @@ public class EventDialogFragment extends DialogFragment {
     public EventDialogFragment() {
     }
 
-    private DialogInterface.OnDismissListener mOnDismissListener;
+    private OnDataAddedListener mOnDataAddedListener;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            mOnDismissListener = (DialogInterface.OnDismissListener) context;
+            mOnDataAddedListener = (OnDataAddedListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(requireActivity()
-                    + " must implement DialogInterface.OnDismissListener");
+                    + " must implement OnDataAddedListener");
         }
-    }
-
-    @Override
-    public void onDismiss(@NonNull DialogInterface dialog) {
-        mOnDismissListener.onDismiss(dialog);
-        super.onDismiss(dialog);
     }
 
     @NonNull
@@ -196,7 +190,7 @@ public class EventDialogFragment extends DialogFragment {
             // 不能与已有事件冲突
             Event mEvent = new Event(-1, "",
                     mStart, mDuration, mInterval);// 虚构event对象用于判断
-            List<Event> events = DbUtil.getDbEvents(context);
+            List<Event> events = DbUtil.getEvents(context);
             for (int i = 0; i < events.size(); i++) {
                 Event ev = events.get(i);
                 if (ev.isTimeConflictWith(mEvent)) {
@@ -213,6 +207,8 @@ public class EventDialogFragment extends DialogFragment {
                 ToastUtil.showToast(context,
                         R.string.event_success_toast,
                         Toast.LENGTH_SHORT);
+                if (mOnDataAddedListener != null)
+                    mOnDataAddedListener.onDataAdded(TAG);
             } else {
                 ToastUtil.showToast(context,
                         R.string.event_fail_toast,
