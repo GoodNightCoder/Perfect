@@ -32,10 +32,9 @@ import java.time.ZoneId;
 import java.util.List;
 
 public class EventDialogFragment extends DialogFragment {
-
     public static final String TAG = "EventDialogFragment";
 
-    // 用于savedInstanceState状态恢复
+    // 用于状态恢复
     private static final String START_YEAR_KEY = "start_year_key";
     private static final String START_MONTH_KEY = "start_month_key";
     private static final String START_DAY_OF_MONTH_KEY = "start_day_of_month_key";
@@ -44,6 +43,8 @@ public class EventDialogFragment extends DialogFragment {
     private static final String DURATION_KEY = "duration_key";
     private static final String INTERVAL_UNIT_KEY = "interval_unit_key";
     private static final String INTERVAL_VALUE_KEY = "interval_value_key";
+
+    // 用于监听对话框返回结果
     private static final String PICK_DHM_REQUEST_KEY = "pick_dhm_request_key";
     private static final String PICK_HM_REQUEST_KEY = "pick_hm_request_key";
     private static final String PICK_TU_REQUEST_KEY = "pick_tu_request_key";
@@ -61,6 +62,7 @@ public class EventDialogFragment extends DialogFragment {
     public EventDialogFragment() {
     }
 
+    // 事件添加成功监听器，通知主页更新事件集
     private OnDataAddedListener mOnDataAddedListener;
 
     @Override
@@ -82,17 +84,16 @@ public class EventDialogFragment extends DialogFragment {
         @SuppressLint("InflateParams")
         View view = inflater.inflate(R.layout.dialog_event, null);
         Context context = requireContext();
-        // 获取fragmentManager准备用于对话框操作
         FragmentManager fragmentManager = getChildFragmentManager();
         // 初始化数据
         if (savedInstanceState != null) {
-            int mStartYear = savedInstanceState.getInt(START_YEAR_KEY);
-            int mStartMonth = savedInstanceState.getInt(START_MONTH_KEY);
-            int mStartDayOfMonth = savedInstanceState.getInt(START_DAY_OF_MONTH_KEY);
-            int mStartHour = savedInstanceState.getInt(START_HOUR_KEY);
-            int mStartMinute = savedInstanceState.getInt(START_MINUTE_KEY);
-            mStartDateTime = LocalDateTime.of(mStartYear, mStartMonth, mStartDayOfMonth,
-                    mStartHour, mStartMinute);
+            int startYear = savedInstanceState.getInt(START_YEAR_KEY);
+            int startMonth = savedInstanceState.getInt(START_MONTH_KEY);
+            int startDayOfMonth = savedInstanceState.getInt(START_DAY_OF_MONTH_KEY);
+            int startHour = savedInstanceState.getInt(START_HOUR_KEY);
+            int startMinute = savedInstanceState.getInt(START_MINUTE_KEY);
+            mStartDateTime = LocalDateTime.of(
+                    startYear, startMonth, startDayOfMonth, startHour, startMinute);
             mDuration = savedInstanceState.getLong(DURATION_KEY);
             mIntervalUnit = savedInstanceState.getInt(INTERVAL_UNIT_KEY);
             mIntervalValue = savedInstanceState.getInt(INTERVAL_VALUE_KEY);
@@ -103,12 +104,9 @@ public class EventDialogFragment extends DialogFragment {
             mIntervalValue = 1;
             mIntervalUnit = UnitWheelPicker.UNIT_DAY;
         }
-        // 获取title输入框
         mTitleContentEt = view.findViewById(R.id.dialog_event_title_content_et);
-        // 获取并设置start输入框
         mStartContentTv = view.findViewById(R.id.dialog_event_start_content_tv);
         mStartContentTv.setText(DateTimeFormatUtil.getReadableDateHourMinute(context, mStartDateTime));
-        // Material Design输入框设置点击监听不明原因无效，只能设置触摸监听
         mStartContentTv.setOnClickListener(v -> {
             int initYear = mStartDateTime.getYear();
             int initMonth = mStartDateTime.getMonthValue();
@@ -124,7 +122,6 @@ public class EventDialogFragment extends DialogFragment {
                         DateHourMinutePickerDialogFragment.TAG);
             }
         });
-        // 获取并设置duration输入框
         mDurationContentTv = view.findViewById(R.id.dialog_event_duration_content_tv);
         mDurationContentTv.setText(getDurationStr());
         mDurationContentTv.setOnClickListener(v -> {
@@ -139,14 +136,13 @@ public class EventDialogFragment extends DialogFragment {
                         HourMinutePickerDialogFragment.TAG);
             }
         });
-        // 获取并设置interval输入框
         mRepeatContentTv = view.findViewById(R.id.dialog_event_repeat_content_tv);
         mRepeatContentTv.setText(getIntervalStr());
         mRepeatContentTv.setOnClickListener(v -> {
             if (fragmentManager.findFragmentByTag(TimeOfUnitPickerDialogFragment.TAG) == null) {
                 DialogFragment timeOfUnitPickerDialogFragment =
-                        TimeOfUnitPickerDialogFragment.newInstance(PICK_TU_REQUEST_KEY,
-                                mIntervalValue, mIntervalUnit);
+                        TimeOfUnitPickerDialogFragment.newInstance(
+                                PICK_TU_REQUEST_KEY, mIntervalValue, mIntervalUnit);
                 timeOfUnitPickerDialogFragment.show(fragmentManager,
                         TimeOfUnitPickerDialogFragment.TAG);
             }
@@ -154,20 +150,20 @@ public class EventDialogFragment extends DialogFragment {
         // 设置按钮栏
         TextView dialogTitleTv = view.findViewById(R.id.dialog_action_bar_title_tv);
         dialogTitleTv.setText(R.string.event_dialog_title);
-        ImageView mConfirmIv = view.findViewById(R.id.dialog_action_bar_confirm_iv);
-        mConfirmIv.setOnClickListener(v -> {
-            String mTitle = mTitleContentEt != null ? mTitleContentEt.getText().toString() : "";
-            long mStart = mStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-            long mInterval = getInterval();
+        ImageView confirmIv = view.findViewById(R.id.dialog_action_bar_confirm_iv);
+        confirmIv.setOnClickListener(v -> {
+            String title = mTitleContentEt != null ? mTitleContentEt.getText().toString() : "";
+            long start = mStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            long interval = getInterval();
             // title不能为空
-            if (mTitle.equals("")) {
+            if (title.equals("")) {
                 ToastUtil.showToast(context,
                         R.string.event_incomplete_toast,
                         Toast.LENGTH_SHORT);
                 return;
             }
             // start不允许小于0
-            if (mStart < 0) {
+            if (start < 0) {
                 ToastUtil.showToast(context,
                         R.string.event_start_time_invalid_toast,
                         Toast.LENGTH_SHORT);
@@ -181,19 +177,18 @@ public class EventDialogFragment extends DialogFragment {
                 return;
             }
             // interval必须大于等于duration
-            if (mInterval < mDuration) {
+            if (interval < mDuration) {
                 ToastUtil.showToast(context,
                         R.string.event_interval_less_than_duration_toast,
                         Toast.LENGTH_SHORT);
                 return;
             }
             // 不能与已有事件冲突
-            Event mEvent = new Event(-1, "",
-                    mStart, mDuration, mInterval);// 虚构event对象用于判断
+            Event event = new Event(-1, "", start, mDuration, interval);
             List<Event> events = DbUtil.getEvents(context);
             for (int i = 0; i < events.size(); i++) {
                 Event ev = events.get(i);
-                if (ev.isTimeConflictWith(mEvent)) {
+                if (ev.isTimeConflictWith(event)) {
                     ToastUtil.showToast(context,
                             R.string.event_time_conflict_toast,
                             Toast.LENGTH_SHORT);
@@ -201,7 +196,7 @@ public class EventDialogFragment extends DialogFragment {
                 }
             }
             // 添加事件，显示是否成功的消息，退出对话框
-            if (DbUtil.addEvent(context, mTitle, mStart, mDuration, mInterval)) {
+            if (DbUtil.addEvent(context, title, start, mDuration, interval)) {
                 // 更新事件提醒任务
                 EventReminderReceiver.activateReminder(context, true);
                 ToastUtil.showToast(context,
@@ -216,8 +211,8 @@ public class EventDialogFragment extends DialogFragment {
             }
             dismiss();
         });
-        ImageView mCancelIv = view.findViewById(R.id.dialog_action_bar_cancel_iv);
-        mCancelIv.setOnClickListener(v -> dismiss());
+        ImageView cancelIv = view.findViewById(R.id.dialog_action_bar_cancel_iv);
+        cancelIv.setOnClickListener(v -> dismiss());
         // 设置FragmentResultListener获取选择结果
         fragmentManager.setFragmentResultListener(PICK_DHM_REQUEST_KEY, this,
                 (requestKey, result) -> {
@@ -236,15 +231,15 @@ public class EventDialogFragment extends DialogFragment {
                             context, mStartDateTime));
                 }
         );
-        fragmentManager.setFragmentResultListener(PICK_HM_REQUEST_KEY,
-                this, (requestKey, result) -> {
+        fragmentManager.setFragmentResultListener(
+                PICK_HM_REQUEST_KEY, this, (requestKey, result) -> {
                     int hour = result.getInt(HourMinutePickerDialogFragment.HM_HOUR_KEY);
                     int minute = result.getInt(HourMinutePickerDialogFragment.HM_MINUTE_KEY);
                     mDuration = (hour * 60L + minute) * 60000;
                     mDurationContentTv.setText(getDurationStr());
                 });
-        fragmentManager.setFragmentResultListener(PICK_TU_REQUEST_KEY,
-                this, (requestKey, result) -> {
+        fragmentManager.setFragmentResultListener(
+                PICK_TU_REQUEST_KEY, this, (requestKey, result) -> {
                     mIntervalValue = result.getInt(TimeOfUnitPickerDialogFragment.TU_VALUE_KEY);
                     mIntervalUnit = result.getInt(TimeOfUnitPickerDialogFragment.TU_UNIT_KEY);
                     mRepeatContentTv.setText(getIntervalStr());
@@ -264,7 +259,6 @@ public class EventDialogFragment extends DialogFragment {
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        //保存对话框状态
         outState.putInt(START_YEAR_KEY, mStartDateTime.getYear());
         outState.putInt(START_MONTH_KEY, mStartDateTime.getMonthValue());
         outState.putInt(START_DAY_OF_MONTH_KEY, mStartDateTime.getDayOfMonth());

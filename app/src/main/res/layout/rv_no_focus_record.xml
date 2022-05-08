@@ -12,7 +12,6 @@
         android:layout_marginBottom="20dp"
         android:gravity="center"
         android:text="@string/main_no_focus_record"
-        android:textAppearance="@style/TextAppearance.Perfect.HomepageBody"/>
-
+        android:textAppearance="@style/TextAppearance.Perfect.HomepageBody" />
 
 </LinearLayout>

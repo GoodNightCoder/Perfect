@@ -29,10 +29,11 @@ import java.time.ZoneId;
 import java.util.List;
 
 public class ScheduleLayout extends ViewGroup {
-    private static final int DEFAULT_WIDTH = 1000;// 整个layout的默认宽度
-    private static final int DEFAULT_TABLE_HEIGHT = 24 * 60 * 2;// 第一条线到最后一条线之间的像素
+    // 整个layout的默认宽度
+    private static final int DEFAULT_WIDTH = 1000;
+    // 第一条线到最后一条线之间的像素，用于决定默认高度
+    private static final int DEFAULT_TABLE_HEIGHT = 24 * 60 * 2;
 
-    // 定义属性
     private boolean mAntiAlias;
     private int mTableColor;
     private int mCurTimeLineColor;
@@ -40,12 +41,10 @@ public class ScheduleLayout extends ViewGroup {
     private int mTimeLineWidth;
     private int mTimeTextSize;
 
-    // Paint
     private final Paint mTimeLinePaint;
     private final Paint mTimeTextPaint;
     private final Paint mCurTimeLinePaint;
 
-    // 绘制和布局数据
     private final Rect mDrawRect;
     private final float mTimeTextWidth;
     private float mFirstTimeTextY;
@@ -55,7 +54,7 @@ public class ScheduleLayout extends ViewGroup {
 
     private final Context mContext;
     private final int mTouchSlop;// 用于事件按钮手势判断
-    private boolean isToday = false;// 日期是否是今天
+    private boolean mIsToday = false;// 日期是否是今天
     private LocalDate mDate;// 当前日期，由Activity通过setDate()赋值
     private List<Event> mEvents;// 当前layout所使用的事件列表，通过setEvents()修改
     private final Handler mHandler = new Handler();
@@ -110,8 +109,9 @@ public class ScheduleLayout extends ViewGroup {
     public void refresh() {
         if (mDate != null && mEvents != null) {
             LocalDate today = LocalDate.now();
-            isToday = today.equals(mDate);
-            if (isToday) {//启动定时刷新curTimeLine任务
+            mIsToday = today.equals(mDate);
+            if (mIsToday) {
+                // 启动定时刷新curTimeLine任务
                 mHandler.post(mCurTimeLineRunnable);
             } else {
                 mHandler.removeCallbacks(mCurTimeLineRunnable);
@@ -129,29 +129,29 @@ public class ScheduleLayout extends ViewGroup {
                     Runnable r = () -> {
                         // 切换事件的完成状态
                         if (DbUtil.specEventIsFinished(mContext, specEvent)) {
-                            if (DbUtil.unfinishSpecEvent(mContext, specEvent))
+                            if (DbUtil.deleteEventRecord(mContext, specEvent))
                                 specEventButton.toggleFinishState();
                         } else {
-                            if (DbUtil.finishSpecEvent(mContext, specEvent))
+                            if (DbUtil.addEventRecord(mContext, specEvent))
                                 specEventButton.toggleFinishState();
                         }
                     };
                     specEventButton.setOnTouchListener(new OnTouchListener() {
-                        int mDownX;
-                        int mDownY;
+                        int downX;
+                        int downY;
 
                         @Override
                         public boolean onTouch(View v, MotionEvent event) {
                             switch (event.getAction()) {
                                 case MotionEvent.ACTION_DOWN:
                                     mHandler.removeCallbacks(r);
-                                    mDownX = (int) event.getX();
-                                    mDownY = (int) event.getY();
+                                    downX = (int) event.getX();
+                                    downY = (int) event.getY();
                                     mHandler.postDelayed(r, 800);
                                     break;
                                 case MotionEvent.ACTION_MOVE:
-                                    if (Math.abs(mDownX - event.getX()) > mTouchSlop
-                                            || Math.abs(mDownY - event.getY()) > mTouchSlop) {
+                                    if (Math.abs(downX - event.getX()) > mTouchSlop
+                                            || Math.abs(downY - event.getY()) > mTouchSlop) {
                                         // 移动过远则不是长按
                                         mHandler.removeCallbacks(r);
                                     }
@@ -296,12 +296,11 @@ public class ScheduleLayout extends ViewGroup {
                     mTimeLinePaint);
         }
         if (mDate != null) {
-            if (isToday) {// 如果日期与当前日期一致，就画当前时间线
+            if (mIsToday) {// 如果日期与当前日期一致，就画当前时间线
                 LocalTime curTime = LocalTime.now();
                 int curHour = curTime.getHour();
                 int curMinute = curTime.getMinute();
-                float curTimeLineY = mFirstTimeLineY +
-                        (curHour * 60 + curMinute) * mTableHeight / 1440f;
+                float curTimeLineY = mFirstTimeLineY + (curHour * 60 + curMinute) * mTableHeight / 1440f;
                 // 绘制当前时间线
                 canvas.drawLine(mTimeLineStartX,
                         curTimeLineY,

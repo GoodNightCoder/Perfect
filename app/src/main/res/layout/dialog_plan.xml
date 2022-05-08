@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_dialog_rc_tl30_tr30"
@@ -30,7 +31,8 @@
                 android:background="@null"
                 android:hint="@string/plan_content_hint"
                 android:inputType="text"
-                android:textAppearance="@style/TextAppearance.Perfect.DialogContent" />
+                android:textAppearance="@style/TextAppearance.Perfect.DialogContent"
+                tools:ignore="Autofill" />
 
             <View
                 android:id="@+id/dialog_plan_content_target_divider"
@@ -38,7 +40,6 @@
                 android:layout_height="1px"
                 android:layout_below="@id/dialog_plan_content_et"
                 android:background="@color/gray" />
-
 
             <TextView
                 android:id="@+id/dialog_plan_target_title_tv"
@@ -69,7 +70,8 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/bg_btn_rc_tl8_bl8"
                     android:padding="4dp"
-                    android:src="@drawable/ic_baseline_remove_24" />
+                    android:src="@drawable/ic_baseline_remove_24"
+                    tools:ignore="ContentDescription" />
 
                 <View
                     android:layout_width="1dp"
@@ -96,12 +98,11 @@
                     android:layout_gravity="end"
                     android:background="@drawable/bg_btn_rc_tr8_br8"
                     android:padding="4dp"
-                    android:src="@drawable/ic_baseline_add_22" />
+                    android:src="@drawable/ic_baseline_add_22"
+                    tools:ignore="ContentDescription" />
             </LinearLayout>
-
 
         </RelativeLayout>
     </ScrollView>
-
 
 </LinearLayout>

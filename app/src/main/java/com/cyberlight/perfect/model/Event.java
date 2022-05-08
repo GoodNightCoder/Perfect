@@ -119,8 +119,8 @@ public class Event {
         }
         long earlyStartNearest = early.start + intervalGCD * translationTimes;
         // 判断两事件距离最近时是否有时间冲突
-        return !(earlyStartNearest + early.duration - 1 < later.start ||
-                later.start + later.duration - 1 < earlyStartNearest);
+        return !(earlyStartNearest + early.duration - 1 < later.start
+                || later.start + later.duration - 1 < earlyStartNearest);
     }
 
     /**

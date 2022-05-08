@@ -13,7 +13,6 @@
         android:layout_marginBottom="10dp"
         android:orientation="horizontal">
 
-
         <com.cyberlight.perfect.widget.IntegerWheelPicker
             android:id="@+id/dialog_tu_value_wp"
             android:layout_width="0dp"
@@ -21,7 +20,7 @@
             android:layout_weight="1"
             app:digitsEnable="false"
             app:maxValue="100"
-            app:minValue="1"/>
+            app:minValue="1" />
 
         <com.cyberlight.perfect.widget.UnitWheelPicker
             android:id="@+id/dialog_tu_unit_wp"

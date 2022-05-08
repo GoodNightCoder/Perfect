@@ -1,11 +1,29 @@
 <resources>
     <string name="app_name">Perfect</string>
 
-    <!--  Dialog button text  -->
-    <string name="dialog_btn_confirm">Confirm</string>
-    <string name="dialog_btn_cancel">Cancel</string>
-    <string name="dialog_btn_yes">Yes</string>
-    <string name="dialog_btn_no">No</string>
+    <!--  MainActivity  -->
+    <string name="main_event_header">Events</string>
+    <string name="main_focus_header">Focus</string>
+    <string name="main_no_focus_record">No record</string>
+    <string name="main_focus_duration_indicator">Focus duration</string>
+    <string name="main_completion_time_indicator">Completion time</string>
+    <string name="main_focus_duration">%1$dmin</string>
+    <string name="main_plans_header">Plans</string>
+    <string name="main_no_plan">No plan</string>
+    <string name="main_summary_header">Summary</string>
+    <string name="main_rating_title">Rating</string>
+    <string name="main_review_title">Review</string>
+    <string name="main_memo_title">Memo</string>
+    <string name="main_no_summary">No summary</string>
+    <string name="main_have_sum_toast">You\'ve already summarized this day</string>
+    <string name="main_sum_not_today_toast">The day you summarize is not today</string>
+
+    <!--  FocusActivity  -->
+    <string name="focus_exit_toast">Exit focus mode</string>
+    <string name="focus_focusing_state">Focusing</string>
+    <string name="focus_relaxing_state">Relaxing</string>
+    <string name="focus_exit_btn_text">Exit</string>
+    <string name="focus_new_settings_applied_toast">New settings applied to focus task</string>
 
     <!-- SettingsActivity -->
     <string name="settings_activity_title">Settings</string>
@@ -36,23 +54,6 @@
     <string name="settings_wake_up_title">Wake Up</string>
     <string name="settings_fall_asleep_title">Fall Asleep</string>
 
-    <!--  MainActivity  -->
-    <string name="main_event_header">Events</string>
-    <string name="main_focus_header">Focus</string>
-    <string name="main_no_focus_record">No record</string>
-    <string name="main_focus_duration_indicator">Focus duration</string>
-    <string name="main_completion_time_indicator">Completion time</string>
-    <string name="main_focus_duration">%1$dmin</string>
-    <string name="main_plans_header">Plans</string>
-    <string name="main_no_plan">No plan</string>
-    <string name="main_summary_header">Summary</string>
-    <string name="main_rating_title">Rating</string>
-    <string name="main_review_title">Review</string>
-    <string name="main_memo_title">Memo</string>
-    <string name="main_no_summary">No summary</string>
-    <string name="main_have_sum_toast">You\'ve already summarized this day</string>
-    <string name="main_sum_not_today_toast">The day you summarize is not today</string>
-
     <!--  EventDialogFragment  -->
     <string name="event_dialog_title">New Event</string>
     <string name="event_time_conflict_toast">Time conflict</string>
@@ -76,6 +77,14 @@
         <item quantity="other">Every %d weeks</item>
     </plurals>
 
+    <!--  PlanDialogFragment  -->
+    <string name="plan_dialog_title">New Plan</string>
+    <string name="plan_incomplete_toast">Incomplete info</string>
+    <string name="plan_content_hint">Content</string>
+    <string name="plan_target">Target</string>
+    <string name="plan_success_toast">Add plan succeeded</string>
+    <string name="plan_fail_toast">Add plan failed</string>
+
     <!--  SummaryDialogFragment  -->
     <string name="summary_dialog_title">Summary</string>
     <string name="summary_memo_hint">Tomorrow\'s memo</string>
@@ -86,22 +95,7 @@
     <string name="summary_no_review_toast">You haven\'t written review text yet</string>
     <string name="summary_no_rating_toast">You haven\'t rated yet</string>
 
-    <!--  PlanDialogFragment  -->
-    <string name="plan_dialog_title">New Plan</string>
-    <string name="plan_incomplete_toast">Incomplete info</string>
-    <string name="plan_content_hint">Content</string>
-    <string name="plan_target">Target</string>
-    <string name="plan_success_toast">Add plan succeeded</string>
-    <string name="plan_fail_toast">Add plan failed</string>
-
-    <!--  FocusActivity  -->
-    <string name="focus_exit_toast">Exit focus mode</string>
-    <string name="focus_focusing_state">Focusing</string>
-    <string name="focus_relaxing_state">Relaxing</string>
-    <string name="focus_exit_btn_text">Exit</string>
-    <string name="focus_new_settings_applied_toast">New settings applied to focus task</string>
-
-    <!--  HourMinuteDialogFragment  -->
+    <!--  HourMinutePickerDialogFragment  -->
     <string name="hm_picker_minute_indicator">m</string>
     <string name="hm_picker_hour_indicator">h</string>
 
@@ -132,6 +126,12 @@
     <string name="dtf_readable_date_and_day_of_week">E, MMM d, yyyy</string>
     <string name="dtf_readable_month_and_day_of_month">MMM d</string>
     <string name="dtf_readable_date_hour_minute">MMM d, yyyy HH:mm</string>
+
+    <!--  Dialog button text  -->
+    <string name="dialog_btn_confirm">Confirm</string>
+    <string name="dialog_btn_cancel">Cancel</string>
+    <string name="dialog_btn_yes">Yes</string>
+    <string name="dialog_btn_no">No</string>
 
     <!--  UnitWheelPicker  -->
     <plurals name="unit_day">

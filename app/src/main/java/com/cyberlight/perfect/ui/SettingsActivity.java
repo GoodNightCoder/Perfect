@@ -32,6 +32,7 @@ import com.cyberlight.perfect.util.ToastUtil;
 
 @SuppressLint("BatteryLife")
 public class SettingsActivity extends AppCompatActivity {
+    // 用于监听对话框结果
     private static final String RESET_ALL_SETTINGS_REQUEST_KEY = "reset_all_settings_request_key";
     private static final String PICK_WAKE_UP_REQUEST_KEY = "pick_wake_up_request_key";
     private static final String PICK_FALL_ASLEEP_REQUEST_KEY = "pick_fall_asleep_request_key";
@@ -46,19 +47,19 @@ public class SettingsActivity extends AppCompatActivity {
                     .replace(R.id.settings, new SettingsFragment())
                     .commit();
         }
-        //对自定义返回键设置监听
-        ImageView mBackIv = findViewById(R.id.settings_back_iv);
-        mBackIv.setOnClickListener(v -> finish());
+        // 对自定义返回键设置监听
+        ImageView backIv = findViewById(R.id.settings_back_iv);
+        backIv.setOnClickListener(v -> finish());
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat
             implements SharedPreferences.OnSharedPreferenceChangeListener {
-        private Context mContext;
-        private final Handler mHandler = new Handler();
-        private final Runnable mApplyRunnable = new Runnable() {
+        private Context context;
+        private final Handler handler = new Handler();
+        private final Runnable applyRunnable = new Runnable() {
             @Override
             public void run() {
-                FocusService.notifySettingsChanged(mContext);
+                FocusService.notifySettingsChanged(context);
             }
         };
 
@@ -81,10 +82,7 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
-            // 获取并检查context
-            mContext = getContext();
-            if (mContext == null)
-                return;
+            context = requireContext();
             // 获取各个Preference
             ListPreference focusDurationPref = findPreference(
                     SettingConstants.KEY_FOCUS_DURATION);
@@ -106,7 +104,7 @@ public class SettingsActivity extends AppCompatActivity {
                     SettingConstants.KEY_FALL_ASLEEP);
             Preference clearDataPref = findPreference(
                     SettingConstants.KEY_CLEAR_DATA);
-            Preference resetPref = findPreference(
+            Preference resetAllSettingsPref = findPreference(
                     SettingConstants.KEY_RESET_ALL_SETTINGS);
             Preference ignoreBatteryOptimizationPref = findPreference(
                     SettingConstants.KEY_IGNORE_BATTERY_OPTIMIZATION);
@@ -116,10 +114,10 @@ public class SettingsActivity extends AppCompatActivity {
             if (focusDurationPref == null || soundPref == null || vibrationPref == null ||
                     flashlightPref == null || strictTimePref == null || keepScreenOnPref == null ||
                     manageBedtimePref == null || wakeUpPref == null || fallAsleepPref == null ||
-                    clearDataPref == null || resetPref == null ||
+                    clearDataPref == null || resetAllSettingsPref == null ||
                     ignoreBatteryOptimizationPref == null || manageStartupAppsPref == null)
                 return;
-            SettingManager settingManager = SharedPrefSettingManager.getInstance(mContext);
+            SettingManager settingManager = SharedPrefSettingManager.getInstance(context);
             // 初始化wakeUpPref和fallAsleepPref的Summary
             long curWakeUp = settingManager.getWakeUp();
             wakeUpPref.setSummary(DateTimeFormatUtil.getNeatHourMinute(curWakeUp));
@@ -154,7 +152,7 @@ public class SettingsActivity extends AppCompatActivity {
                 }
                 return true;
             });
-            resetPref.setOnPreferenceClickListener(preference -> {
+            resetAllSettingsPref.setOnPreferenceClickListener(preference -> {
                 if (fragmentManager.findFragmentByTag(ConfirmDialogFragment.TAG) == null) {
                     DialogFragment dialogFragment = ConfirmDialogFragment.newInstance(
                             RESET_ALL_SETTINGS_REQUEST_KEY,
@@ -168,14 +166,14 @@ public class SettingsActivity extends AppCompatActivity {
                 return true;
             });
             ignoreBatteryOptimizationPref.setOnPreferenceClickListener(preference -> {
-                PowerManager powerManager = (PowerManager) mContext.getSystemService(POWER_SERVICE);
-                if (!powerManager.isIgnoringBatteryOptimizations(mContext.getPackageName())) {
+                PowerManager powerManager = (PowerManager) context.getSystemService(POWER_SERVICE);
+                if (!powerManager.isIgnoringBatteryOptimizations(context.getPackageName())) {
                     Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-                    intent.setData(Uri.parse("package:" + mContext.getPackageName()));
+                    intent.setData(Uri.parse("package:" + context.getPackageName()));
                     try {
                         startActivity(intent);
                     } catch (ActivityNotFoundException e) {
-                        ToastUtil.showToast(mContext,
+                        ToastUtil.showToast(context,
                                 R.string.settings_no_matching_activity_toast,
                                 Toast.LENGTH_SHORT);
                     }
@@ -184,16 +182,17 @@ public class SettingsActivity extends AppCompatActivity {
             });
             manageStartupAppsPref.setOnPreferenceClickListener(preference -> {
                 Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                intent.setData(Uri.parse("package:" + mContext.getPackageName()));
+                intent.setData(Uri.parse("package:" + context.getPackageName()));
                 try {
                     startActivity(intent);
                 } catch (ActivityNotFoundException e) {
-                    ToastUtil.showToast(mContext,
+                    ToastUtil.showToast(context,
                             R.string.settings_no_matching_activity_toast,
                             Toast.LENGTH_SHORT);
                 }
                 return true;
             });
+            // 监听各对话框的返回结果
             fragmentManager.setFragmentResultListener(RESET_ALL_SETTINGS_REQUEST_KEY,
                     this, (requestKey, result) -> {
                         if (result.getInt(ConfirmDialogFragment.CONFIRM_WHICH_KEY) ==
@@ -206,7 +205,6 @@ public class SettingsActivity extends AppCompatActivity {
                             strictTimePref.setChecked(SettingConstants.DEFAULT_STRICT_TIME);
                             keepScreenOnPref.setChecked(SettingConstants.DEFAULT_KEEP_SCREEN_ON);
                             manageBedtimePref.setChecked(SettingConstants.DEFAULT_MANAGE_BEDTIME);
-                            // 恢复默认起床、睡觉时间
                             settingManager.setWakeUp(SettingConstants.DEFAULT_WAKE_UP);
                             settingManager.setFallAsleep(SettingConstants.DEFAULT_FALL_ASLEEP);
                             wakeUpPref.setSummary(DateTimeFormatUtil.getNeatHourMinute(
@@ -235,22 +233,22 @@ public class SettingsActivity extends AppCompatActivity {
 
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            SettingManager settingManager = SharedPrefSettingManager.getInstance(mContext);
+            SettingManager settingManager = SharedPrefSettingManager.getInstance(context);
             switch (key) {
                 case SettingConstants.KEY_FOCUS_DURATION:
                 case SettingConstants.KEY_SOUND:
                 case SettingConstants.KEY_VIBRATION:
                 case SettingConstants.KEY_FLASHLIGHT:
                 case SettingConstants.KEY_STRICT_TIME:
-                    mHandler.removeCallbacks(mApplyRunnable);
-                    mHandler.postDelayed(mApplyRunnable, 3000);
+                    handler.removeCallbacks(applyRunnable);
+                    handler.postDelayed(applyRunnable, 3000);
                     break;
                 case SettingConstants.KEY_MANAGE_BEDTIME: {
                     boolean manageBedtime = settingManager.getManageBedtime();
                     if (manageBedtime) {
-                        BedtimeAlarmService.activateAlarm(mContext, false);
+                        BedtimeAlarmService.activateAlarm(context, false);
                     } else {
-                        BedtimeAlarmService.cancelAlarm(mContext);
+                        BedtimeAlarmService.cancelAlarm(context);
                     }
                     break;
                 }
@@ -258,7 +256,7 @@ public class SettingsActivity extends AppCompatActivity {
                 case SettingConstants.KEY_FALL_ASLEEP: {
                     boolean manageBedtime = settingManager.getManageBedtime();
                     if (manageBedtime) {
-                        BedtimeAlarmService.activateAlarm(mContext, true);
+                        BedtimeAlarmService.activateAlarm(context, true);
                     }
                     break;
                 }

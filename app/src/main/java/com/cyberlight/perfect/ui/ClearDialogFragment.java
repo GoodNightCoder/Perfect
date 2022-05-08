@@ -50,8 +50,8 @@ public class ClearDialogFragment extends DialogFragment {
             boolean focusRecordsChecked = focusRecordsCheckBox.isChecked();
             boolean plansChecked = plansCheckBox.isChecked();
             boolean summaryChecked = summaryCheckBox.isChecked();
-            if (!eventsChecked && !focusRecordsChecked &&
-                    !plansChecked && !summaryChecked) {
+            if (!eventsChecked && !focusRecordsChecked
+                    && !plansChecked && !summaryChecked) {
                 // 没有一项选中
                 dismiss();
                 return;
@@ -71,8 +71,7 @@ public class ClearDialogFragment extends DialogFragment {
                         getString(R.string.settings_clear_confirm_dialog_title),
                         builder.toString().trim(),
                         getString(R.string.dialog_btn_confirm),
-                        getString(R.string.dialog_btn_cancel)
-                );
+                        getString(R.string.dialog_btn_cancel));
                 confirmDialogFragment.show(fragmentManager, ConfirmDialogFragment.TAG);
             }
         });

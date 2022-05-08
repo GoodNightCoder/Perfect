@@ -75,9 +75,8 @@ public class DbUtil {
         DbHelper dbHelper = new DbHelper(context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         List<Event> events = new ArrayList<>();
-        //从数据库中读取所有事件
-        Cursor cursor = db.query(DbContract.EventsTable.TABLE_NAME, null, null
-                , null, null, null, null);
+        Cursor cursor = db.query(DbContract.EventsTable.TABLE_NAME, null,
+                null, null, null, null, null);
         if (cursor.moveToFirst()) {
             do {
                 int eventIdColIndex = cursor.getColumnIndex(
@@ -111,7 +110,6 @@ public class DbUtil {
                                         int completionCount) {
         DbHelper dbHelper = new DbHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        //添加Event record到数据库
         ContentValues values = new ContentValues();
         values.put(DbContract.PlanRecordsTable.COLUMN_NAME_PLAN_RECORD_DATE, dateStr);
         values.put(DbContract.PlanRecordsTable.COLUMN_NAME_PLAN_ID, planId);
@@ -126,12 +124,11 @@ public class DbUtil {
         DbHelper dbHelper = new DbHelper(context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         int completionCount = -1;
-        //从数据库中读取所有事件
-        String selection = DbContract.PlanRecordsTable.COLUMN_NAME_PLAN_RECORD_DATE + " = ? AND " +
-                DbContract.PlanRecordsTable.COLUMN_NAME_PLAN_ID + " = ?";
+        String selection = DbContract.PlanRecordsTable.COLUMN_NAME_PLAN_RECORD_DATE + " = ? AND "
+                + DbContract.PlanRecordsTable.COLUMN_NAME_PLAN_ID + " = ?";
         String[] selectionArgs = {dateStr, String.valueOf(planId)};
-        Cursor cursor = db.query(DbContract.PlanRecordsTable.TABLE_NAME, null, selection
-                , selectionArgs, null, null, null);
+        Cursor cursor = db.query(DbContract.PlanRecordsTable.TABLE_NAME, null,
+                selection, selectionArgs, null, null, null);
         if (cursor.moveToFirst()) {
             int completionCountCol = cursor.getColumnIndex(
                     DbContract.PlanRecordsTable.COLUMN_NAME_COMPLETION_COUNT);
@@ -162,7 +159,6 @@ public class DbUtil {
     public static boolean addPlan(Context context, String planContent, int targetNum) {
         DbHelper dbHelper = new DbHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        //添加Event到数据库
         ContentValues values = new ContentValues();
         values.put(DbContract.PlansTable.COLUMN_NAME_CONTENT, planContent);
         values.put(DbContract.PlansTable.COLUMN_NAME_TARGET_NUM, targetNum);
@@ -174,9 +170,8 @@ public class DbUtil {
         DbHelper dbHelper = new DbHelper(context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         List<Plan> plans = new ArrayList<>();
-        //从数据库中读取所有事件
-        Cursor cursor = db.query(DbContract.PlansTable.TABLE_NAME, null, null
-                , null, null, null, null);
+        Cursor cursor = db.query(DbContract.PlansTable.TABLE_NAME, null,
+                null, null, null, null, null);
         if (cursor.moveToFirst()) {
             do {
                 int planIdColIndex = cursor.getColumnIndex(
@@ -198,59 +193,55 @@ public class DbUtil {
     }
 
     public static boolean addSummary(Context context,
-                                     int rating,
-                                     String summaryText,
+                                     int summaryRating,
+                                     String summaryReview,
                                      String summaryMemo,
                                      String dateStr) {
         DbHelper dbHelper = new DbHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DbContract.SummaryTable.COLUMN_NAME_RATING, rating);
-        values.put(DbContract.SummaryTable.COLUMN_NAME_SUMMARY_TEXT, summaryText);
+        values.put(DbContract.SummaryTable.COLUMN_NAME_RATING, summaryRating);
+        values.put(DbContract.SummaryTable.COLUMN_NAME_SUMMARY_REVIEW, summaryReview);
         values.put(DbContract.SummaryTable.COLUMN_NAME_SUMMARY_MEMO, summaryMemo);
         values.put(DbContract.SummaryTable.COLUMN_NAME_SUMMARY_DATE, dateStr);
         long newRowId = db.insert(DbContract.SummaryTable.TABLE_NAME, null, values);
         return newRowId != -1;
     }
 
-    public static Summary getSummary(Context context,
-                                     String dateStr) {
+    public static Summary getSummary(Context context, String dateStr) {
         DbHelper dbHelper = new DbHelper(context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Summary summary = null;
-        //从数据库中读取所有事件
         String selection = DbContract.SummaryTable.COLUMN_NAME_SUMMARY_DATE + " = ?";
         String[] selectionArgs = {dateStr};
-        Cursor cursor = db.query(DbContract.SummaryTable.TABLE_NAME, null, selection
-                , selectionArgs, null, null, null);
+        Cursor cursor = db.query(DbContract.SummaryTable.TABLE_NAME, null,
+                selection, selectionArgs, null, null, null);
         if (cursor.moveToFirst()) {
             int summaryIdCol = cursor.getColumnIndex(
                     DbContract.SummaryTable._ID);
-            int ratingCol = cursor.getColumnIndex(
+            int summaryRatingCol = cursor.getColumnIndex(
                     DbContract.SummaryTable.COLUMN_NAME_RATING);
-            int summaryTextCol = cursor.getColumnIndex(
-                    DbContract.SummaryTable.COLUMN_NAME_SUMMARY_TEXT);
+            int summaryReviewCol = cursor.getColumnIndex(
+                    DbContract.SummaryTable.COLUMN_NAME_SUMMARY_REVIEW);
             int summaryMemoCol = cursor.getColumnIndex(
                     DbContract.SummaryTable.COLUMN_NAME_SUMMARY_MEMO);
             int summaryDateCol = cursor.getColumnIndex(
                     DbContract.SummaryTable.COLUMN_NAME_SUMMARY_DATE);
-            if (summaryIdCol >= 0 && ratingCol >= 0 && summaryTextCol >= 0
+            if (summaryIdCol >= 0 && summaryRatingCol >= 0 && summaryReviewCol >= 0
                     && summaryMemoCol >= 0 && summaryDateCol >= 0) {
                 int summaryId = cursor.getInt(summaryIdCol);
-                int rating = cursor.getInt(ratingCol);
-                String summaryText = cursor.getString(summaryTextCol);
+                int summaryRating = cursor.getInt(summaryRatingCol);
+                String summaryReview = cursor.getString(summaryReviewCol);
                 String summaryMemo = cursor.getString(summaryMemoCol);
                 String summaryDate = cursor.getString(summaryDateCol);
-                summary = new Summary(summaryId, rating, summaryText, summaryMemo, summaryDate);
+                summary = new Summary(summaryId, summaryRating, summaryReview, summaryMemo, summaryDate);
             }
         }
         cursor.close();
         return summary;
     }
 
-    public static boolean addFocusRecord(Context context,
-                                         long completionTime,
-                                         long focusDuration) {
+    public static boolean addFocusRecord(Context context, long completionTime, long focusDuration) {
         DbHelper dbHelper = new DbHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -260,20 +251,16 @@ public class DbUtil {
         return newRowId != -1;
     }
 
-    public static List<FocusRecord> getFocusRecordsDuring(Context context,
-                                                          long start,
-                                                          long end) {
+    public static List<FocusRecord> getFocusRecordsDuring(Context context, long start, long end) {
         DbHelper dbHelper = new DbHelper(context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         List<FocusRecord> focusRecords = new ArrayList<>();
-        String[] columns = {
-                DbContract.FocusRecordsTable.COLUMN_NAME_COMPLETION_TIME,
-                DbContract.FocusRecordsTable.COLUMN_NAME_FOCUS_DURATION
-        };
+        String[] columns = {DbContract.FocusRecordsTable.COLUMN_NAME_COMPLETION_TIME,
+                DbContract.FocusRecordsTable.COLUMN_NAME_FOCUS_DURATION};
         String selection = DbContract.FocusRecordsTable.COLUMN_NAME_COMPLETION_TIME
                 + " BETWEEN " + start + " AND " + end;
-        Cursor cursor = db.query(DbContract.FocusRecordsTable.TABLE_NAME, columns, selection
-                , null, null, null, null);
+        Cursor cursor = db.query(DbContract.FocusRecordsTable.TABLE_NAME, columns,
+                selection, null, null, null, null);
         if (cursor.moveToFirst()) {
             do {
                 int completionTimeCol = cursor.getColumnIndex(
@@ -292,16 +279,18 @@ public class DbUtil {
         return focusRecords;
     }
 
-    public static boolean specEventIsFinished(Context context,
-                                              SpecEvent specEvent) {
+    public static boolean specEventIsFinished(Context context, SpecEvent specEvent) {
         DbHelper dbHelper = new DbHelper(context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String selectSql = "SELECT * FROM " + DbContract.EventsTable.TABLE_NAME + " INNER JOIN "
-                + DbContract.EventRecordsTable.TABLE_NAME + " ON " + DbContract.EventsTable.TABLE_NAME
-                + "." + DbContract.EventsTable._ID + "=" + DbContract.EventRecordsTable.TABLE_NAME
-                + "." + DbContract.EventRecordsTable.COLUMN_NAME_EVENT_ID + " WHERE "
-                + DbContract.EventRecordsTable.COLUMN_NAME_EVENT_ID + "=" + specEvent.eventId
-                + " AND " + DbContract.EventRecordsTable.COLUMN_NAME_COMPLETION_INDEX + "="
+        String selectSql = "SELECT * FROM " + DbContract.EventsTable.TABLE_NAME
+                + " INNER JOIN " + DbContract.EventRecordsTable.TABLE_NAME + " ON "
+                + DbContract.EventsTable.TABLE_NAME + "."
+                + DbContract.EventsTable._ID + "="
+                + DbContract.EventRecordsTable.TABLE_NAME + "."
+                + DbContract.EventRecordsTable.COLUMN_NAME_EVENT_ID
+                + " WHERE " + DbContract.EventRecordsTable.COLUMN_NAME_EVENT_ID + "="
+                + specEvent.eventId + " AND "
+                + DbContract.EventRecordsTable.COLUMN_NAME_COMPLETION_INDEX + "="
                 + specEvent.occurNum + ";";
         Cursor cursor = db.rawQuery(selectSql, null);
         if (cursor.moveToFirst()) {
@@ -313,11 +302,9 @@ public class DbUtil {
         }
     }
 
-    public static boolean finishSpecEvent(Context context,
-                                          SpecEvent specEvent) {
+    public static boolean addEventRecord(Context context, SpecEvent specEvent) {
         DbHelper dbHelper = new DbHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        //添加Event record到数据库
         ContentValues values = new ContentValues();
         values.put(DbContract.EventRecordsTable.COLUMN_NAME_EVENT_ID, specEvent.eventId);
         values.put(DbContract.EventRecordsTable.COLUMN_NAME_COMPLETION_INDEX, specEvent.occurNum);
@@ -325,14 +312,13 @@ public class DbUtil {
         return newRowId != -1;
     }
 
-    public static boolean unfinishSpecEvent(Context context,
-                                            SpecEvent specEvent) {
+    public static boolean deleteEventRecord(Context context, SpecEvent specEvent) {
         DbHelper dbHelper = new DbHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String selection = DbContract.EventRecordsTable.COLUMN_NAME_EVENT_ID + "="
                 + specEvent.eventId + " AND "
-                + DbContract.EventRecordsTable.COLUMN_NAME_COMPLETION_INDEX
-                + "=" + specEvent.occurNum;
+                + DbContract.EventRecordsTable.COLUMN_NAME_COMPLETION_INDEX + "="
+                + specEvent.occurNum;
         int deletedRows = db.delete(DbContract.EventRecordsTable.TABLE_NAME, selection, null);
         return deletedRows > 0;
     }

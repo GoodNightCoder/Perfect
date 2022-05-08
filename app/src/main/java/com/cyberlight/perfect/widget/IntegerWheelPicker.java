@@ -34,17 +34,15 @@ public class IntegerWheelPicker extends WheelPicker<Integer> {
         this(context, attrs, defStyleAttr, R.style.DefaultWheelPicker);
     }
 
-    public IntegerWheelPicker(Context context,
-                              @Nullable AttributeSet attrs,
-                              int defStyleAttr,
-                              int defStyleRes) {
+    public IntegerWheelPicker(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        //初始化
         initAttrs(context, attrs, defStyleAttr, defStyleRes);
         if (mDigitsEnable) {
+            // 格式化数字的位数
             NumberFormat numberFormat = NumberFormat.getNumberInstance();
             numberFormat.setMinimumIntegerDigits(mDigits);
             numberFormat.setMaximumIntegerDigits(mDigits);
+            // 取消格式中的逗号分组
             numberFormat.setGroupingUsed(false);
             setDataFormat(numberFormat);
         }
@@ -57,10 +55,7 @@ public class IntegerWheelPicker extends WheelPicker<Integer> {
         });
     }
 
-    private void initAttrs(Context context,
-                           @Nullable AttributeSet attrs,
-                           int defStyleAttr,
-                           int defStyleRes) {
+    private void initAttrs(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.IntegerWheelPicker, defStyleAttr, defStyleRes);
         try {
@@ -151,10 +146,10 @@ public class IntegerWheelPicker extends WheelPicker<Integer> {
         NumberFormat numberFormat = NumberFormat.getNumberInstance();
         numberFormat.setGroupingUsed(false);
         if (mDigitsEnable) {
-            //依据指定位数计算宽度(考虑负号占位)
+            // 依据指定位数计算宽度(考虑负号占位)
             numberFormat.setMinimumIntegerDigits(mMinValue < 0 ? mDigits + 1 : mDigits);
         } else {
-            //求最宽文字宽度(考虑负号占的位置)
+            // 求最宽文字宽度(考虑负号占位)
             int maxDigits = Math.max(getIntDigits(mMaxValue),
                     mMinValue < 0 ? getIntDigits(mMinValue) + 1 : getIntDigits(mMinValue));
             numberFormat.setMinimumIntegerDigits(maxDigits);

@@ -18,14 +18,16 @@ public class DateWheelPicker extends WheelPicker<String> {
 
     public DateWheelPicker(Context context, AttributeSet attrs) {
         super(context, attrs);
+        // 默认的日期选择范围
         setStartAndEnd(2020, 1, 1,
                 2024, 12, 31);
         setMaxWidthText("WWW 00");
         setOnItemSelectedListener((item, position) -> {
             if (mOnDateSelectedListener != null) {
                 LocalDate mSelectedDate = mStartDate.plusDays(position);
-                mOnDateSelectedListener.onDateSelected(mSelectedDate.getYear()
-                        , mSelectedDate.getMonthValue(), mSelectedDate.getDayOfMonth());
+                mOnDateSelectedListener.onDateSelected(mSelectedDate.getYear(),
+                        mSelectedDate.getMonthValue(),
+                        mSelectedDate.getDayOfMonth());
             }
         });
     }
@@ -55,8 +57,8 @@ public class DateWheelPicker extends WheelPicker<String> {
 
     public void setSelectedDate(int year, int month, int dayOfMonth, boolean scroll) {
         LocalDate date = LocalDate.of(year, month, dayOfMonth);
-        if (date.equals(mStartDate) || date.equals(mEndDate) ||
-                (date.isAfter(mStartDate) && date.isBefore(mEndDate))) {
+        if (date.equals(mStartDate) || date.equals(mEndDate)
+                || (date.isAfter(mStartDate) && date.isBefore(mEndDate))) {
             int pos = (int) ChronoUnit.DAYS.between(mStartDate, date);
             setPosition(pos, scroll);
         }

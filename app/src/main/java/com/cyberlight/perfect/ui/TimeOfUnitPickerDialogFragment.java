@@ -21,6 +21,7 @@ import java.util.Locale;
 
 public class TimeOfUnitPickerDialogFragment extends DialogFragment {
     public static final String TAG = "TimeOfUnitPickerDialogFragment";
+
     private static final String TU_REQUEST_KEY = "tu_request_key";
     public static final String TU_VALUE_KEY = "tu_value_key";
     public static final String TU_UNIT_KEY = "tu_unit_key";
@@ -29,12 +30,11 @@ public class TimeOfUnitPickerDialogFragment extends DialogFragment {
     private int mSelectedValue;
     private int mSelectedUnit;
 
-    // 借助内存优化语法规则支持性能
+    // 用于单位选择器判断语言是否需要切换单复数
     private final String mLanguage;
     private final String mZhLanguage;
 
     public TimeOfUnitPickerDialogFragment() {
-        // 保存经常要判断的两个字符串，优化性能
         mLanguage = Locale.getDefault().getLanguage();
         mZhLanguage = new Locale("zh").getLanguage();
     }
@@ -54,58 +54,52 @@ public class TimeOfUnitPickerDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        //获取并设置初始时间
         Bundle bundle = getArguments();
         if (bundle != null) {
             mRequestKey = bundle.getString(TU_REQUEST_KEY);
             mSelectedValue = bundle.getInt(TU_VALUE_KEY);
             mSelectedUnit = bundle.getInt(TU_UNIT_KEY);
         }
-        //恢复对话框状态
         if (savedInstanceState != null) {
             mRequestKey = savedInstanceState.getString(TU_REQUEST_KEY);
             mSelectedValue = savedInstanceState.getInt(TU_VALUE_KEY);
             mSelectedUnit = savedInstanceState.getInt(TU_UNIT_KEY);
         }
-
-        //设置布局
+        // 设置布局
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         @SuppressLint("InflateParams")
         View view = inflater.inflate(R.layout.dialog_tu_picker, null);
-        //初始化两个选择器
         IntegerWheelPicker mValueWp = view.findViewById(R.id.dialog_tu_value_wp);
         UnitWheelPicker mUnitWp = view.findViewById(R.id.dialog_tu_unit_wp);
-        //将初始时间赋给两个选择器
         mValueWp.setSelectedValue(mSelectedValue, false);
         mUnitWp.setSelectedUnit(mSelectedUnit, false);
-        //对两个选择器设置选中监听
         mValueWp.setOnValueSelectedListener(value -> {
-            //只有在系统为英语并且原来选中1或即将选中1，才更新UnitPicker数据集
+            // 只有在系统为英语并且原来选中1或即将选中1，才更新UnitPicker数据集
             if (!mLanguage.equals(mZhLanguage) && (value == 1 || mSelectedValue == 1)) {
                 mUnitWp.updateDataList(value);
             }
             mSelectedValue = value;
         });
         mUnitWp.setOnUnitSelectedListener(unit -> mSelectedUnit = unit);
-        //把初始值告知UnitPicker，以保证复数等语法规则一开始就正确生效
+        // 把初始值告知UnitPicker，以保证复数等语法规则一开始就正确生效
         if (!mLanguage.equals(mZhLanguage)) {
             mUnitWp.updateDataList(mSelectedValue);
         }
-        //获取取消和确认按钮
-        TextView mCancelTv = view.findViewById(R.id.dialog_btn_bar_negative_tv);
-        TextView mConfirmTv = view.findViewById(R.id.dialog_btn_bar_positive_tv);
-        mConfirmTv.setText(R.string.dialog_btn_confirm);
-        mCancelTv.setText(R.string.dialog_btn_cancel);
-        mCancelTv.setOnClickListener(v -> dismiss());
-        mConfirmTv.setOnClickListener(v -> {
-            //将对话框选择的时间返回给Activity
+        // 设置确认、取消按钮
+        TextView confirmTv = view.findViewById(R.id.dialog_btn_bar_positive_tv);
+        TextView cancelTv = view.findViewById(R.id.dialog_btn_bar_negative_tv);
+        confirmTv.setText(R.string.dialog_btn_confirm);
+        cancelTv.setText(R.string.dialog_btn_cancel);
+        confirmTv.setOnClickListener(v -> {
+            // 返回结果
             Bundle result = new Bundle();
             result.putInt(TU_VALUE_KEY, mSelectedValue);
             result.putInt(TU_UNIT_KEY, mSelectedUnit);
             getParentFragmentManager().setFragmentResult(mRequestKey, result);
             dismiss();
         });
-        //设置对话框
+        cancelTv.setOnClickListener(v -> dismiss());
+        // 设置对话框
         Dialog dialog = new Dialog(getContext(), R.style.SlideBottomAnimDialog);
         dialog.setContentView(view);
         Window window = dialog.getWindow();
@@ -121,7 +115,6 @@ public class TimeOfUnitPickerDialogFragment extends DialogFragment {
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        //保存对话框状态
         outState.putString(TU_REQUEST_KEY, mRequestKey);
         outState.putInt(TU_VALUE_KEY, mSelectedValue);
         outState.putInt(TU_UNIT_KEY, mSelectedUnit);

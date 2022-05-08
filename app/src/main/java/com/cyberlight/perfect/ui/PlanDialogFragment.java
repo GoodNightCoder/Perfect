@@ -27,16 +27,18 @@ public class PlanDialogFragment extends DialogFragment {
 
     public static final String TAG = "PlanDialogFragment";
 
+    // 用于状态恢复
     private static final String TARGET_KEY = "target_key";
+
+    // 用于监听目标个数选择对话框结果
     private static final String PICK_PT_REQUEST_KEY = "pick_pt_request_key";
 
     private int mTarget;
     private TextView mStepperValueTv;
+    private OnDataAddedListener mOnDataAddedListener;
 
     public PlanDialogFragment() {
     }
-
-    private OnDataAddedListener mOnDataAddedListener;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -58,7 +60,6 @@ public class PlanDialogFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.dialog_plan, null);
 
         Context context = getContext();
-        // 获取fragmentManager准备用于对话框操作
         FragmentManager fragmentManager = getChildFragmentManager();
         // 初始化数据
         if (savedInstanceState != null) {
@@ -76,34 +77,32 @@ public class PlanDialogFragment extends DialogFragment {
                         PlanTargetPickerDialogFragment.TAG);
             }
         });
-        ImageView mStepperPlusIv = view.findViewById(R.id.dialog_plan_stepper_plus_iv);
-        mStepperPlusIv.setOnClickListener(v -> {
+        ImageView stepperPlusIv = view.findViewById(R.id.dialog_plan_stepper_plus_iv);
+        stepperPlusIv.setOnClickListener(v -> {
             if (mTarget < 99) {
                 mTarget++;
                 mStepperValueTv.setText(String.valueOf(mTarget));
             }
         });
-        ImageView mStepperMinusIv = view.findViewById(R.id.dialog_plan_stepper_minus_iv);
-        mStepperMinusIv.setOnClickListener(v -> {
+        ImageView stepperMinusIv = view.findViewById(R.id.dialog_plan_stepper_minus_iv);
+        stepperMinusIv.setOnClickListener(v -> {
             if (mTarget > 1) {
                 mTarget--;
                 mStepperValueTv.setText(String.valueOf(mTarget));
             }
         });
-        fragmentManager.setFragmentResultListener(PICK_PT_REQUEST_KEY,
-                this, (requestKey, result) -> {
+        fragmentManager.setFragmentResultListener(
+                PICK_PT_REQUEST_KEY, this, (requestKey, result) -> {
                     mTarget = result.getInt(PlanTargetPickerDialogFragment.PT_TARGET_KEY);
                     mStepperValueTv.setText(String.valueOf(mTarget));
                 });
         // 设置按钮栏
         TextView dialogTitleTv = view.findViewById(R.id.dialog_action_bar_title_tv);
         dialogTitleTv.setText(R.string.plan_dialog_title);
-        ImageView cancelIv = view.findViewById(R.id.dialog_action_bar_cancel_iv);
-        cancelIv.setOnClickListener(v -> dismiss());
         ImageView confirmIv = view.findViewById(R.id.dialog_action_bar_confirm_iv);
         confirmIv.setOnClickListener(v -> {
-            EditText mContentEt = view.findViewById(R.id.dialog_plan_content_et);
-            String planContent = mContentEt.getText().toString();
+            EditText contentEt = view.findViewById(R.id.dialog_plan_content_et);
+            String planContent = contentEt.getText().toString();
             if (planContent.equals("")) {
                 ToastUtil.showToast(context,
                         R.string.plan_incomplete_toast,
@@ -123,6 +122,8 @@ public class PlanDialogFragment extends DialogFragment {
             }
             dismiss();
         });
+        ImageView cancelIv = view.findViewById(R.id.dialog_action_bar_cancel_iv);
+        cancelIv.setOnClickListener(v -> dismiss());
         // 设置对话框
         Dialog dialog = new Dialog(context, R.style.SlideBottomAnimDialog);
         dialog.setContentView(view);

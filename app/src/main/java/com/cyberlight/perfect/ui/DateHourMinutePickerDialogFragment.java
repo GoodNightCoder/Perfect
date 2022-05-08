@@ -20,7 +20,6 @@ import com.cyberlight.perfect.widget.DateWheelPicker;
 import com.cyberlight.perfect.widget.IntegerWheelPicker;
 
 public class DateHourMinutePickerDialogFragment extends DialogFragment {
-
     // 用于findFragmentByTag
     public static final String TAG = "DateHourMinutePickerDialogFragment";
 
@@ -34,7 +33,7 @@ public class DateHourMinutePickerDialogFragment extends DialogFragment {
     public static final String DHM_MINUTE_KEY = "dhm_minute_key";
 
     private String mRequestKey;
-    //当前选中的年月日时分
+    // 当前选中的年月日时分
     private int mSelectedYear;
     private int mSelectedMonth;
     private int mSelectedDayOfMonth;
@@ -91,35 +90,33 @@ public class DateHourMinutePickerDialogFragment extends DialogFragment {
         @SuppressLint("InflateParams")
         View view = inflater.inflate(R.layout.dialog_dhm_picker, null);
         // 将初始日期赋给日期指示textView
-        TextView mIndicatorTv =
-                view.findViewById(R.id.dialog_dhm_indicator_tv);
-        mIndicatorTv.setText(DateTimeFormatUtil.getReadableDateAndDayOfWeek(
+        TextView indicatorTv = view.findViewById(R.id.dialog_dhm_indicator_tv);
+        indicatorTv.setText(DateTimeFormatUtil.getReadableDateAndDayOfWeek(
                 context, mSelectedYear, mSelectedMonth, mSelectedDayOfMonth));
         // 获取三个选择器
-        DateWheelPicker mDateWp = view.findViewById(R.id.dialog_dhm_date_wp);
-        IntegerWheelPicker mHourWp = view.findViewById(R.id.dialog_dhm_hour_wp);
-        IntegerWheelPicker mMinuteWp = view.findViewById(R.id.dialog_dhm_minute_wp);
+        DateWheelPicker dateWp = view.findViewById(R.id.dialog_dhm_date_wp);
+        IntegerWheelPicker hourWp = view.findViewById(R.id.dialog_dhm_hour_wp);
+        IntegerWheelPicker minuteWp = view.findViewById(R.id.dialog_dhm_minute_wp);
         // 初始化三个选择器的选中项
-        mDateWp.setSelectedDate(mSelectedYear, mSelectedMonth, mSelectedDayOfMonth, false);
-        mHourWp.setSelectedValue(mSelectedHour, false);
-        mMinuteWp.setSelectedValue(mSelectedMinute, false);
+        dateWp.setSelectedDate(mSelectedYear, mSelectedMonth, mSelectedDayOfMonth, false);
+        hourWp.setSelectedValue(mSelectedHour, false);
+        minuteWp.setSelectedValue(mSelectedMinute, false);
         // 对三个选择器设置选中监听
-        mDateWp.setOnDateSelectedListener((year, month, dayOfMonth) -> {
+        dateWp.setOnDateSelectedListener((year, month, dayOfMonth) -> {
             mSelectedYear = year;
             mSelectedMonth = month;
             mSelectedDayOfMonth = dayOfMonth;
-            mIndicatorTv.setText(DateTimeFormatUtil.getReadableDateAndDayOfWeek(
+            indicatorTv.setText(DateTimeFormatUtil.getReadableDateAndDayOfWeek(
                     context, mSelectedYear, mSelectedMonth, mSelectedDayOfMonth));
         });
-        mHourWp.setOnValueSelectedListener(value -> mSelectedHour = value);
-        mMinuteWp.setOnValueSelectedListener(value -> mSelectedMinute = value);
+        hourWp.setOnValueSelectedListener(value -> mSelectedHour = value);
+        minuteWp.setOnValueSelectedListener(value -> mSelectedMinute = value);
         // 设置对话框的取消、确认按钮
-        TextView mCancelTv = view.findViewById(R.id.dialog_btn_bar_negative_tv);
-        TextView mConfirmTv = view.findViewById(R.id.dialog_btn_bar_positive_tv);
-        mConfirmTv.setText(R.string.dialog_btn_confirm);
-        mCancelTv.setText(R.string.dialog_btn_cancel);
-        mCancelTv.setOnClickListener(v -> dismiss());
-        mConfirmTv.setOnClickListener(v -> {
+        TextView confirmTv = view.findViewById(R.id.dialog_btn_bar_positive_tv);
+        TextView cancelTv = view.findViewById(R.id.dialog_btn_bar_negative_tv);
+        confirmTv.setText(R.string.dialog_btn_confirm);
+        cancelTv.setText(R.string.dialog_btn_cancel);
+        confirmTv.setOnClickListener(v -> {
             // 将对话框选择结果通过setFragmentResult返回给Activity
             Bundle result = new Bundle();
             result.putInt(DHM_YEAR_KEY, mSelectedYear);
@@ -131,10 +128,11 @@ public class DateHourMinutePickerDialogFragment extends DialogFragment {
             getParentFragmentManager().setFragmentResult(mRequestKey, result);
             dismiss();
         });
+        cancelTv.setOnClickListener(v -> dismiss());
         // 设置对话框
         // R.style.SlideBottomAnimDialog是对话框进出动画
         Dialog dialog = new Dialog(context, R.style.SlideBottomAnimDialog);
-        // 设置对话框布局
+        // 将设置好的布局应用到对话框
         dialog.setContentView(view);
         // 设置对话框样式
         Window window = dialog.getWindow();

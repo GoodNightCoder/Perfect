@@ -13,7 +13,6 @@
         android:layout_marginBottom="10dp"
         android:orientation="horizontal">
 
-
         <com.cyberlight.perfect.widget.IntegerWheelPicker
             android:id="@+id/dialog_hm_hour_wp"
             android:layout_width="0dp"

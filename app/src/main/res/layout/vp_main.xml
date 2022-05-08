@@ -52,7 +52,6 @@
                         tools:ignore="ContentDescription" />
                 </RelativeLayout>
 
-
                 <com.cyberlight.perfect.widget.ScheduleLayout
                     android:id="@+id/main_schedule"
                     android:layout_width="match_parent"
@@ -62,7 +61,6 @@
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
-
 
         <androidx.cardview.widget.CardView
             android:id="@+id/main_focus_records_card"
@@ -103,7 +101,6 @@
                         tools:ignore="ContentDescription" />
                 </RelativeLayout>
 
-
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/main_focus_records_rv"
                     android:layout_width="match_parent"
@@ -114,7 +111,6 @@
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
-
 
         <androidx.cardview.widget.CardView
             android:id="@+id/main_plans_card"
@@ -155,7 +151,6 @@
                         tools:ignore="ContentDescription" />
                 </RelativeLayout>
 
-
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/main_plans_rv"
                     android:layout_width="match_parent"
@@ -166,7 +161,6 @@
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
-
 
         <androidx.cardview.widget.CardView
             android:id="@+id/main_summary_card"
@@ -180,7 +174,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!--Summary卡片的标题-->
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -207,7 +200,6 @@
                         tools:ignore="ContentDescription" />
                 </RelativeLayout>
 
-                <!--Summary卡片的内容-->
                 <RelativeLayout
                     android:id="@+id/main_summary_content_layout"
                     android:layout_width="match_parent"
@@ -278,7 +270,7 @@
                         tools:ignore="ContentDescription" />
 
                     <View
-                        android:id="@+id/main_rating_comment_divider"
+                        android:id="@+id/main_rating_review_divider"
                         android:layout_width="match_parent"
                         android:layout_height="1px"
                         android:layout_below="@id/main_thumb_up_iv1"
@@ -287,28 +279,27 @@
                         tools:ignore="ContentDescription" />
 
                     <TextView
-                        android:id="@+id/main_comment_title_tv"
+                        android:id="@+id/main_review_title_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/main_rating_comment_divider"
+                        android:layout_below="@id/main_rating_review_divider"
                         android:layout_alignParentStart="true"
                         android:layout_marginBottom="2dp"
                         android:text="@string/main_review_title"
                         android:textAppearance="@style/TextAppearance.Perfect.HomepageTitle" />
 
                     <TextView
-                        android:id="@+id/main_comment_tv"
+                        android:id="@+id/main_review_tv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/main_comment_title_tv"
+                        android:layout_below="@id/main_review_title_tv"
                         android:textAppearance="@style/TextAppearance.Perfect.HomepageBody" />
-
 
                     <View
                         android:id="@+id/main_comment_memo_divider"
                         android:layout_width="match_parent"
                         android:layout_height="1px"
-                        android:layout_below="@id/main_comment_tv"
+                        android:layout_below="@id/main_review_tv"
                         android:layout_marginVertical="8dp"
                         android:background="@color/gray_a50" />
 
@@ -345,6 +336,6 @@
 
         </androidx.cardview.widget.CardView>
 
-
     </LinearLayout>
+
 </ScrollView>

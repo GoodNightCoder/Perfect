@@ -17,13 +17,13 @@ import java.util.List;
 
 public class FocusRecordRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    // ViewHolder类型
     private static final int TYPE_RECORD = 0;
     private static final int TYPE_NO_RECORD = 1;
     private static final int TYPE_INDICATOR = 2;
 
     private final Context mContext;
     private final List<FocusRecord> mFocusRecords;
-
 
     public FocusRecordRecyclerAdapter(Context context, List<FocusRecord> focusRecords) {
         mContext = context;
@@ -54,12 +54,10 @@ public class FocusRecordRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
             RecordViewHolder recordViewHolder = (RecordViewHolder) holder;
             FocusRecord focusRecord = mFocusRecords.get(position - 1);
             recordViewHolder.mCompletionTimeTv.setText(
-                    DateTimeFormatUtil.getNeatDateTime(focusRecord.completionTime)
-            );
+                    DateTimeFormatUtil.getNeatDateTime(focusRecord.completionTime));
             recordViewHolder.mFocusDurationTv.setText(
                     mContext.getString(R.string.main_focus_duration,
-                            focusRecord.focusDuration / 60000)
-            );
+                            focusRecord.focusDuration / 60000));
         }
     }
 
@@ -70,9 +68,11 @@ public class FocusRecordRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public int getItemViewType(int position) {
-        if (mFocusRecords.size() > 0)
+        if (mFocusRecords.size() > 0)// 有专注记录
+            // 第一行是指示文字，第一行之后是一条条专注记录
             return position == 0 ? TYPE_INDICATOR : TYPE_RECORD;
         else
+            // 没有专注记录
             return TYPE_NO_RECORD;
     }
 

@@ -15,7 +15,6 @@ import androidx.fragment.app.DialogFragment;
 import com.cyberlight.perfect.R;
 
 public class ConfirmDialogFragment extends DialogFragment {
-
     public static final String TAG = "ConfirmDialogFragment";
 
     public static final int CONFIRM_POSITIVE = 1;
@@ -75,27 +74,26 @@ public class ConfirmDialogFragment extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         @SuppressLint("InflateParams")
         View view = inflater.inflate(R.layout.dialog_confirm, null);
-        TextView mTitleTv = view.findViewById(R.id.dialog_confirm_title_tv);
-        TextView mContentTv = view.findViewById(R.id.dialog_confirm_content_tv);
-        TextView mNegativeTv = view.findViewById(R.id.dialog_btn_bar_negative_tv);
-        TextView mPositiveTv = view.findViewById(R.id.dialog_btn_bar_positive_tv);
-        mTitleTv.setText(mTitle);
-        mContentTv.setText(mContent);
-        mPositiveTv.setText(mPositiveText);
-        mNegativeTv.setText(mNegativeText);
-        mPositiveTv.setOnClickListener(v -> {
+        TextView titleTv = view.findViewById(R.id.dialog_confirm_title_tv);
+        TextView contentTv = view.findViewById(R.id.dialog_confirm_content_tv);
+        TextView negativeTv = view.findViewById(R.id.dialog_btn_bar_negative_tv);
+        TextView positiveTv = view.findViewById(R.id.dialog_btn_bar_positive_tv);
+        titleTv.setText(mTitle);
+        contentTv.setText(mContent);
+        positiveTv.setText(mPositiveText);
+        negativeTv.setText(mNegativeText);
+        positiveTv.setOnClickListener(v -> {
             Bundle result = new Bundle();
             result.putInt(CONFIRM_WHICH_KEY, CONFIRM_POSITIVE);
             getParentFragmentManager().setFragmentResult(mRequestKey, result);
             dismiss();
         });
-        mNegativeTv.setOnClickListener(v -> {
+        negativeTv.setOnClickListener(v -> {
             Bundle result = new Bundle();
             result.putInt(CONFIRM_WHICH_KEY, CONFIRM_NEGATIVE);
             getParentFragmentManager().setFragmentResult(mRequestKey, result);
             dismiss();
         });
-
         // 设置对话框
         Dialog dialog = new Dialog(getContext(), R.style.FadeAnimDialog);
         dialog.setContentView(view);

@@ -18,8 +18,9 @@ import com.cyberlight.perfect.widget.IntegerWheelPicker;
 
 public class PlanTargetPickerDialogFragment extends DialogFragment {
     public static final String TAG = "PlanTargetPickerDialogFragment";
-    private static final String PT_REQUEST_KEY = "pt_request_key";
 
+    // 初始化、状态恢复、返回结果用
+    private static final String PT_REQUEST_KEY = "pt_request_key";
     public static final String PT_TARGET_KEY = "pt_target_key";
 
     private String mRequestKey;
@@ -53,23 +54,21 @@ public class PlanTargetPickerDialogFragment extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         @SuppressLint("InflateParams")
         View view = inflater.inflate(R.layout.dialog_pt_picker, null);
-        // 初始化两个选择器
-        IntegerWheelPicker mTargetWp = view.findViewById(R.id.dialog_pt_target_wp);
-        mTargetWp.setSelectedValue(mSelectedTarget, false);
-        mTargetWp.setOnValueSelectedListener(value -> mSelectedTarget = value);
-        // 设置取消和确认按钮
-        TextView mCancelTv = view.findViewById(R.id.dialog_btn_bar_negative_tv);
-        TextView mConfirmTv = view.findViewById(R.id.dialog_btn_bar_positive_tv);
-        mConfirmTv.setText(R.string.dialog_btn_confirm);
-        mCancelTv.setText(R.string.dialog_btn_cancel);
-        mCancelTv.setOnClickListener(v -> dismiss());
-        mConfirmTv.setOnClickListener(v -> {
-            //将对话框选择的时间返回给Activity
+        IntegerWheelPicker targetWp = view.findViewById(R.id.dialog_pt_target_wp);
+        targetWp.setSelectedValue(mSelectedTarget, false);
+        targetWp.setOnValueSelectedListener(value -> mSelectedTarget = value);
+        TextView confirmTv = view.findViewById(R.id.dialog_btn_bar_positive_tv);
+        TextView cancelTv = view.findViewById(R.id.dialog_btn_bar_negative_tv);
+        confirmTv.setText(R.string.dialog_btn_confirm);
+        cancelTv.setText(R.string.dialog_btn_cancel);
+        confirmTv.setOnClickListener(v -> {
+            // 返回结果
             Bundle result = new Bundle();
             result.putInt(PT_TARGET_KEY, mSelectedTarget);
             getParentFragmentManager().setFragmentResult(mRequestKey, result);
             dismiss();
         });
+        cancelTv.setOnClickListener(v -> dismiss());
         // 设置对话框
         Dialog dialog = new Dialog(getContext(), R.style.SlideBottomAnimDialog);
         dialog.setContentView(view);

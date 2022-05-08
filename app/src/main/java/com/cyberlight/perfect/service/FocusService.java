@@ -1,6 +1,5 @@
 package com.cyberlight.perfect.service;
 
-
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -37,7 +36,6 @@ public class FocusService extends Service {
     private static final long[] RELAX_VIBRATION_FLASHLIGHT_TIMINGS = {0, 100, 100, 100, 100, 100, 100, 100};
     private static final long[] FOCUS_VIBRATION_FLASHLIGHT_TIMINGS = {0, 800, 100, 800};
 
-    // 该前台服务的通知相关常量
     public static final CharSequence FOCUS_CHANNEL_NAME = "Focus notifications";
     public static final String FOCUS_CHANNEL_ID = "focus_channel";
     public static final int FOCUS_CHANNEL_IMPORTANCE = NotificationManager.IMPORTANCE_DEFAULT;
@@ -47,12 +45,12 @@ public class FocusService extends Service {
 
     private static final int FOCUS_ALARM_REQUEST_CODE = 8880;
 
-    // 定时任务相关的信息
-    private long mCurStart;
-    private long mNextStart;
-    private long mCurDuration;
-    private boolean mFocusing;
-    private String mFocusStateStr;
+    // 专注任务相关的信息
+    private long mCurStart;// 任务开始时间
+    private long mNextStart;// 任务结束时间
+    private long mCurDuration;// 任务总时长
+    private boolean mFocusing;// 任务是专注还是休息
+    private String mFocusStateStr;// 任务状态文字(专注中或休息中)
 
     // 专注设置
     private long mFocusDuration;
@@ -77,8 +75,8 @@ public class FocusService extends Service {
             int remainSecs = (int) (remain / 1000);
             int min = remainSecs / 60;
             int sec = remainSecs % 60;
-            float mProgress = (float) remain / mCurDuration;
-            String mRemainTimeStr = mNumberFormat.format(min) + ":" + mNumberFormat.format(sec);
+            float progress = (float) remain / mCurDuration;
+            String remainTimeStr = mNumberFormat.format(min) + ":" + mNumberFormat.format(sec);
             // 更新通知
             Intent ni = new Intent(FocusService.this, FocusActivity.class);
             PendingIntent npi = PendingIntent.getActivity(FocusService.this,
@@ -88,7 +86,7 @@ public class FocusService extends Service {
             Notification notification = NotificationUtil.buildNotification(FocusService.this,
                     FOCUS_CHANNEL_ID,
                     mFocusStateStr,
-                    mRemainTimeStr,
+                    remainTimeStr,
                     npi,
                     false,
                     true);
@@ -98,9 +96,9 @@ public class FocusService extends Service {
             // 为保证秒数显示稳定、不会跳数，计算下次刷新的延迟，
             // 控制每次在一秒的中间刷新
             long delayMillis = 1000 + (500 - (curTimeMillis % 1000));
-            // 通知Activity更新界面
+            // 通知FocusActivity更新界面
             if (mOnUpdateListener != null)
-                mOnUpdateListener.onUpdate(delayMillis, mProgress, mRemainTimeStr, mFocusStateStr);
+                mOnUpdateListener.onUpdate(delayMillis, progress, remainTimeStr, mFocusStateStr);
             mHandler.postDelayed(mRunnable, delayMillis);
         }
     };
@@ -179,8 +177,8 @@ public class FocusService extends Service {
     private void loadSettings() {
         SettingManager settingManager = SharedPrefSettingManager.getInstance(this);
         mFocusDuration = settingManager.getFocusDuration();
-        mRelaxDuration = mFocusDuration < 1800000 ?
-                1800000 - mFocusDuration : 3600000 - mFocusDuration;
+        mRelaxDuration = mFocusDuration < 1800000
+                ? 1800000 - mFocusDuration : 3600000 - mFocusDuration;
         mVibration = settingManager.getVibration();
         mSound = settingManager.getSound();
         mFlashlight = settingManager.getFlashlight();

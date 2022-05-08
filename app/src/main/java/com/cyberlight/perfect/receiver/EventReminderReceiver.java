@@ -21,7 +21,6 @@ import java.util.List;
 
 @SuppressLint("UnspecifiedImmutableFlag")
 public class EventReminderReceiver extends BroadcastReceiver {
-
     public static final CharSequence EVENT_CHANNEL_NAME = "Event notifications";
     public static final String EVENT_CHANNEL_ID = "event_channel";
     public static final int EVENT_CHANNEL_IMPORTANCE = NotificationManager.IMPORTANCE_HIGH;
@@ -78,6 +77,7 @@ public class EventReminderReceiver extends BroadcastReceiver {
             // 启动事件提醒
             boolean firstSet = setNextReminder(context);
             if (firstSet) {
+                // 发通知提醒用户事件提醒已启动
                 Intent ni = new Intent(context, MainActivity.class);
                 PendingIntent npi = PendingIntent.getActivity(context,
                         EVENT_NOTIFICATION_REQUEST_CODE,

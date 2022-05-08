@@ -10,33 +10,23 @@
         <attr name="itemTextSize" format="dimension" />
         <attr name="selectedItemTextSize" format="dimension" />
         <attr name="indicatorTextSize" format="dimension" />
-
         <attr name="itemTextColor" format="color" />
         <attr name="selectedItemTextColor" format="color" />
         <attr name="indicatorTextColor" format="color" />
-
         <attr name="selectedItemTextStrokeWidth" format="float" />
-
         <attr name="selectedItemLetterSpacing" format="float" />
-
         <attr name="indicatorText" format="string" />
         <attr name="maxWidthText" format="string" />
-
         <attr name="itemWidthSpace" format="dimension" />
         <attr name="itemHeightSpace" format="dimension" />
-
         <attr name="halfVisibleItemCount" format="integer" />
-
         <attr name="textSizeGradual" format="boolean" />
         <attr name="textColorGradual" format="boolean" />
         <attr name="textAlphaGradual" format="boolean" />
-
         <attr name="showCurtain" format="boolean" />
         <attr name="showSelectedItemDivider" format="boolean" />
-
         <attr name="curtainColor" format="color" />
         <attr name="selectedItemDividerColor" format="color" />
-
         <attr name="cyclic" format="boolean" />
     </declare-styleable>
 

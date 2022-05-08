@@ -1,9 +1,5 @@
 <resources>
-    <!--  专注模式的工作时长，对应休息时长为：  -->
-    <!--  工作20min休息10min  -->
-    <!--  工作25min休息5min  -->
-    <!--  工作40min休息20min  -->
-    <!--  工作45min休息15min  -->
+    <!-- 专注模式的工作时长 -->
     <string-array name="settings_focus_duration_entries">
         <item>@string/settings_focus_duration_option_20min</item>
         <item>@string/settings_focus_duration_option_25min</item>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_dialog_rc_tl30_tr30"
@@ -29,41 +30,45 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-
                 <ImageView
                     android:id="@+id/dialog_summary_thumb_up_iv1"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:padding="1dp"
-                    android:src="@drawable/ic_baseline_thumb_up_24" />
+                    android:src="@drawable/ic_baseline_thumb_up_24"
+                    tools:ignore="ContentDescription" />
 
                 <ImageView
                     android:id="@+id/dialog_summary_thumb_up_iv2"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:padding="1dp"
-                    android:src="@drawable/ic_baseline_thumb_up_24" />
+                    android:src="@drawable/ic_baseline_thumb_up_24"
+                    tools:ignore="ContentDescription" />
 
                 <ImageView
                     android:id="@+id/dialog_summary_thumb_up_iv3"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:padding="1dp"
-                    android:src="@drawable/ic_baseline_thumb_up_24" />
+                    android:src="@drawable/ic_baseline_thumb_up_24"
+                    tools:ignore="ContentDescription" />
 
                 <ImageView
                     android:id="@+id/dialog_summary_thumb_up_iv4"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:padding="1dp"
-                    android:src="@drawable/ic_baseline_thumb_up_24" />
+                    android:src="@drawable/ic_baseline_thumb_up_24"
+                    tools:ignore="ContentDescription" />
 
                 <ImageView
                     android:id="@+id/dialog_summary_thumb_up_iv5"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:padding="1dp"
-                    android:src="@drawable/ic_baseline_thumb_up_24" />
+                    android:src="@drawable/ic_baseline_thumb_up_24"
+                    tools:ignore="ContentDescription" />
 
             </LinearLayout>
 
@@ -87,7 +92,8 @@
                 android:background="@null"
                 android:hint="@string/summary_review_hint"
                 android:inputType="textMultiLine"
-                android:textAppearance="@style/TextAppearance.Perfect.DialogContent" />
+                android:textAppearance="@style/TextAppearance.Perfect.DialogContent"
+                tools:ignore="Autofill" />
 
             <View
                 android:layout_width="match_parent"
@@ -102,9 +108,9 @@
                 android:background="@null"
                 android:hint="@string/summary_memo_hint"
                 android:inputType="textMultiLine"
-                android:textAppearance="@style/TextAppearance.Perfect.DialogContent" />
+                android:textAppearance="@style/TextAppearance.Perfect.DialogContent"
+                tools:ignore="Autofill" />
         </LinearLayout>
     </ScrollView>
-
 
 </LinearLayout>

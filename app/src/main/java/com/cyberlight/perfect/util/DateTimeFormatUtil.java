@@ -236,8 +236,7 @@ public class DateTimeFormatUtil {
                                                    int dayOfMonth,
                                                    int hour,
                                                    int minute) {
-        LocalDateTime dateTime =
-                LocalDateTime.of(year, month, dayOfMonth, hour, minute);
+        LocalDateTime dateTime = LocalDateTime.of(year, month, dayOfMonth, hour, minute);
         return getReadableDateHourMinute(context, dateTime);
     }
 

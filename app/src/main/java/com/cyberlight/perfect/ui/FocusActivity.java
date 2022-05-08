@@ -39,30 +39,17 @@ public class FocusActivity extends AppCompatActivity {
     public static final int SHOW_TIME = 3;
     public static final int SHOW_NONE = 4;
 
-    /**
-     * 动画时长
-     */
+    // 动画时长
     private static final int ANIM_DURATION = 300;
 
-    /**
-     * 指示cpv是否是第一次设置progress
-     */
-    private boolean isFirstUpdate = true;
-
-    /**
-     * 正在展示动画时为true
-     */
-    private boolean disallowAnim = false;
-
-    /**
-     * 正在执行动画的view的数量
-     */
-    private int animatingViewsCount;
-
-    /**
-     * 当前显示模式
-     */
-    private int displayMode = SHOW_TIME_PROGRESS_STATE_EXIT;
+    // 指示cpv是否是第一次设置progress
+    private boolean mIsFirstUpdate = true;
+    // 正在展示动画时为true
+    private boolean mDisallowAnim = false;
+    // 正在执行动画的view的数量
+    private int mAnimatingViewsCount;
+    // 当前显示模式
+    private int mDisplayMode = SHOW_TIME_PROGRESS_STATE_EXIT;
 
     private CircularProgressView mCpv;
     private TextView mExitBtn;
@@ -78,11 +65,11 @@ public class FocusActivity extends AppCompatActivity {
             mService = binder.getService();
             mService.setOnUpdateListener((delayMillis, progress, remainTimeStr, focusStateStr) ->
                     mHandler.post(() -> {
-                        mCpv.setProgress(progress, isFirstUpdate ? delayMillis / 2 : delayMillis);
+                        mCpv.setProgress(progress, mIsFirstUpdate ? delayMillis / 2 : delayMillis);
                         mTimeTv.setText(remainTimeStr);
                         mStateTv.setText(focusStateStr);
-                        if (isFirstUpdate) {
-                            isFirstUpdate = false;
+                        if (mIsFirstUpdate) {
+                            mIsFirstUpdate = false;
                         }
                     }));
         }
@@ -108,25 +95,25 @@ public class FocusActivity extends AppCompatActivity {
         mStateTv = findViewById(R.id.focus_state_tv);
         mExitBtn = findViewById(R.id.focus_exit_btn);
         mExitBtn.setOnClickListener(v -> exitFocus());
-        ViewGroup mFocusLayout = findViewById(R.id.focus_layout);
+        ViewGroup focusLayout = findViewById(R.id.focus_layout);
         // 为布局添加长按监听
-        mFocusLayout.setOnTouchListener(new View.OnTouchListener() {
-            int mDownX;
-            int mDownY;
-            final int mTouchSlop = ViewConfiguration.get(FocusActivity.this).getScaledTouchSlop();
+        focusLayout.setOnTouchListener(new View.OnTouchListener() {
+            int downX;
+            int downY;
+            final int touchSlop = ViewConfiguration.get(FocusActivity.this).getScaledTouchSlop();
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         mHandler.removeCallbacks(mAlterDisplayModeRunnable);
-                        mDownX = (int) event.getX();
-                        mDownY = (int) event.getY();
+                        downX = (int) event.getX();
+                        downY = (int) event.getY();
                         mHandler.postDelayed(mAlterDisplayModeRunnable, 800);
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        if (Math.abs(mDownX - event.getX()) > mTouchSlop
-                                || Math.abs(mDownY - event.getY()) > mTouchSlop) {
+                        if (Math.abs(downX - event.getX()) > touchSlop
+                                || Math.abs(downY - event.getY()) > touchSlop) {
                             // 移动过远则不是长按
                             mHandler.removeCallbacks(mAlterDisplayModeRunnable);
                         }
@@ -138,10 +125,10 @@ public class FocusActivity extends AppCompatActivity {
                 return false;
             }
         });
-        //重置有必要的变量
-        displayMode = SHOW_TIME_PROGRESS_STATE_EXIT;
-        disallowAnim = false;
-        isFirstUpdate = true;
+        // 重置有必要的变量
+        mDisplayMode = SHOW_TIME_PROGRESS_STATE_EXIT;
+        mDisallowAnim = false;
+        mIsFirstUpdate = true;
     }
 
     @Override
@@ -154,25 +141,25 @@ public class FocusActivity extends AppCompatActivity {
         mStateTv = findViewById(R.id.focus_state_tv);
         mExitBtn = findViewById(R.id.focus_exit_btn);
         mExitBtn.setOnClickListener(v -> exitFocus());
-        ViewGroup mFocusLayout = findViewById(R.id.focus_layout);
+        ViewGroup focusLayout = findViewById(R.id.focus_layout);
         // 为布局添加长按监听
-        mFocusLayout.setOnTouchListener(new View.OnTouchListener() {
-            int mDownX;
-            int mDownY;
-            final int mTouchSlop = ViewConfiguration.get(FocusActivity.this).getScaledTouchSlop();
+        focusLayout.setOnTouchListener(new View.OnTouchListener() {
+            int downX;
+            int downY;
+            final int touchSlop = ViewConfiguration.get(FocusActivity.this).getScaledTouchSlop();
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         mHandler.removeCallbacks(mAlterDisplayModeRunnable);
-                        mDownX = (int) event.getX();
-                        mDownY = (int) event.getY();
+                        downX = (int) event.getX();
+                        downY = (int) event.getY();
                         mHandler.postDelayed(mAlterDisplayModeRunnable, 800);
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        if (Math.abs(mDownX - event.getX()) > mTouchSlop
-                                || Math.abs(mDownY - event.getY()) > mTouchSlop) {
+                        if (Math.abs(downX - event.getX()) > touchSlop
+                                || Math.abs(downY - event.getY()) > touchSlop) {
                             // 移动过远则不是长按
                             mHandler.removeCallbacks(mAlterDisplayModeRunnable);
                         }
@@ -228,8 +215,8 @@ public class FocusActivity extends AppCompatActivity {
      * @param v 要隐藏的view
      */
     private void fadeOutView(View v) {
-        if (!disallowAnim) {
-            disallowAnim = true;
+        if (!mDisallowAnim) {
+            mDisallowAnim = true;
             v.animate()
                     .alpha(0f)
                     .setDuration(FocusActivity.ANIM_DURATION)
@@ -237,7 +224,7 @@ public class FocusActivity extends AppCompatActivity {
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             v.setVisibility(View.INVISIBLE);
-                            disallowAnim = false;
+                            mDisallowAnim = false;
                         }
                     });
         }
@@ -249,9 +236,9 @@ public class FocusActivity extends AppCompatActivity {
      * @param views 要显示的View数组
      */
     private void fadeInViews(View[] views) {
-        if (!disallowAnim) {
-            disallowAnim = true;
-            animatingViewsCount = views.length;
+        if (!mDisallowAnim) {
+            mDisallowAnim = true;
+            mAnimatingViewsCount = views.length;
             for (View v : views) {
                 v.setVisibility(View.VISIBLE);
                 v.animate()
@@ -260,9 +247,9 @@ public class FocusActivity extends AppCompatActivity {
                         .setListener(new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {
-                                animatingViewsCount--;
-                                if (animatingViewsCount == 0)
-                                    disallowAnim = false;
+                                mAnimatingViewsCount--;
+                                if (mAnimatingViewsCount == 0)
+                                    mDisallowAnim = false;
                             }
                         });
             }
@@ -273,17 +260,17 @@ public class FocusActivity extends AppCompatActivity {
      * 切换要显示的内容，目前有4种模式
      */
     private void alterDisplayMode() {
-        if (!disallowAnim) {
-            displayMode = (displayMode + 1) % DISPLAY_MODES_COUNT;
-            if (displayMode == SHOW_TIME_PROGRESS_STATE_EXIT) {
+        if (!mDisallowAnim) {
+            mDisplayMode = (mDisplayMode + 1) % DISPLAY_MODES_COUNT;
+            if (mDisplayMode == SHOW_TIME_PROGRESS_STATE_EXIT) {
                 fadeInViews(new View[]{mTimeTv, mCpv, mStateTv, mExitBtn});
-            } else if (displayMode == SHOW_TIME_PROGRESS_STATE) {
+            } else if (mDisplayMode == SHOW_TIME_PROGRESS_STATE) {
                 fadeOutView(mExitBtn);
-            } else if (displayMode == SHOW_TIME_PROGRESS) {
+            } else if (mDisplayMode == SHOW_TIME_PROGRESS) {
                 fadeOutView(mStateTv);
-            } else if (displayMode == SHOW_TIME) {
+            } else if (mDisplayMode == SHOW_TIME) {
                 fadeOutView(mCpv);
-            } else if (displayMode == SHOW_NONE) {
+            } else if (mDisplayMode == SHOW_NONE) {
                 fadeOutView(mTimeTv);
             }
         }
@@ -304,13 +291,12 @@ public class FocusActivity extends AppCompatActivity {
      */
     private void hideSystemUI() {
         View decorView = getWindow().getDecorView();
-        decorView.setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN);
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN);
     }
 
 }

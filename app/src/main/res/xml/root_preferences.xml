@@ -70,6 +70,7 @@
             app:title="@string/settings_fall_asleep_title" />
 
     </PreferenceCategory>
+
     <PreferenceCategory app:title="@string/settings_help_header">
 
         <Preference
@@ -82,6 +83,5 @@
             app:title="@string/settings_manage_app_launch_settings_title" />
 
     </PreferenceCategory>
-
 
 </PreferenceScreen>

@@ -16,20 +16,19 @@ public final class ToastUtil {
     public @interface Duration {
     }
 
-    private static Toast mToast;
+    private static Toast sToast;
 
     private ToastUtil() {
-
     }
 
     public static void showToast(Context context, CharSequence text, @Duration int duration) {
-        if (mToast != null) {
-            mToast.setText(text);
-            mToast.setDuration(duration);
+        if (sToast != null) {
+            sToast.setText(text);
+            sToast.setDuration(duration);
         } else {
-            mToast = Toast.makeText(context.getApplicationContext(), text, duration);
+            sToast = Toast.makeText(context.getApplicationContext(), text, duration);
         }
-        mToast.show();
+        sToast.show();
     }
 
     public static void showToast(Context context, int resId, @Duration int duration) {

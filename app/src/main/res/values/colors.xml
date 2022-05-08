@@ -34,6 +34,6 @@
     <color name="black">#000000</color>
     <!-- FocusActivity文字色，colorOnPrimary -->
     <color name="white">#FFFFFF</color>
-
+    <!-- ScheduleLayout当前时间线颜色 -->
     <color name="red">#FF0000</color>
 </resources>

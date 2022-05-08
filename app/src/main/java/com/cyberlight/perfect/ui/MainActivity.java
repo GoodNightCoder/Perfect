@@ -50,19 +50,23 @@ import java.util.List;
 
 @SuppressLint({"NotifyDataSetChanged", "UnspecifiedImmutableFlag"})
 public class MainActivity extends AppCompatActivity implements OnDataAddedListener {
+
+    // 用于监听日期选择对话框结果
     private static final String PICK_D_REQUEST_KEY = "pick_d_request_key";
 
     // 状态恢复用
     private static final String CUR_EPOCH_DAY_KEY = "cur_epoch_day_key";
     private static final String CUR_POSITION_KEY = "cur_position_key";
     private static final String CUR_SCROLL_Y_KEY = "cur_scroll_y_key";
+
+    // ViewPager总页数
     public static final int PAGES_COUNT = 50;
 
     // 当前页
     private int mCurPosition;
     // 当前页日期
     private LocalDate mCurDate;
-    // 当前滚动Y位置
+    // 当前滚动到的Y位置
     private int mCurScrollY;
     // 各页的日期
     private final LocalDate[] mPageDates = new LocalDate[PAGES_COUNT];
@@ -72,15 +76,14 @@ public class MainActivity extends AppCompatActivity implements OnDataAddedListen
     private List<Plan> mPlans;
 
     private TextView mDateTv;
-    private ViewPager2 mPager;
-    private FloatingActionButton mFab;
+    private ViewPager2 mVp;
+    private FloatingActionButton mTodayFab;
     private PagerAdapter mPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         if (savedInstanceState != null) {
             // 恢复数据
             long epochDay = savedInstanceState.getLong(CUR_EPOCH_DAY_KEY);
@@ -88,39 +91,38 @@ public class MainActivity extends AppCompatActivity implements OnDataAddedListen
             mCurPosition = savedInstanceState.getInt(CUR_POSITION_KEY);
             mCurScrollY = savedInstanceState.getInt(CUR_SCROLL_Y_KEY);
         } else {
-            // 初始化数据
+            // 初始日期为今天
             mCurDate = LocalDate.now();
-            mCurPosition = PAGES_COUNT / 2;// 设置初始页为中间页
+            // 初始页为中间页
+            mCurPosition = PAGES_COUNT / 2;
             mCurScrollY = 0;
         }
+        // 初始化各页日期
         updatePageDates(mCurPosition, mCurDate);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
         // 初始化控件
         mDateTv = findViewById(R.id.main_date_tv);
-        mPager = findViewById(R.id.main_vp);
-        mFab = findViewById(R.id.main_today_fab);
-        ImageView mFocusIv = findViewById(R.id.main_focus_iv);
-        ImageView mSettingsIv = findViewById(R.id.main_settings_iv);
-        // 设置fab
-        mFab.setOnClickListener(v -> {
-            mFab.setVisibility(View.INVISIBLE);
+        mVp = findViewById(R.id.main_vp);
+        mTodayFab = findViewById(R.id.main_today_fab);
+        ImageView focusIv = findViewById(R.id.main_focus_iv);
+        ImageView settingsIv = findViewById(R.id.main_settings_iv);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        // 设置定位到今天的fab点击监听
+        mTodayFab.setOnClickListener(v -> {
+            mTodayFab.setVisibility(View.INVISIBLE);
             mCurDate = LocalDate.now();
             onDateChanged();
             updatePageDates(mCurPosition, mCurDate);
             mPagerAdapter.notifyDataSetChanged();
         });
-        // 对专注模式图片添加点击监听
-        mFocusIv.setOnClickListener(v -> {
+        focusIv.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, FocusActivity.class);
             startActivity(intent);
         });
-        // 对设置图片添加点击监听
-        mSettingsIv.setOnClickListener(v -> {
+        settingsIv.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(intent);
         });
-        // 设置timeTv
         mDateTv.setOnClickListener(v -> {
             int initYear = mCurDate.getYear();
             int initMonth = mCurDate.getMonthValue();
@@ -131,11 +133,11 @@ public class MainActivity extends AppCompatActivity implements OnDataAddedListen
                 dialogFragment.show(fragmentManager, DatePickerFragment.TAG);
             }
         });
-        // 获取并设置viewPager
+        // 设置ViewPager
         mPagerAdapter = new PagerAdapter();
-        mPager.setAdapter(mPagerAdapter);
-        mPager.setCurrentItem(mCurPosition, false);
-        mPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+        mVp.setAdapter(mPagerAdapter);
+        mVp.setCurrentItem(mCurPosition, false);
+        mVp.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
@@ -144,13 +146,13 @@ public class MainActivity extends AppCompatActivity implements OnDataAddedListen
                 mCurDate = LocalDate.ofEpochDay(mPageDates[position].toEpochDay());
                 onDateChanged();
                 if (position == 0) {
-                    mPager.setUserInputEnabled(false);
+                    mVp.setUserInputEnabled(false);
                     updatePageDates(PAGES_COUNT - 2, mCurDate);
                     // 此处无需pagerAdapter.notifyDataSetChanged();
                     // 因为从第0页跳转到倒数第二页时，倒数第二页是还没有加载的
                     // 所以跳转后倒数第二页加载的就已经是新数据了，不必通知数据有更新
                 } else if (position == PAGES_COUNT - 1) {
-                    mPager.setUserInputEnabled(false);
+                    mVp.setUserInputEnabled(false);
                     updatePageDates(1, mCurDate);
                     // 理由同上，无需pagerAdapter.notifyDataSetChanged();
                 }
@@ -161,11 +163,11 @@ public class MainActivity extends AppCompatActivity implements OnDataAddedListen
                 super.onPageScrollStateChanged(state);
                 if (state == ViewPager2.SCROLL_STATE_IDLE) {
                     if (mCurPosition == 0) {
-                        mPager.setCurrentItem(PAGES_COUNT - 2, false);
-                        mPager.setUserInputEnabled(true);
+                        mVp.setCurrentItem(PAGES_COUNT - 2, false);
+                        mVp.setUserInputEnabled(true);
                     } else if (mCurPosition == PAGES_COUNT - 1) {
-                        mPager.setCurrentItem(1, false);
-                        mPager.setUserInputEnabled(true);
+                        mVp.setCurrentItem(1, false);
+                        mVp.setUserInputEnabled(true);
                     }
                 }
             }
@@ -196,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements OnDataAddedListen
     @Override
     protected void onResume() {
         super.onResume();
-        // 保证数据能及时更新，比如去SettingsActivity删除数据后
+        // 保证数据能及时更新
         mEvents = DbUtil.getEvents(this);
         mPlans = DbUtil.getPlans(this);
         mPagerAdapter.notifyDataSetChanged();
@@ -217,11 +219,11 @@ public class MainActivity extends AppCompatActivity implements OnDataAddedListen
         mDateTv.setText(DateTimeFormatUtil.getReadableDate(this, mCurDate));
         LocalDate today = LocalDate.now();
         boolean isToday = today.equals(mCurDate);
-        if (mFab.getVisibility() == View.VISIBLE && isToday) {
-            mFab.setVisibility(View.INVISIBLE);
+        if (mTodayFab.getVisibility() == View.VISIBLE && isToday) {
+            mTodayFab.setVisibility(View.INVISIBLE);
         }
-        if (mFab.getVisibility() == View.INVISIBLE && !isToday) {
-            mFab.setVisibility(View.VISIBLE);
+        if (mTodayFab.getVisibility() == View.INVISIBLE && !isToday) {
+            mTodayFab.setVisibility(View.VISIBLE);
         }
     }
 
@@ -243,7 +245,8 @@ public class MainActivity extends AppCompatActivity implements OnDataAddedListen
 
     @Override
     public void onDataAdded(String tag) {
-        // 保证数据在添加事件、计划、总结对话框关闭后能及时更新
+        // 保证数据在添加事件、计划、总结对话框关闭后能及时更新，
+        // 并且对事件、计划添加之后还需更新事件集、计划集
         if (tag.equals(EventDialogFragment.TAG)) {
             mEvents = DbUtil.getEvents(this);
         } else if (tag.equals(PlanDialogFragment.TAG)) {
@@ -259,7 +262,6 @@ public class MainActivity extends AppCompatActivity implements OnDataAddedListen
         public static final String TAG = "DatePickerFragment";
 
         private static final String D_REQUEST_KEY = "d_request_key";
-
         public static final String D_YEAR_KEY = "d_year_key";
         public static final String D_MONTH_KEY = "d_month_key";
         public static final String D_DAY_OF_MONTH_KEY = "d_day_of_month_key";
@@ -330,61 +332,55 @@ public class MainActivity extends AppCompatActivity implements OnDataAddedListen
             private final FocusRecordRecyclerAdapter focusRecordRecyclerAdapter;
             private final PlanRecyclerAdapter planRecyclerAdapter;
 
-            private final ScheduleLayout mScheduleLayout;
-            private final RelativeLayout mSummaryContentLayout;
-            private final ImageView mThumbUpIv1;
-            private final ImageView mThumbUpIv2;
-            private final ImageView mThumbUpIv3;
-            private final ImageView mThumbUpIv4;
-            private final ImageView mThumbUpIv5;
-            private final TextView mCommentTv;
-            private final TextView mMemoTv;
-            private final TextView mNoSummaryTv;
-            private final ScrollView mSv;
+            private final ScheduleLayout scheduleLayout;
+            private final RelativeLayout summaryContentLayout;
+            private final ImageView thumbUpIv1;
+            private final ImageView thumbUpIv2;
+            private final ImageView thumbUpIv3;
+            private final ImageView thumbUpIv4;
+            private final ImageView thumbUpIv5;
+            private final TextView reviewTv;
+            private final TextView memoTv;
+            private final TextView noSummaryTv;
+            private final ScrollView sv;
 
             public PageViewHolder(View v) {
                 super(v);
-                // 获取控件
-                mScheduleLayout = v.findViewById(R.id.main_schedule);
-                mSummaryContentLayout = v.findViewById(R.id.main_summary_content_layout);
-                mThumbUpIv1 = v.findViewById(R.id.main_thumb_up_iv1);
-                mThumbUpIv2 = v.findViewById(R.id.main_thumb_up_iv2);
-                mThumbUpIv3 = v.findViewById(R.id.main_thumb_up_iv3);
-                mThumbUpIv4 = v.findViewById(R.id.main_thumb_up_iv4);
-                mThumbUpIv5 = v.findViewById(R.id.main_thumb_up_iv5);
-                mCommentTv = v.findViewById(R.id.main_comment_tv);
-                mMemoTv = v.findViewById(R.id.main_memo_tv);
-                mNoSummaryTv = v.findViewById(R.id.main_no_summary_tv);
-                mSv = v.findViewById(R.id.main_sv);
-                ImageView mAddEventIv = v.findViewById(R.id.main_add_event_iv);
-                ImageView mAddFocusRecordIv = v.findViewById(R.id.main_add_focus_record_iv);
-                ImageView mAddPlanIv = v.findViewById(R.id.main_add_plan_iv);
-                ImageView mAddSummaryIv = v.findViewById(R.id.main_add_summary_iv);
-                RecyclerView mFocusRecordsRv = v.findViewById(R.id.main_focus_records_rv);
-                RecyclerView mPlansRv = v.findViewById(R.id.main_plans_rv);
-
+                scheduleLayout = v.findViewById(R.id.main_schedule);
+                summaryContentLayout = v.findViewById(R.id.main_summary_content_layout);
+                thumbUpIv1 = v.findViewById(R.id.main_thumb_up_iv1);
+                thumbUpIv2 = v.findViewById(R.id.main_thumb_up_iv2);
+                thumbUpIv3 = v.findViewById(R.id.main_thumb_up_iv3);
+                thumbUpIv4 = v.findViewById(R.id.main_thumb_up_iv4);
+                thumbUpIv5 = v.findViewById(R.id.main_thumb_up_iv5);
+                reviewTv = v.findViewById(R.id.main_review_tv);
+                memoTv = v.findViewById(R.id.main_memo_tv);
+                noSummaryTv = v.findViewById(R.id.main_no_summary_tv);
+                sv = v.findViewById(R.id.main_sv);
+                ImageView addEventIv = v.findViewById(R.id.main_add_event_iv);
+                ImageView addFocusRecordIv = v.findViewById(R.id.main_add_focus_record_iv);
+                ImageView addPlanIv = v.findViewById(R.id.main_add_plan_iv);
+                ImageView addSummaryIv = v.findViewById(R.id.main_add_summary_iv);
+                RecyclerView focusRecordsRv = v.findViewById(R.id.main_focus_records_rv);
+                RecyclerView plansRv = v.findViewById(R.id.main_plans_rv);
                 FragmentManager fragmentManager = getSupportFragmentManager();
-                // 对添加事件按钮设置监听
-                mAddEventIv.setOnClickListener(v13 -> {
+                addEventIv.setOnClickListener(v13 -> {
                     if (fragmentManager.findFragmentByTag(EventDialogFragment.TAG) == null) {
                         DialogFragment dialogFragment = new EventDialogFragment();
                         dialogFragment.show(fragmentManager, EventDialogFragment.TAG);
                     }
                 });
-                // 对添加专注按钮设置监听
-                mAddFocusRecordIv.setOnClickListener(v14 -> {
+                addFocusRecordIv.setOnClickListener(v14 -> {
                     Intent intent = new Intent(MainActivity.this, FocusActivity.class);
                     startActivity(intent);
                 });
-                // 对添加计划按钮设置监听
-                mAddPlanIv.setOnClickListener(v12 -> {
+                addPlanIv.setOnClickListener(v12 -> {
                     if (fragmentManager.findFragmentByTag(PlanDialogFragment.TAG) == null) {
                         DialogFragment dialogFragment = new PlanDialogFragment();
                         dialogFragment.show(fragmentManager, PlanDialogFragment.TAG);
                     }
                 });
-                // 对添加总结按钮设置监听
-                mAddSummaryIv.setOnClickListener(v1 -> {
+                addSummaryIv.setOnClickListener(v1 -> {
                     if (hasSummarized) {
                         ToastUtil.showToast(MainActivity.this,
                                 R.string.main_have_sum_toast,
@@ -408,10 +404,10 @@ public class MainActivity extends AppCompatActivity implements OnDataAddedListen
                         return false;
                     }
                 };
-                mFocusRecordsRv.setLayoutManager(focusRecordsRvLayoutManager);
+                focusRecordsRv.setLayoutManager(focusRecordsRvLayoutManager);
                 focusRecordRecyclerAdapter = new FocusRecordRecyclerAdapter(
                         MainActivity.this, focusRecords);
-                mFocusRecordsRv.setAdapter(focusRecordRecyclerAdapter);
+                focusRecordsRv.setAdapter(focusRecordRecyclerAdapter);
                 // 初始化PlansRv，通过LayoutManager禁止其滚动
                 RecyclerView.LayoutManager plansRvLayoutManager = new LinearLayoutManager(
                         MainActivity.this, LinearLayoutManager.VERTICAL, false) {
@@ -420,19 +416,19 @@ public class MainActivity extends AppCompatActivity implements OnDataAddedListen
                         return false;
                     }
                 };
-                mPlansRv.setLayoutManager(plansRvLayoutManager);
+                plansRv.setLayoutManager(plansRvLayoutManager);
                 planRecyclerAdapter = new PlanRecyclerAdapter(MainActivity.this, specPlans);
-                mPlansRv.setAdapter(planRecyclerAdapter);
+                plansRv.setAdapter(planRecyclerAdapter);
                 // scrollView监听
-                mSv.setOnScrollChangeListener((v15, scrollX, scrollY, oldScrollX, oldScrollY)
-                        -> mCurScrollY = scrollY);
+                sv.setOnScrollChangeListener((v15, scrollX, scrollY, oldScrollX, oldScrollY) ->
+                        mCurScrollY = scrollY);
             }
 
             private void setRating(int rating) {
                 int purpleA50 = ContextCompat.getColor(MainActivity.this, R.color.purple_a50);
                 int grayA50 = ContextCompat.getColor(MainActivity.this, R.color.gray_a50);
                 final ImageView[] imageViews =
-                        {mThumbUpIv1, mThumbUpIv2, mThumbUpIv3, mThumbUpIv4, mThumbUpIv5};
+                        {thumbUpIv1, thumbUpIv2, thumbUpIv3, thumbUpIv4, thumbUpIv5};
                 for (int i = 0; i < imageViews.length; i++) {
                     imageViews[i].setColorFilter(i < rating ? purpleA50 : grayA50);
                 }
@@ -446,9 +442,9 @@ public class MainActivity extends AppCompatActivity implements OnDataAddedListen
             }
 
             private void refreshSchedule() {
-                mScheduleLayout.setEvents(mEvents);
-                mScheduleLayout.setDate(date);
-                mScheduleLayout.refresh();
+                scheduleLayout.setEvents(mEvents);
+                scheduleLayout.setDate(date);
+                scheduleLayout.refresh();
             }
 
             private void refreshFocusRecords() {
@@ -482,16 +478,16 @@ public class MainActivity extends AppCompatActivity implements OnDataAddedListen
                         MainActivity.this, DateTimeFormatUtil.getNeatDate(date));
                 if (summary != null) {
                     hasSummarized = true;
-                    mSummaryContentLayout.setVisibility(View.VISIBLE);
-                    mNoSummaryTv.setVisibility(View.GONE);
+                    summaryContentLayout.setVisibility(View.VISIBLE);
+                    noSummaryTv.setVisibility(View.GONE);
                     // 将Summary的内容应用到界面上
                     setRating(summary.rating);
-                    mCommentTv.setText(summary.comment);
-                    mMemoTv.setText(summary.memo);
+                    reviewTv.setText(summary.review);
+                    memoTv.setText(summary.memo);
                 } else {
                     hasSummarized = false;
-                    mSummaryContentLayout.setVisibility(View.GONE);
-                    mNoSummaryTv.setVisibility(View.VISIBLE);
+                    summaryContentLayout.setVisibility(View.GONE);
+                    noSummaryTv.setVisibility(View.VISIBLE);
                 }
             }
         }
@@ -520,9 +516,9 @@ public class MainActivity extends AppCompatActivity implements OnDataAddedListen
             // 页面可见时才刷新数据，是为了在跨天事件完成状态改变时，相邻页该事件的完成状态也能及时改变
             holder.refreshData();
             // scrollView绘制完后滚动到之前已滚到的位置
-            holder.mSv.post(() -> {
-                holder.mSv.scrollTo(0, mCurScrollY);
-                mCurScrollY = holder.mSv.getScrollY();
+            holder.sv.post(() -> {
+                holder.sv.scrollTo(0, mCurScrollY);
+                mCurScrollY = holder.sv.getScrollY();
             });
         }
 

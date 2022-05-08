@@ -29,6 +29,7 @@ import java.time.LocalDate;
 public class SummaryDialogFragment extends DialogFragment {
     public static final String TAG = "SummaryDialogFragment";
 
+    // 状态恢复用
     private static final String SUMMARY_DATE_KEY = "summary_date_key";
     private static final String SUMMARY_RATING_KEY = "summary_rating_key";
 
@@ -40,11 +41,10 @@ public class SummaryDialogFragment extends DialogFragment {
 
     private LocalDate mDate;
     private int mRating;
+    private OnDataAddedListener mOnDataAddedListener;
 
     public SummaryDialogFragment() {
     }
-
-    private OnDataAddedListener mOnDataAddedListener;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -64,7 +64,6 @@ public class SummaryDialogFragment extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         @SuppressLint("InflateParams")
         View view = inflater.inflate(R.layout.dialog_summary, null);
-
         Context context = getContext();
         if (savedInstanceState != null) {
             mRating = savedInstanceState.getInt(SUMMARY_RATING_KEY);
@@ -73,7 +72,7 @@ public class SummaryDialogFragment extends DialogFragment {
             mRating = 0;
             mDate = LocalDate.now();
         }
-        //初始化5个评分图片
+        // 初始化5个评分图片
         mThumbUpIv1 = view.findViewById(R.id.dialog_summary_thumb_up_iv1);
         mThumbUpIv2 = view.findViewById(R.id.dialog_summary_thumb_up_iv2);
         mThumbUpIv3 = view.findViewById(R.id.dialog_summary_thumb_up_iv3);
@@ -88,20 +87,20 @@ public class SummaryDialogFragment extends DialogFragment {
         // 设置按钮栏
         TextView dialogTitleTv = view.findViewById(R.id.dialog_action_bar_title_tv);
         dialogTitleTv.setText(R.string.summary_dialog_title);
-        ImageView cancelIv = view.findViewById(R.id.dialog_action_bar_cancel_iv);
-        cancelIv.setOnClickListener(v -> dismiss());
         ImageView confirmIv = view.findViewById(R.id.dialog_action_bar_confirm_iv);
         confirmIv.setOnClickListener(v -> {
             EditText reviewEt = view.findViewById(R.id.dialog_summary_review_et);
             EditText memoEt = view.findViewById(R.id.dialog_summary_memo_et);
             String review = reviewEt.getText().toString();
             String memo = memoEt.getText().toString();
+            // review不能为空
             if (review.equals("")) {
                 ToastUtil.showToast(context,
                         R.string.summary_no_review_toast,
                         Toast.LENGTH_SHORT);
                 return;
             }
+            // 不能没有评分
             if (mRating == 0) {
                 ToastUtil.showToast(context,
                         R.string.summary_no_rating_toast,
@@ -122,6 +121,8 @@ public class SummaryDialogFragment extends DialogFragment {
             }
             dismiss();
         });
+        ImageView cancelIv = view.findViewById(R.id.dialog_action_bar_cancel_iv);
+        cancelIv.setOnClickListener(v -> dismiss());
         // 设置对话框
         Dialog dialog = new Dialog(context, R.style.SlideBottomAnimDialog);
         dialog.setContentView(view);
@@ -137,7 +138,6 @@ public class SummaryDialogFragment extends DialogFragment {
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        //保存对话框状态
         outState.putInt(SUMMARY_RATING_KEY, mRating);
         outState.putLong(SUMMARY_DATE_KEY, mDate.toEpochDay());
         super.onSaveInstanceState(outState);

@@ -77,7 +77,7 @@ public final class DbContract {
         public static final String COLUMN_NAME_COMPLETION_TIME = "completion_time";
 
         /**
-         * 专注时长，有20、25、40、45
+         * 专注时长
          */
         public static final String COLUMN_NAME_FOCUS_DURATION = "focus_duration";
     }
@@ -120,14 +120,14 @@ public final class DbContract {
         public static final String TABLE_NAME = "summary";
 
         /**
-         * 打分,0到5
+         * 评分
          */
         public static final String COLUMN_NAME_RATING = "rating";
 
         /**
-         * 总结文字
+         * 回顾
          */
-        public static final String COLUMN_NAME_SUMMARY_TEXT = "summary_text";
+        public static final String COLUMN_NAME_SUMMARY_REVIEW = "summary_review";
 
         /**
          * 总结对应的日期
@@ -135,7 +135,7 @@ public final class DbContract {
         public static final String COLUMN_NAME_SUMMARY_DATE = "summary_date";
 
         /**
-         * 总结的明日备忘
+         * 明日备忘
          */
         public static final String COLUMN_NAME_SUMMARY_MEMO = "summary_memo";
     }

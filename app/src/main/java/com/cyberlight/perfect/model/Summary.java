@@ -5,14 +5,14 @@ import androidx.annotation.NonNull;
 public class Summary {
     public final int summaryId;
     public final int rating;
-    public final String comment;
+    public final String review;
     public final String memo;
     public final String dateStr;
 
-    public Summary(int summaryId, int rating, String comment, String memo, String dateStr) {
+    public Summary(int summaryId, int rating, String review, String memo, String dateStr) {
         this.summaryId = summaryId;
         this.rating = rating;
-        this.comment = comment;
+        this.review = review;
         this.memo = memo;
         this.dateStr = dateStr;
     }
@@ -23,7 +23,7 @@ public class Summary {
         return "Summary{" +
                 "summaryId=" + summaryId +
                 ", rating=" + rating +
-                ", comment='" + comment + '\'' +
+                ", review='" + review + '\'' +
                 ", memo='" + memo + '\'' +
                 ", dateStr='" + dateStr + '\'' +
                 '}';

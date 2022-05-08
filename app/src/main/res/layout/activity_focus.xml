@@ -41,4 +41,3 @@
         android:text="@string/focus_exit_btn_text" />
 
 </RelativeLayout>
-

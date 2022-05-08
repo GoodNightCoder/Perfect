@@ -3,7 +3,6 @@ package com.cyberlight.perfect.model;
 import androidx.annotation.NonNull;
 
 public class Plan {
-
     public final int planId;
     public final String planContent;
     public final int targetNum;

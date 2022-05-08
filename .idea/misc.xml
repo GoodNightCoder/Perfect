@@ -5,18 +5,28 @@
       <map>
         <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable-v24/bg_dialog_rc_30.xml" value="0.1" />
         <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/bg_btn.xml" value="0.184" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/bg_btn_rc_100.xml" value="0.177" />
         <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/bg_btn_rc_8.xml" value="0.1" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/bg_btn_rc_tl8_bl8.xml" value="0.177" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/bg_btn_rc_tr8_br8.xml" value="0.177" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/bg_dialog_rc_30.xml" value="0.177" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/bg_dialog_rc_tl30_tr30.xml" value="0.177" />
         <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/bg_finished_event_btn.xml" value="0.1" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/bg_stepper.xml" value="0.177" />
         <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/bg_unfinished_event_btn.xml" value="0.1" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/bg_vp_add_btn.xml" value="0.177" />
         <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/ic_baseline_add_22.xml" value="0.1" />
         <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/ic_baseline_arrow_back_ios_19.xml" value="0.1" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/ic_baseline_arrow_back_ios_24.xml" value="0.177" />
         <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/ic_baseline_check_24.xml" value="0.1" />
         <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/ic_baseline_close_24.xml" value="0.1" />
         <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/ic_baseline_my_location_24.xml" value="0.1" />
         <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/ic_baseline_remove_24.xml" value="0.1" />
         <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.1" />
         <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/ic_baseline_thumb_up_24.xml" value="0.1" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/ic_baseline_trip_origin_24.xml" value="0.177" />
         <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.1" />
+        <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/drawable/ic_outline_today_24.xml" value="0.177" />
         <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/layout/activity_focus.xml" value="0.2" />
         <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/layout/dialog_action_bar.xml" value="0.660377358490566" />
         <entry key="..\:/File/Dream/Project/Android/Perfect/app/src/main/res/layout/dialog_clear.xml" value="0.5125115848007414" />

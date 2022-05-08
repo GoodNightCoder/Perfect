@@ -18,6 +18,7 @@ import java.util.List;
 
 public class PlanRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    // ViewHolder类型
     private static final int TYPE_PLAN = 0;
     private static final int TYPE_NO_PLAN = 1;
 
@@ -40,7 +41,6 @@ public class PlanRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             super(v);
         }
     }
-
 
     public PlanRecyclerAdapter(Context context, List<SpecPlan> specPlans) {
         mContext = context;

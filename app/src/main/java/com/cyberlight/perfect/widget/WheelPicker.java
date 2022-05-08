@@ -26,30 +26,22 @@ import java.util.List;
 
 public class WheelPicker<T> extends View {
 
-    /**
-     * Fling最大初始速度
-     */
+    // Fling最大初始速度
     private static final int MAX_FLING_VELOCITY = 10000;
 
-    /**
-     * Fling最小初始速度
-     */
+    // Fling最小初始速度
     private static final int MIN_FLING_VELOCITY = 50;
 
-    /**
-     * 选择器的数据集
-     */
+    // 选择器的数据集
     private List<T> mDataList;
 
-    /**
-     * 选择器数据的格式
-     */
+    // 选择器数据的格式
     private Format mDataFormat;
 
-    /**
-     * 当前选中item在dataList中的下标值
-     */
+    // 当前选中item在dataList中的下标值
     private int mSelectedItemPosition;
+
+    // 选中监听器
     private OnItemSelectedListener<T> mOnItemSelectedListener;
 
     // 未选中项的文字样式
@@ -60,197 +52,127 @@ public class WheelPicker<T> extends View {
     // 选中项的文字样式
     private int mSelectedItemTextSize;
     private int mSelectedItemTextColor;
-    private final TextPaint mSelectedItemTextPaint;
     private float mSelectedItemTextStrokeWidth;
     private float mSelectedItemLetterSpacing;
+    private final TextPaint mSelectedItemTextPaint;
 
     // 指示文字样式
     private int mIndicatorTextSize;
     private int mIndicatorTextColor;
     private final TextPaint mIndicatorTextPaint;
 
-    /**
-     * 指示文字
-     */
+    // 指示文字
     private String mIndicatorText;
 
-    /**
-     * 用于测量文字最大宽度的文字
-     */
+    // 用于测量文字最大宽度
     private String mMaxWidthText;
 
-    /**
-     * 用于测量文字尺寸的paint
-     */
+    // 用于测量文字尺寸
     private final Paint mMeasureTextPaint;
 
-    /**
-     * 文字最大宽度，用来保证文字都能显示完全
-     */
+    // 文字最大宽度，用来保证文字都能显示完全
     private int mTextMaxWidth;
 
-    /**
-     * 文字最大高度，用来保证文字都能显示完全
-     */
+    // 文字最大高度，用来保证文字都能显示完全
     private int mTextMaxHeight;
 
-    /**
-     * Item高度方向留余的空间
-     */
+    // Item高度方向留余的空间
     private int mItemHeightSpace;
 
-    /**
-     * Item宽度方向留余的空间
-     */
+    // Item宽度方向留余的空间
     private int mItemWidthSpace;
 
-    /**
-     * 一个item所占高度
-     */
+    // 一个item所占高度
     private int mItemHeight;
 
-    /**
-     * 在选中item上下方的可见item个数(可见item总共有 mHalfVisibleItemCount*2+1 个)
-     */
+    // 在选中item上下方的可见item个数(可见item总共有 mHalfVisibleItemCount*2+1 个)
     private int mHalfVisibleItemCount;
 
-    /**
-     * 是否开启文字大小渐变
-     */
+    // 是否开启文字大小渐变
     private boolean mIsTextSizeGradual;
 
-    /**
-     * 是否开启文字颜色渐变
-     */
+    // 是否开启文字颜色渐变
     private boolean mIsTextColorGradual;
 
-    /**
-     * 是否开启文字透明度渐变
-     */
+    // 是否开启文字透明度渐变
     private boolean mIsTextAlphaGradual;
 
-    /**
-     * 是否绘制幕布
-     */
+    // 是否绘制幕布
     private boolean mIsShowCurtain;
 
-    /**
-     * 幕布颜色
-     */
+    // 幕布颜色
     private int mCurtainColor;
 
-    /**
-     * 用于绘制幕布
-     */
+    // 用于绘制幕布
     private final Paint mCurtainPaint;
 
-    /**
-     * 是否绘制选中项的分隔线
-     */
+    // 是否绘制选中项的分隔线
     private boolean mIsShowSelectedItemDivider;
 
-    /**
-     * 选中项的分隔线颜色
-     */
+    // 选中项的分隔线颜色
     private int mSelectedItemDividerColor;
 
-    /**
-     * 用于绘制选中项的分隔线
-     */
+    // 用于绘制选中项的分隔线
     private final Paint mSelectedItemDividerPaint;
 
-    /**
-     * 整个选择器的绘制区域
-     */
+    // 整个选择器的绘制区域
     private final Rect mDrawRect;
 
-    /**
-     * 选中item的区域
-     */
+    // 选中item的区域
     private final Rect mSelectedItemRect;
 
-    /**
-     * item文字绘制时的X坐标，使文字水平居中
-     */
+    // item文字绘制时的X坐标
     private int mTextDrawX;
 
-    /**
-     * 第一个item文字绘制时的Y坐标，使文字垂直居中
-     */
+    // 第一个item文字绘制时的Y坐标
     private int mFirstTextDrawY;
 
-    /**
-     * 中间item(也就是选中item)文字绘制时的Y坐标，使文字垂直居中
-     */
+    // 中间item(也就是选中item)文字绘制时的Y坐标
     private int mCenterTextDrawY;
 
-    /**
-     * 用于在手势移动超过TouchSlop之后使TouchSlop失效
-     */
+    // 用于在手势移动超过TouchSlop之后使TouchSlop失效
     private boolean mEnableTouchSlop;
 
-    /**
-     * TouchSlop，决定将手势解释为移动手势时需要移动的距离
-     */
+    // 将手势解释为移动手势时需要移动的距离
     private final int mTouchSlop;
 
-    /**
-     * 是否循环读取
-     */
+    // 是否循环读取
     private boolean mIsCyclic;
 
-    /**
-     * 处理触摸事件时用到的辅助变量，记录上个触摸事件的Y坐标
-     */
+    // 处理触摸事件时用到的辅助变量，记录上个触摸事件的Y坐标
     private int mLastTouchY;
 
-    /**
-     * 处理触摸事件时用到的辅助变量，记录手指按下时的Y坐标
-     */
+    // 处理触摸事件时用到的辅助变量，记录手指按下时的Y坐标
     private int mTouchDownY;
 
-    /**
-     * 处理触摸事件时用到的辅助变量，用于指示用户手势是否为取消滚动的手势
-     */
+    // 处理触摸事件时用到的辅助变量，用于指示用户手势是否为取消滚动的手势
     private boolean mIsAbortScroller;
 
-    /**
-     * Y方向偏移量，用来实现界面滚动
-     */
+    // Y方向偏移量，用来实现界面滚动
     private int mOffsetY;
 
-    /**
-     * Fling的最大Y值，限制滚动范围(Cyclic模式下置为Integer.MAX_VALUE)
-     */
+    // Fling的最大Y值，限制滚动范围(Cyclic模式下置为Integer.MAX_VALUE)
     private int mMaxFlingY;
 
-    /**
-     * Fling的最小Y值，限制滚动范围(Cyclic模式下置为Integer.MIN_VALUE)
-     */
+    // Fling的最小Y值，限制滚动范围(Cyclic模式下置为Integer.MIN_VALUE)
     private int mMinFlingY;
 
-    /**
-     * 用于跟踪和计算手势速度
-     */
+    // 用于跟踪和计算手势速度
     private VelocityTracker mVelocityTracker;
 
-    /**
-     * 用于实现滚动
-     */
+    // 用于实现滚动
     private final Scroller mScroller;
 
     private final Handler mHandler = new Handler();
 
-    /**
-     * 将scroller的值应用到界面
-     */
+    // 将mScroller的值应用到界面
     private final Runnable mScrollRunnable = new Runnable() {
         @Override
         public void run() {
             if (mScroller.computeScrollOffset()) {
                 mOffsetY = mScroller.getCurrY();
                 selectByOffsetY();
-                postInvalidate();
+                invalidate();
                 mHandler.postDelayed(this, 15);
             }
         }
@@ -390,8 +312,8 @@ public class WheelPicker<T> extends View {
         // 计算文字绘制的X坐标，使文字在item里水平居中
         mTextDrawX = mDrawRect.centerX();
         // 计算文字绘制的Y坐标，使文字在item里垂直居中
-        mFirstTextDrawY = mDrawRect.top + (int) ((mItemHeight - (mSelectedItemTextPaint.ascent() +
-                mSelectedItemTextPaint.descent())) / 2);
+        mFirstTextDrawY = mDrawRect.top + (int) ((mItemHeight - (mSelectedItemTextPaint.ascent()
+                + mSelectedItemTextPaint.descent())) / 2);
         mCenterTextDrawY = mFirstTextDrawY + mItemHeight * mHalfVisibleItemCount;
         // 计算selectedItem的边框位置
         mSelectedItemRect.set(mDrawRect.left,
@@ -411,12 +333,14 @@ public class WheelPicker<T> extends View {
             canvas.drawRect(mSelectedItemRect, mCurtainPaint);
         }
         if (mIsShowSelectedItemDivider) {
+            // 绘制选中项上方分隔线
             canvas.drawLine(mSelectedItemRect.left, mSelectedItemRect.top,
                     mSelectedItemRect.right, mSelectedItemRect.top, mSelectedItemDividerPaint);
+            // 绘制选中项下方分隔线
             canvas.drawLine(mSelectedItemRect.left, mSelectedItemRect.bottom,
                     mSelectedItemRect.right, mSelectedItemRect.bottom, mSelectedItemDividerPaint);
         }
-        int selectedPos = computePosition(mOffsetY);
+        final int selectedPos = computePosition(mOffsetY);
         // 首尾各多绘制一个用于缓冲
         for (int drawPos = selectedPos - mHalfVisibleItemCount - 1;
              drawPos <= selectedPos + mHalfVisibleItemCount + 1; drawPos++) {
@@ -444,11 +368,11 @@ public class WheelPicker<T> extends View {
             if (mIsTextAlphaGradual) {
                 float alphaRatio;
                 if (itemDrawY > mCenterTextDrawY) {// item在绘制区域下半部分
-                    alphaRatio = (float) (mDrawRect.bottom - itemDrawY) /
-                            (mDrawRect.bottom - mCenterTextDrawY);
+                    alphaRatio = (float) (mDrawRect.bottom - itemDrawY)
+                            / (mDrawRect.bottom - mCenterTextDrawY);
                 } else {// item在绘制区域上半部分
-                    alphaRatio = (float) (itemDrawY - mDrawRect.top) /
-                            (mCenterTextDrawY - mDrawRect.top);
+                    alphaRatio = (float) (itemDrawY - mDrawRect.top)
+                            / (mCenterTextDrawY - mDrawRect.top);
                 }
                 alphaRatio = alphaRatio < 0 ? 0 : alphaRatio;
                 mSelectedItemTextPaint.setAlpha((int) (alphaRatio * 255));
@@ -456,8 +380,8 @@ public class WheelPicker<T> extends View {
             }
             // 文字大小渐变
             if (mIsTextSizeGradual && distanceY < mItemHeight) {
-                float addedSize = (mItemHeight - distanceY) /
-                        (float) mItemHeight * (mSelectedItemTextSize - mItemTextSize);
+                float addedSize = (mItemHeight - distanceY)
+                        / (float) mItemHeight * (mSelectedItemTextSize - mItemTextSize);
                 mSelectedItemTextPaint.setTextSize(mItemTextSize + addedSize);
                 mItemTextPaint.setTextSize(mItemTextSize + addedSize);
             } else {
@@ -475,6 +399,7 @@ public class WheelPicker<T> extends View {
             }
         }
         if (!TextUtils.isEmpty(mIndicatorText)) {
+            // 在选中项后绘制指示文字
             canvas.drawText(mIndicatorText, mTextDrawX + mTextMaxWidth / 2.0f,
                     mCenterTextDrawY, mIndicatorTextPaint);
         }
@@ -493,11 +418,13 @@ public class WheelPicker<T> extends View {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (!mScroller.isFinished()) {
+                    // 手指按下时如果正在滚动，就要停止滚动
                     mScroller.abortAnimation();
                     mIsAbortScroller = true;
                 } else {
                     mIsAbortScroller = false;
                 }
+                // 创建或重置VelocityTracker，开始跟踪手势移动速度
                 if (mVelocityTracker == null) {
                     mVelocityTracker = VelocityTracker.obtain();
                 } else {
@@ -505,12 +432,15 @@ public class WheelPicker<T> extends View {
                 }
                 mVelocityTracker.addMovement(event);
                 mTouchDownY = mLastTouchY = (int) event.getY();
+                // 使TouchSlop生效
                 mEnableTouchSlop = true;
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (mEnableTouchSlop && Math.abs(mTouchDownY - event.getY()) < mTouchSlop) {
+                    // 手势移动距离还未超过TouchSlop，不是移动手势
                     break;
                 }
+                // 手势已被解释为移动手势
                 mEnableTouchSlop = false;
                 mVelocityTracker.addMovement(event);
                 float move = event.getY() - mLastTouchY;
@@ -521,80 +451,70 @@ public class WheelPicker<T> extends View {
                 break;
             case MotionEvent.ACTION_UP:
                 performClick();
+                // !mIsAbortScroller为true表示此轮手势开始时，选择器处于静止状态
+                // mTouchDownY == mLastTouchY表示手势未被解释为移动手势
+                // 即在选择器静止时用户进行点击，该条件分支触发
                 if (!mIsAbortScroller && mTouchDownY == mLastTouchY) {
-                    //用户点击后滚动到所点击item的位置
+                    // 滚动到用户所点击item的位置
                     if (event.getY() > mSelectedItemRect.bottom) {
-                        //用户点击selectedItemRect下方
-                        int scrollItem =
-                                (int) (event.getY() - mSelectedItemRect.bottom) / mItemHeight + 1;
-                        mScroller.startScroll(
-                                0,
-                                mOffsetY,
-                                0,
-                                -scrollItem * mItemHeight
-                        );
+                        // 用户点击选中项下方
+                        int scrollItem = (int) (event.getY() - mSelectedItemRect.bottom)
+                                / mItemHeight + 1;
+                        mScroller.startScroll(0, mOffsetY, 0, -scrollItem * mItemHeight);
                     } else if (event.getY() < mSelectedItemRect.top) {
-                        //用户点击selectedItemRect上方
-                        int scrollItem =
-                                (int) (mSelectedItemRect.top - event.getY()) / mItemHeight + 1;
-                        mScroller.startScroll(
-                                0,
-                                mOffsetY,
-                                0,
-                                scrollItem * mItemHeight
-                        );
+                        // 用户点击选中项上方
+                        int scrollItem = (int) (mSelectedItemRect.top - event.getY())
+                                / mItemHeight + 1;
+                        mScroller.startScroll(0, mOffsetY, 0, scrollItem * mItemHeight);
                     }
                 } else {
-                    //用户滑动
+                    // 计算最近1000ms内的手势速度，计算结果不超过MAX_FLING_VELOCITY
                     mVelocityTracker.computeCurrentVelocity(1000, MAX_FLING_VELOCITY);
+                    // 获取手势速度计算结果
                     int velocityY = (int) mVelocityTracker.getYVelocity();
-                    if (Math.abs(velocityY) > MIN_FLING_VELOCITY &&
-                            !(mOffsetY < mMinFlingY && velocityY < 0) &&
-                            !(mOffsetY > mMaxFlingY && velocityY > 0)
-                    ) {
-                        //用户滑动较快，开始fling
-                        mScroller.fling(
-                                0,
+                    if (Math.abs(velocityY) > MIN_FLING_VELOCITY
+                            && !(mOffsetY < mMinFlingY && velocityY < 0)
+                            && !(mOffsetY > mMaxFlingY && velocityY > 0)) {
+                        // 用户滑动较快，开始fling
+                        mScroller.fling(0,
                                 mOffsetY,
                                 0,
                                 velocityY,
                                 0,
                                 0,
                                 mMinFlingY,
-                                mMaxFlingY
-                        );
-                        //使fling结束在item对齐的位置
-                        mScroller.setFinalY(
-                                mScroller.getFinalY() + computeDistanceToEndY(mScroller.getFinalY())
-                        );
+                                mMaxFlingY);
+                        // 使fling结束在item对齐的位置
+                        mScroller.setFinalY(mScroller.getFinalY()
+                                + computeDistanceToEndY(mScroller.getFinalY()));
                     } else {
-                        //用户滑动较慢，此时的情形为用户手指定在屏幕上不动然后松手，所以将item滚动到最近对齐位置即可
-                        mScroller.startScroll(
-                                0,
+                        // 用户滑动较慢，滚动到最近的item对齐位置
+                        mScroller.startScroll(0,
                                 mOffsetY,
                                 0,
-                                computeDistanceToEndY(mOffsetY)
-                        );
+                                computeDistanceToEndY(mOffsetY));
                     }
                 }
                 if (!mIsCyclic) {
+                    // 限制滚动不要超出边界
                     if (mScroller.getFinalY() > mMaxFlingY) {
                         mScroller.setFinalY(mMaxFlingY);
                     } else if (mScroller.getFinalY() < mMinFlingY) {
                         mScroller.setFinalY(mMinFlingY);
                     }
                 }
-                mHandler.post(mScrollRunnable);//开始让界面跟随scroller的数据滚动
+                // 开始让界面跟随Scroller的数据滚动
+                mHandler.post(mScrollRunnable);
+                // 回收VelocityTracker
                 mVelocityTracker.recycle();
-                mVelocityTracker = null;//velocityTracker回收后不能再用
+                mVelocityTracker = null;
                 break;
         }
         return true;
     }
 
     /**
-     * 选择器选择当前mOffsetY对应的item
-     * 每当用户通过手势改变mOffsetY后，都应该调用该方法
+     * 计算mOffsetY对应的item并将其选中
      */
     private void selectByOffsetY() {
         int position = computePosition(mOffsetY);
@@ -606,7 +526,7 @@ public class WheelPicker<T> extends View {
         if (mSelectedItemPosition != position) {
             mSelectedItemPosition = position;
             if (mOnItemSelectedListener != null) {
-                //回调监听器接口的onItemSelected
+                // 回调监听器接口的onItemSelected
                 mOnItemSelectedListener.onItemSelected(mDataList.get(position), position);
             }
         }
@@ -614,7 +534,8 @@ public class WheelPicker<T> extends View {
 
     /**
      * 计算Fling极限
-     * 如果为Cyclic模式则为Integer的极限值，如果正常模式，则为一整个数据集的上下限
+     * 如果为Cyclic模式则为Integer的极限值
+     * 如果正常模式，则为一整个数据集的上下限
      */
     private void computeFlingLimitY() {
         mMinFlingY = mIsCyclic ? Integer.MIN_VALUE :
@@ -626,7 +547,7 @@ public class WheelPicker<T> extends View {
      * 计算文字最大尺寸
      */
     private void computeTextMaxSize() {
-        //选更大字体来测量Text
+        // 选用更大字体来测量文字
         mMeasureTextPaint.setTextSize(Math.max(mSelectedItemTextSize, mItemTextSize));
         if (!TextUtils.isEmpty(mMaxWidthText)) {
             mTextMaxWidth = (int) mMeasureTextPaint.measureText(mMaxWidthText);
@@ -638,7 +559,7 @@ public class WheelPicker<T> extends View {
     }
 
     /**
-     * 计算指定offsetY与最近对齐位置的距离
+     * 计算指定offsetY与最近的item对齐位置的距离
      */
     private int computeDistanceToEndY(int offsetY) {
         int remainder = offsetY % mItemHeight;
@@ -660,7 +581,8 @@ public class WheelPicker<T> extends View {
     }
 
     /**
-     * cyclic模式下将position修正到0~mDataList.size()中
+     * cyclic模式下将position修正到
+     * 0 ~ mDataList.size() 中
      */
     private int fixPosition(int position) {
         int r = position % mDataList.size();
@@ -844,11 +766,11 @@ public class WheelPicker<T> extends View {
             if (!mScroller.isFinished()) {
                 mScroller.abortAnimation();
             }
-            //如果mItemHeight=0代表还没有绘制完成，无需滚动
+            // 如果mItemHeight=0代表还没有绘制完成，无需滚动
             if (scroll && mItemHeight != 0) {
                 mScroller.startScroll(0, mOffsetY, 0,
                         (mSelectedItemPosition - position) * mItemHeight);
-                //保证滚动到对齐位置，因为不一定是从对齐位置开始滚动的
+                // 保证滚动到对齐位置，因为不一定是从对齐位置开始滚动的
                 int finalY = -position * mItemHeight;
                 mScroller.setFinalY(finalY);
                 mHandler.post(mScrollRunnable);

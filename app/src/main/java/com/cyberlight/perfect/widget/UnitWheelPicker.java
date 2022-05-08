@@ -11,7 +11,7 @@ import java.util.List;
 
 public class UnitWheelPicker extends WheelPicker<String> {
 
-    //单位，要求从0开始以1递增，否则监听器无法监听到正确对应的单位
+    // 单位，要求从0开始以1递增，否则监听器无法监听到正确对应的单位
     public static final int UNIT_DAY = 0;
     public static final int UNIT_WEEK = 1;
 

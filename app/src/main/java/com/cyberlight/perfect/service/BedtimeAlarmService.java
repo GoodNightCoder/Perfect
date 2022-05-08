@@ -35,17 +35,18 @@ import java.time.ZoneId;
 
 @SuppressLint("UnspecifiedImmutableFlag")
 public class BedtimeAlarmService extends Service {
-
     public static final CharSequence BEDTIME_CHANNEL_NAME = "Bedtime notifications";
     public static final String BEDTIME_CHANNEL_ID = "bedtime_channel";
     public static final int BEDTIME_CHANNEL_IMPORTANCE = NotificationManager.IMPORTANCE_HIGH;
 
+    // 闹钟已启动通知
     private static final int ACTIVATE_ALARM_NOTIFICATION_ID = 80;
-    private static final int ALARM_NOTIFICATION_ID = 81;
-    private static final int AFTER_ALARM_NOTIFICATION_ID = 82;
-
     private static final int ACTIVATE_ALARM_NOTIFICATION_REQUEST_CODE = 880;
+    // 闹钟响铃时通知
+    private static final int ALARM_NOTIFICATION_ID = 81;
     private static final int ALARM_NOTIFICATION_REQUEST_CODE = 881;
+    // 闹钟结束后提醒备忘或总结的通知
+    private static final int AFTER_ALARM_NOTIFICATION_ID = 82;
     private static final int AFTER_ALARM_NOTIFICATION_REQUEST_CODE = 882;
 
     private static final int BEDTIME_ALARM_REQUEST_CODE = 8882;
@@ -64,7 +65,7 @@ public class BedtimeAlarmService extends Service {
     private static final int TYPE_FALL_ASLEEP = 2;
 
     private MediaPlayer mMediaPlayer;
-    private AudioFocusRequest audioFocusRequest;
+    private AudioFocusRequest mAudioFocusRequest;
     private boolean mRunning = false;
     private int mVolumeToReset;
     private boolean mUseEarphone = false;
@@ -75,9 +76,11 @@ public class BedtimeAlarmService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (mRunning) {
+            // 用户点击了闹钟通知，结束闹钟
             boolean stop = intent.getBooleanExtra(EXTRA_STOP, false);
             if (stop) stopSelf();
         } else {
+            // 闹钟开始响铃
             mRunning = true;
             mAlarmType = intent.getIntExtra(EXTRA_ALARM_TYPE, 0);
             startAlarm();
@@ -96,6 +99,7 @@ public class BedtimeAlarmService extends Service {
     public void onDestroy() {
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         if (audioManager.isVolumeFixed()) {
+            // 设备音量无法调节，通知用户
             ToastUtil.showToast(this,
                     R.string.bedtime_cannot_adjust_volume_toast,
                     Toast.LENGTH_SHORT);
@@ -106,23 +110,23 @@ public class BedtimeAlarmService extends Service {
                     mVolumeToReset,
                     AudioManager.FLAG_SHOW_UI);
         // 释放AudioFocus，让其他音乐继续播放
-        if (audioFocusRequest != null) {
-            audioManager.abandonAudioFocusRequest(audioFocusRequest);
-            audioFocusRequest = null;
+        if (mAudioFocusRequest != null) {
+            audioManager.abandonAudioFocusRequest(mAudioFocusRequest);
+            mAudioFocusRequest = null;
         }
         // MediaPlayer使用完必须释放
         if (mMediaPlayer != null) {
             mMediaPlayer.release();
             mMediaPlayer = null;
         }
-        // 闹钟结束后提醒待办事项或总结
+        // 闹钟结束后提醒备忘或总结
         String title, text;
         switch (mAlarmType) {
             case TYPE_WAKE_UP:
                 LocalDate date = LocalDate.now();
                 Summary yesterdaySummary = DbUtil.getSummary(this,
                         DateTimeFormatUtil.getNeatDate(date.minusDays(1)));
-                if (yesterdaySummary == null) return;// 无备忘录
+                if (yesterdaySummary == null) return;// 昨日无备忘录
                 title = getString(R.string.bedtime_notification_memo_title);
                 text = yesterdaySummary.memo;
                 break;
@@ -242,6 +246,9 @@ public class BedtimeAlarmService extends Service {
         }
     }
 
+    /**
+     * 运行闹钟
+     */
     private void startAlarm() {
         int resId;
         String title;
@@ -259,9 +266,9 @@ public class BedtimeAlarmService extends Service {
         }
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         // 获取AudioFocus，暂停其他音乐播放
-        audioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT).build();
-        audioManager.requestAudioFocus(audioFocusRequest);
-        // 创建MediaPlayer播放音乐
+        mAudioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT).build();
+        audioManager.requestAudioFocus(mAudioFocusRequest);
+        // 创建MediaPlayer播放音乐，播放结束自动停止服务
         mMediaPlayer = MediaPlayer.create(this, resId);
         mMediaPlayer.setOnCompletionListener(mp -> stopSelf());
         mMediaPlayer.start();

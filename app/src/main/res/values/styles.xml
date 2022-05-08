@@ -14,14 +14,11 @@
         <item name="selectedItemTextColor">?attr/colorPrimary</item>
         <item name="indicatorTextColor">?attr/colorPrimary</item>
         <item name="selectedItemDividerColor">@color/gray</item>
-
         <item name="itemTextSize">14sp</item>
         <item name="selectedItemTextSize">18sp</item>
         <item name="indicatorTextSize">16sp</item>
-
         <item name="selectedItemTextStrokeWidth">0.8</item>
         <item name="selectedItemLetterSpacing">0.008</item>
-
         <item name="itemHeightSpace">16dp</item>
         <item name="itemWidthSpace">32dp</item>
     </style>
@@ -41,7 +38,6 @@
         <item name="timeTextSize">12sp</item>
     </style>
 
-
     <style name="Widget.Perfect.FocusExitButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="strokeColor">@color/focus_exit_btn_color</item>
         <item name="strokeWidth">1dp</item>
@@ -55,7 +51,7 @@
         <item name="android:textAppearance">@style/TextAppearance.Perfect.FocusExitButton</item>
     </style>
 
-    <!-- 自定义对话框样式 -->
+    <!-- 对话框样式 -->
     <style name="NoAnimDialog" parent="Theme.Perfect">
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -74,19 +70,20 @@
     </style>
 
     <!-- 动画 -->
-    <!-- 各种选择器的自定义对话框 -->
+
+    <!-- 对话框底部进出动画 -->
     <style name="Animation_DialogSlideBottom" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/slide_in_bottom</item>
         <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
     </style>
 
-    <!-- 设置中的确认自定义对话框 -->
+    <!-- 对话框淡入淡出动画 -->
     <style name="Animation_DialogFade" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/fade_in</item>
         <item name="android:windowExitAnimation">@anim/fade_out</item>
     </style>
 
-    <!-- 专注Activity进出动画 -->
+    <!-- FocusActivity淡入淡出动画 -->
     <style name="Animation_ActivityFade" parent="android:Animation.Activity">
         <item name="android:activityOpenExitAnimation">@anim/fade_out</item>
         <item name="android:activityOpenEnterAnimation">@anim/fade_in</item>
@@ -94,8 +91,12 @@
         <item name="android:activityCloseEnterAnimation">@anim/fade_in</item>
     </style>
 
-    <!-- 应用中各种文本样式 -->
-    <!-- 对话框按钮文本样式 -->
+    <!-- 以下是应用中各种文本样式 -->
+
+    <!-- 活动标题(SettingsActivity用到) -->
+    <style name="TextAppearance.Perfect.ActivityTitle" parent="TextAppearance.MaterialComponents.Headline6" />
+
+    <!-- 对话框按钮文本 -->
     <style name="TextAppearance.Perfect.DialogButton" parent="TextAppearance.MaterialComponents.Button">
         <item name="android:textColor">?attr/colorPrimary</item>
         <item name="android:textSize">16sp</item>

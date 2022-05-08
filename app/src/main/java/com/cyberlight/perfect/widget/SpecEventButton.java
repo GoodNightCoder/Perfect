@@ -21,17 +21,17 @@ public class SpecEventButton extends androidx.appcompat.widget.AppCompatButton {
 
     private final Context mContext;
     private final SpecEvent mSpecEvent;
-    private boolean isFinished;
+    private boolean mIsFinished;
 
     public void toggleFinishState() {
-        if (isFinished) {
+        if (mIsFinished) {
             setBackground(AppCompatResources.getDrawable(mContext,
                     R.drawable.bg_unfinished_event_btn));
         } else {
             setBackground(AppCompatResources.getDrawable(mContext,
                     R.drawable.bg_finished_event_btn));
         }
-        isFinished = !isFinished;
+        mIsFinished = !mIsFinished;
     }
 
     public SpecEventButton(@NonNull Context context, SpecEvent specEvent) {
@@ -49,11 +49,11 @@ public class SpecEventButton extends androidx.appcompat.widget.AppCompatButton {
         setPadding(10, 4, 0, 0);
         setGravity(Gravity.NO_GRAVITY);//文字左上角显示
         if (DbUtil.specEventIsFinished(mContext, mSpecEvent)) {
-            isFinished = true;
+            mIsFinished = true;
             setBackground(AppCompatResources.getDrawable(mContext,
                     R.drawable.bg_finished_event_btn));//设置按钮自定义样式
         } else {
-            isFinished = false;
+            mIsFinished = false;
             setBackground(AppCompatResources.getDrawable(mContext,
                     R.drawable.bg_unfinished_event_btn));//设置按钮自定义样式
         }
