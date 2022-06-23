@@ -26,6 +26,7 @@ import com.cyberlight.perfect.constant.SettingConstants;
 import com.cyberlight.perfect.service.BedtimeAlarmService;
 import com.cyberlight.perfect.service.FocusService;
 import com.cyberlight.perfect.util.DateTimeFormatUtil;
+import com.cyberlight.perfect.util.ServiceUtil;
 import com.cyberlight.perfect.util.SettingManager;
 import com.cyberlight.perfect.util.SharedPrefSettingManager;
 import com.cyberlight.perfect.util.ToastUtil;
@@ -240,8 +241,11 @@ public class SettingsActivity extends AppCompatActivity {
                 case SettingConstants.KEY_VIBRATION:
                 case SettingConstants.KEY_FLASHLIGHT:
                 case SettingConstants.KEY_STRICT_TIME:
+                    // 专注任务相关设置改变，通知专注服务更新设置信息
                     handler.removeCallbacks(applyRunnable);
-                    handler.postDelayed(applyRunnable, 3000);
+                    if (ServiceUtil.isServiceRunning(context, FocusService.class.getName()))
+                        // 如果专注服务正在运行
+                        handler.postDelayed(applyRunnable, 3000);
                     break;
                 case SettingConstants.KEY_MANAGE_BEDTIME: {
                     boolean manageBedtime = settingManager.getManageBedtime();
