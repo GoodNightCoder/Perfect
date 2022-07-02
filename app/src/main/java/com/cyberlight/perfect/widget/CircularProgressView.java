@@ -188,19 +188,20 @@ public class CircularProgressView extends View {
         }
     }
 
-    /**
-     * 设置进度,从当前进度通过动画过渡到指定进度
-     */
-    public void setProgress(float progress, long animTime) {
-        startAnimator(mProgress, progress, animTime);
-    }
 
     public void setText(String text) {
         mText = text;
         invalidate();
     }
 
-    private void startAnimator(float start, float end, long animTime) {
+    /**
+     * 启动进度条动画
+     *
+     * @param start    初始进度
+     * @param end      结束进度
+     * @param animTime 动画时长
+     */
+    public void startAnimator(float start, float end, long animTime) {
         if (mAnimator != null)
             mAnimator.pause();
         mAnimator = ValueAnimator.ofFloat(start, end);

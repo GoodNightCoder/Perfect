@@ -46,10 +46,12 @@ public class FocusService extends Service {
     private static final int FOCUS_ALARM_REQUEST_CODE = 8880;
 
     // 专注任务相关的信息
+    private long mRemainMillis;// 任务剩余时间
     private long mCurStart;// 任务开始时间
     private long mNextStart;// 任务结束时间
     private long mCurDuration;// 任务总时长
     private boolean mFocusing;// 任务是专注还是休息
+    private String mRemainTimeStr;// 任务剩余时间文字
     private String mFocusStateStr;// 任务状态文字(专注中或休息中)
 
     // 专注设置
@@ -71,12 +73,9 @@ public class FocusService extends Service {
         public void run() {
             // 计算进度、剩余时间
             long curTimeMillis = System.currentTimeMillis();
-            long remain = mNextStart - curTimeMillis;
-            int remainSecs = (int) (remain / 1000);
-            int min = remainSecs / 60;
-            int sec = remainSecs % 60;
-            float progress = (float) remain / mCurDuration;
-            String remainTimeStr = mNumberFormat.format(min) + ":" + mNumberFormat.format(sec);
+            mRemainMillis = mNextStart - curTimeMillis;
+            mRemainTimeStr = mNumberFormat.format(mRemainMillis / 60000) + ":"
+                    + mNumberFormat.format(mRemainMillis / 1000 % 60);
             // 更新通知
             Intent ni = new Intent(FocusService.this, FocusActivity.class);
             PendingIntent npi = PendingIntent.getActivity(FocusService.this,
@@ -86,7 +85,7 @@ public class FocusService extends Service {
             Notification notification = NotificationUtil.buildNotification(FocusService.this,
                     FOCUS_CHANNEL_ID,
                     mFocusStateStr,
-                    remainTimeStr,
+                    mRemainTimeStr,
                     npi,
                     false,
                     true);
@@ -96,9 +95,9 @@ public class FocusService extends Service {
             // 为保证秒数显示稳定、不会跳数，计算下次刷新的延迟，
             // 控制每次在一秒的中间刷新
             long delayMillis = 1000 + (500 - (curTimeMillis % 1000));
-            // 通知FocusActivity更新界面
+            // 通知FocusActivity倒计时更新
             if (mOnUpdateListener != null)
-                mOnUpdateListener.onUpdate(delayMillis, progress, remainTimeStr, mFocusStateStr);
+                mOnUpdateListener.onCount();
             mHandler.postDelayed(mRunnable, delayMillis);
         }
     };
@@ -183,6 +182,11 @@ public class FocusService extends Service {
         mSound = settingManager.getSound();
         mFlashlight = settingManager.getFlashlight();
         mStrictTime = settingManager.getStrictTime();
+
+        // Test:用于快速测试专注任务
+//        mStrictTime = false;
+//        mFocusDuration = 10000;
+//        mRelaxDuration = 6000;
     }
 
     /**
@@ -193,31 +197,40 @@ public class FocusService extends Service {
         mCurStart = curTime;
         if (mStrictTime) {
             // 计算现在到下次提醒剩余毫秒
-            long remainMillis = 3600000 - (curTime % 3600000);// 距下一小时剩余毫秒
+            mRemainMillis = 3600000 - (curTime % 3600000);// 距下一小时剩余毫秒
             if (mFocusDuration < 1800000) {
                 // mFocusDuration < 1800000说明半小时为一个周期
-                remainMillis = remainMillis > 1800000 ? remainMillis - 1800000 : remainMillis;
+                mRemainMillis = mRemainMillis > 1800000 ? mRemainMillis - 1800000 : mRemainMillis;
             }
-            if (remainMillis > mRelaxDuration) {
+            if (mRemainMillis > mRelaxDuration) {
                 // 当前在专注时段
-                remainMillis = remainMillis - mRelaxDuration;
-                mNextStart = curTime + remainMillis;
+                mRemainMillis = mRemainMillis - mRelaxDuration;
+                mNextStart = curTime + mRemainMillis;
                 mFocusing = true;
                 mCurDuration = mFocusDuration;
                 mFocusStateStr = getString(R.string.focus_focusing_state);
             } else {
                 // 当前在休息时段
-                mNextStart = curTime + remainMillis;
+                mNextStart = curTime + mRemainMillis;
                 mFocusing = false;
                 mCurDuration = mRelaxDuration;
                 mFocusStateStr = getString(R.string.focus_relaxing_state);
             }
         } else {
             // 不是严格时间模式
-            mNextStart = curTime + mFocusDuration;
+            mRemainMillis = mFocusDuration;
+            mNextStart = curTime + mRemainMillis;
             mFocusing = true;
             mCurDuration = mFocusDuration;
             mFocusStateStr = getString(R.string.focus_focusing_state);
+        }
+        mRemainTimeStr = mNumberFormat.format(mRemainMillis / 60000) + ":"
+                + mNumberFormat.format(mRemainMillis / 1000 % 60);
+        // 通知FocusActivity专注信息变化，
+        // 此处主要是考虑到专注任务重新初始化的情况
+        if (mOnUpdateListener != null) {
+            mOnUpdateListener.onCount();
+            mOnUpdateListener.onStateChanged();
         }
     }
 
@@ -254,6 +267,37 @@ public class FocusService extends Service {
         }
     }
 
+    public long getRemainMillis() {
+        return mRemainMillis;
+    }
+
+    public long getCurStart() {
+        return mCurStart;
+    }
+
+    public long getNextStart() {
+        return mNextStart;
+    }
+
+    public long getCurDuration() {
+        return mCurDuration;
+    }
+
+    public boolean isFocusing() {
+        return mFocusing;
+    }
+
+    public String getRemainTimeStr() {
+        return mRemainTimeStr;
+    }
+
+    public String getFocusStateStr() {
+        return mFocusStateStr;
+    }
+
+    /**
+     * 接收AlarmManager定时广播
+     */
     private class FocusReceiver extends BroadcastReceiver {
         private static final String FOCUS_REMIND_ACTION = "focus_remind_action";
         private static final String FOCUS_UPDATE_ACTION = "focus_update_action";
@@ -268,6 +312,7 @@ public class FocusService extends Service {
                     DbUtil.addFocusRecord(context, mNextStart, mNextStart - mCurStart);
                     // 计算下一次提醒任务的信息
                     mCurStart = mNextStart;
+                    mRemainMillis = mRelaxDuration;
                     mNextStart += mRelaxDuration;
                     mCurDuration = mRelaxDuration;
                     mFocusing = false;
@@ -276,10 +321,18 @@ public class FocusService extends Service {
                     // 休息结束，切换到专注
                     // 计算下一次提醒任务的信息
                     mCurStart = mNextStart;
+                    mRemainMillis = mFocusDuration;
                     mNextStart += mFocusDuration;
                     mCurDuration = mFocusDuration;
                     mFocusing = true;
                     mFocusStateStr = getString(R.string.focus_focusing_state);
+                }
+                mRemainTimeStr = mNumberFormat.format(mRemainMillis / 60000) + ":"
+                        + mNumberFormat.format(mRemainMillis / 1000 % 60);
+                // 通知FocusActivity专注状态切换
+                if (mOnUpdateListener != null) {
+                    mOnUpdateListener.onCount();// 保证倒计时及时更新
+                    mOnUpdateListener.onStateChanged();
                 }
                 // 发出提醒
                 remind(context, mFocusing, mSound, mVibration, mFlashlight);
@@ -334,7 +387,9 @@ public class FocusService extends Service {
      * 该接口仅限用于通知FocusActivity更新界面
      */
     public interface OnUpdateListener {
-        void onUpdate(long delayMillis, float progress, String remainTimeStr, String focusStateStr);
+        void onCount();
+
+        void onStateChanged();
     }
 
 }

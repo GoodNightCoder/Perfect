@@ -17,6 +17,8 @@
     <string name="main_no_summary">No summary</string>
     <string name="main_have_sum_toast">You\'ve already summarized this day</string>
     <string name="main_sum_not_today_toast">The day you summarize is not today</string>
+    <string name="main_more_settings_title">Settings</string>
+    <string name="main_more_layout_title">Layout</string>
 
     <!--  FocusActivity  -->
     <string name="focus_exit_toast">Exit focus mode</string>

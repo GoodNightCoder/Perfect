@@ -42,8 +42,6 @@ public class FocusActivity extends AppCompatActivity {
     // 动画时长
     private static final int ANIM_DURATION = 300;
 
-    // 指示cpv是否是第一次设置progress
-    private boolean mIsFirstUpdate = true;
     // 正在展示动画时为true
     private boolean mDisallowAnim = false;
     // 正在执行动画的view的数量
@@ -63,15 +61,26 @@ public class FocusActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName className, IBinder service) {
             FocusService.FocusServiceBinder binder = (FocusService.FocusServiceBinder) service;
             mService = binder.getService();
-            mService.setOnUpdateListener((delayMillis, progress, remainTimeStr, focusStateStr) ->
-                    mHandler.post(() -> {
-                        mCpv.setProgress(progress, mIsFirstUpdate ? delayMillis / 2 : delayMillis);
-                        mTimeTv.setText(remainTimeStr);
-                        mStateTv.setText(focusStateStr);
-                        if (mIsFirstUpdate) {
-                            mIsFirstUpdate = false;
-                        }
-                    }));
+            mService.setOnUpdateListener(new FocusService.OnUpdateListener() {
+                @Override
+                public void onCount() {
+                    mTimeTv.setText(mService.getRemainTimeStr());
+                }
+
+                @Override
+                public void onStateChanged() {
+                    mCpv.startAnimator(
+                            (float) mService.getRemainMillis() / mService.getCurDuration(),
+                            0f, mService.getRemainMillis());
+                    mStateTv.setText(mService.getFocusStateStr());
+                }
+            });
+            // 初次设置倒计时、进度条、专注状态
+            mTimeTv.setText(mService.getRemainTimeStr());
+            mCpv.startAnimator(
+                    (float) mService.getRemainMillis() / mService.getCurDuration(),
+                    0f, mService.getRemainMillis());
+            mStateTv.setText(mService.getFocusStateStr());
         }
 
         @Override
@@ -128,7 +137,6 @@ public class FocusActivity extends AppCompatActivity {
         // 重置有必要的变量
         mDisplayMode = SHOW_TIME_PROGRESS_STATE_EXIT;
         mDisallowAnim = false;
-        mIsFirstUpdate = true;
     }
 
     @Override
@@ -190,6 +198,16 @@ public class FocusActivity extends AppCompatActivity {
         // 绑定服务
         Intent intent = new Intent(this, FocusService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     @Override

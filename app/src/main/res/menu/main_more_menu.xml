@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/main_more_layout"
+        android:icon="@drawable/ic_outline_layout_24"
+        android:title="@string/main_more_layout_title" />
+    <item android:id="@+id/main_more_settings"
+        android:icon="@drawable/ic_baseline_settings_24"
+        android:title="@string/main_more_settings_title" />
+</menu>

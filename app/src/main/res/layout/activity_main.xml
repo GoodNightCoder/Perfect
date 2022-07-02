@@ -36,7 +36,7 @@
             android:layout_alignTop="@id/main_focus_iv"
             android:layout_alignBottom="@+id/main_focus_iv"
             android:layout_marginHorizontal="20dp"
-            android:layout_toStartOf="@id/main_settings_iv"
+            android:layout_toStartOf="@id/main_more_iv"
             android:layout_toEndOf="@id/main_focus_iv"
             android:background="@drawable/bg_btn_rc_8"
             android:gravity="center"
@@ -46,13 +46,13 @@
             android:textAppearance="@style/TextAppearance.Perfect.HomepageDate" />
 
         <ImageView
-            android:id="@+id/main_settings_iv"
+            android:id="@+id/main_more_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:background="@drawable/bg_btn_rc_8"
             android:padding="8dp"
-            android:src="@drawable/ic_baseline_settings_24"
+            android:src="@drawable/ic_baseline_more_24"
             app:tint="?attr/colorOnSurface"
             tools:ignore="ContentDescription" />
 

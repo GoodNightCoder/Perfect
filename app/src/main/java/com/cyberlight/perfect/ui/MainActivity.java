@@ -6,10 +6,13 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -105,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements OnDataAddedListen
         mVp = findViewById(R.id.main_vp);
         mTodayFab = findViewById(R.id.main_today_fab);
         ImageView focusIv = findViewById(R.id.main_focus_iv);
-        ImageView settingsIv = findViewById(R.id.main_settings_iv);
+        ImageView moreIv = findViewById(R.id.main_more_iv);
         FragmentManager fragmentManager = getSupportFragmentManager();
         // 设置定位到今天的fab点击监听
         mTodayFab.setOnClickListener(v -> {
@@ -119,9 +122,25 @@ public class MainActivity extends AppCompatActivity implements OnDataAddedListen
             Intent intent = new Intent(MainActivity.this, FocusActivity.class);
             startActivity(intent);
         });
-        settingsIv.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-            startActivity(intent);
+        moreIv.setOnClickListener(v -> {
+            // TODO:实现菜单图标显示
+            PopupMenu popup = new PopupMenu(MainActivity.this, v);
+            popup.setOnMenuItemClickListener(item -> {
+                switch (item.getItemId()) {
+                    case R.id.main_more_layout:
+                        // TODO:修改主页布局
+                        return true;
+                    case R.id.main_more_settings:
+                        Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                        startActivity(intent);
+                        return true;
+                    default:
+                        return false;
+                }
+            });
+            MenuInflater inflater = popup.getMenuInflater();
+            inflater.inflate(R.menu.main_more_menu, popup.getMenu());
+            popup.show();
         });
         mDateTv.setOnClickListener(v -> {
             int initYear = mCurDate.getYear();
