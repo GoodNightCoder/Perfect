@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
     <application
-        android:name=".application.MyApplication"
+        android:name=".BasicApplication"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -20,7 +20,7 @@
         tools:ignore="DataExtractionRules">
 
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:theme="@style/Theme.Perfect.MainActivity">
@@ -32,14 +32,14 @@
         </activity>
 
         <activity
-            android:name=".ui.FocusActivity"
+            android:name=".FocusActivity"
             android:configChanges="orientation|screenSize"
             android:exported="false"
             android:launchMode="singleTask"
             android:theme="@style/Theme.Perfect.FocusActivity" />
 
         <activity
-            android:name=".ui.SettingsActivity"
+            android:name=".SettingsActivity"
             android:exported="false"
             android:label="@string/settings_activity_title"
             android:launchMode="singleTop" />
@@ -53,6 +53,12 @@
             android:name=".service.FocusService"
             android:enabled="true"
             android:exported="false" />
+
+        <service
+            android:name=".service.PlanWidgetListViewService"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <receiver
             android:name=".receiver.BootCompletedReceiver"
@@ -71,6 +77,18 @@
                 <action android:name="event_reminder_action" />
             </intent-filter>
         </receiver>
+
+        <receiver
+            android:name=".appwidget.PlanWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/plan_widget_info" />
+        </receiver>
+
 
     </application>
 

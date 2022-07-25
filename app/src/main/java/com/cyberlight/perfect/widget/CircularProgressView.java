@@ -18,6 +18,9 @@ import androidx.annotation.Nullable;
 
 import com.cyberlight.perfect.R;
 
+/**
+ * 圆环型进度条
+ */
 public class CircularProgressView extends View {
     private static final int DEFAULT_SIZE_IN_DIP = 280;
 

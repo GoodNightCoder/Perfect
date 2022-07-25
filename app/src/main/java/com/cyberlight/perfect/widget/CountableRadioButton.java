@@ -15,6 +15,9 @@ import androidx.annotation.Nullable;
 
 import com.cyberlight.perfect.R;
 
+/**
+ * 可计数按钮（外观类似单选按钮）
+ */
 public class CountableRadioButton extends View {
     // 默认尺寸，当指定wrap_content的时候就会使用这个尺寸
     private static final int DEFAULT_SIZE_IN_DIP = 21;
@@ -26,14 +29,14 @@ public class CountableRadioButton extends View {
     private int mHollowCircleArcWidth;
     private int mSolidCircleColor;
 
-    private final Point mCenterPoint;// 圆心坐标
+    private final Point mCenterPoint = new Point();// 圆心坐标
     private float mRadius;// 圆弧半径
     private float mTextY;// 文字绘制时的y坐标
-    private final TextPaint mTextPaint;
-    private final Paint mHollowCirclePaint;
-    private final Paint mSolidCirclePaint;
+    private final TextPaint mTextPaint = new TextPaint();
+    private final Paint mHollowCirclePaint = new Paint();
+    private final Paint mSolidCirclePaint = new Paint();
 
-    private OnCountChangedListener mOnCountChangedListener;
+    //    private OnCountChangedListener mOnCountChangedListener;
     private int mCount = 0;
     private int mMaxCount = Integer.MAX_VALUE;
 
@@ -51,31 +54,7 @@ public class CountableRadioButton extends View {
 
     public CountableRadioButton(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        mCenterPoint = new Point();
-        mTextPaint = new TextPaint();
-        mHollowCirclePaint = new Paint();
-        mSolidCirclePaint = new Paint();
-        initAttrs(context, attrs, defStyleAttr, defStyleRes);
-        initPaint();
-        setOnClickListener(v -> increaseCount());
-    }
-
-    public void setCount(int count) {
-        if (mCount >= 0 && mCount != count) {
-            mCount = Math.min(count, mMaxCount);
-            invalidate();
-        }
-    }
-
-    public void setMaxCount(int maxCount) {
-        if (mMaxCount >= 1 && mMaxCount != maxCount) {
-            if (maxCount < mCount) mCount = maxCount;
-            mMaxCount = maxCount;
-            invalidate();
-        }
-    }
-
-    private void initAttrs(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        // 初始化各attr属性
         TypedArray typedArray = context.obtainStyledAttributes(attrs,
                 R.styleable.CountableRadioButton, defStyleAttr, defStyleRes);
         try {
@@ -94,19 +73,15 @@ public class CountableRadioButton extends View {
         } finally {
             typedArray.recycle();
         }
-    }
-
-    private void initPaint() {
+        // 初始化各个Paint对象
         mTextPaint.setAntiAlias(mAntiAlias);
         mTextPaint.setColor(mTextColor);
         mTextPaint.setTextSize(mTextSize);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
-
         mHollowCirclePaint.setAntiAlias(mAntiAlias);
         mHollowCirclePaint.setColor(mHollowCircleColor);
         mHollowCirclePaint.setStrokeWidth(mHollowCircleArcWidth);
         mHollowCirclePaint.setStyle(Paint.Style.STROKE);
-
         mSolidCirclePaint.setAntiAlias(mAntiAlias);
         mSolidCirclePaint.setColor(mSolidCircleColor);
         mSolidCirclePaint.setStyle(Paint.Style.FILL);
@@ -134,13 +109,6 @@ public class CountableRadioButton extends View {
         mTextY = mCenterPoint.y - (mTextPaint.ascent() + mTextPaint.descent()) / 2;
     }
 
-    private void increaseCount() {
-        mCount = (mCount + 1) % (mMaxCount + 1);
-        invalidate();
-        if (mOnCountChangedListener != null)
-            mOnCountChangedListener.onCountChanged(mCount);
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -155,11 +123,29 @@ public class CountableRadioButton extends View {
         canvas.drawCircle(mCenterPoint.x, mCenterPoint.y, mRadius, mHollowCirclePaint);
     }
 
-    public void setOnCountListener(OnCountChangedListener onCountChangedListener) {
-        mOnCountChangedListener = onCountChangedListener;
+    /**
+     * 设置计数值，限制范围在0~maxCount
+     *
+     * @param count 计数值
+     */
+    public void setCount(int count) {
+        if (mCount >= 0 && mCount <= mMaxCount && mCount != count) {
+            mCount = count;
+            invalidate();
+        }
     }
 
-    public interface OnCountChangedListener {
-        void onCountChanged(int count);
+    /**
+     * 设置最大值，如果新的最大值小于当前计数值，
+     * 会将计数值置为新的最大值
+     *
+     * @param maxCount 最大值
+     */
+    public void setMaxCount(int maxCount) {
+        if (mMaxCount >= 1 && mMaxCount != maxCount) {
+            if (maxCount < mCount) mCount = maxCount;
+            mMaxCount = maxCount;
+            invalidate();
+        }
     }
 }

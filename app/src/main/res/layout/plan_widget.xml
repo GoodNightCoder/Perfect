@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_plan_widget"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:theme="@style/Theme.Perfect">
+
+    <!-- 应用微件的标题 -->
+    <TextView
+        android:id="@+id/plan_widget_title_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/plan_widget_title"
+        android:textAppearance="@style/TextAppearance.Perfect.WidgetTitle" />
+
+    <!-- 应用微件的内容(集合试图) -->
+    <ListView
+        android:id="@+id/plan_widget_content_lv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- 集合为空时，展示该控件 -->
+    <TextView
+        android:id="@+id/plan_widget_no_content_tv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/main_no_plan" />
+
+</LinearLayout>

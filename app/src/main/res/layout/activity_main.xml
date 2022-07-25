@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.MainActivity">
+    tools:context=".MainActivity">
 
     <!-- 主界面顶部导航栏 -->
     <RelativeLayout
@@ -57,13 +57,347 @@
 
     </RelativeLayout>
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/main_vp"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="?attr/colorHomepageBackground"
+        android:orientation="vertical"
+        android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_nav_bar" />
+        app:layout_constraintTop_toBottomOf="@+id/main_nav_bar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="15dp">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/main_schedule_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:paddingHorizontal="15dp">
+
+                        <TextView
+                            android:id="@+id/main_schedule_header_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="@string/main_event_header"
+                            android:textAppearance="@style/TextAppearance.Perfect.HomepageHeader" />
+
+                        <ImageView
+                            android:id="@+id/main_add_event_iv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_toEndOf="@+id/main_schedule_header_tv"
+                            android:background="@drawable/bg_vp_add_btn"
+                            android:padding="1dp"
+                            android:src="@drawable/ic_baseline_add_22"
+                            tools:ignore="ContentDescription" />
+                    </RelativeLayout>
+
+                    <com.cyberlight.perfect.widget.ScheduleLayout
+                        android:id="@+id/main_schedule"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginVertical="10dp" />
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/main_focus_records_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:paddingHorizontal="15dp">
+
+                        <TextView
+                            android:id="@+id/main_focus_records_header_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="@string/main_focus_header"
+                            android:textAppearance="@style/TextAppearance.Perfect.HomepageHeader" />
+
+                        <ImageView
+                            android:id="@+id/main_add_focus_record_iv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_toEndOf="@+id/main_focus_records_header_tv"
+                            android:background="@drawable/bg_vp_add_btn"
+                            android:padding="1dp"
+                            android:src="@drawable/ic_baseline_add_22"
+                            tools:ignore="ContentDescription" />
+                    </RelativeLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/main_focus_records_rv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="10dp"
+                        android:layout_marginVertical="10dp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/main_plans_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:paddingHorizontal="15dp">
+
+                        <TextView
+                            android:id="@+id/main_plans_header_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="@string/main_plans_header"
+                            android:textAppearance="@style/TextAppearance.Perfect.HomepageHeader" />
+
+                        <ImageView
+                            android:id="@+id/main_add_plan_iv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_toEndOf="@+id/main_plans_header_tv"
+                            android:background="@drawable/bg_vp_add_btn"
+                            android:padding="1dp"
+                            android:src="@drawable/ic_baseline_add_22"
+                            tools:ignore="ContentDescription" />
+                    </RelativeLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/main_plans_rv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginVertical="10dp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/main_summary_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:paddingHorizontal="15dp">
+
+                        <TextView
+                            android:id="@+id/main_summary_header_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="@string/main_summary_header"
+                            android:textAppearance="@style/TextAppearance.Perfect.HomepageHeader" />
+
+                        <ImageView
+                            android:id="@+id/main_add_summary_iv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_toEndOf="@+id/main_summary_header_tv"
+                            android:background="@drawable/bg_vp_add_btn"
+                            android:padding="1dp"
+                            android:src="@drawable/ic_baseline_add_22"
+                            tools:ignore="ContentDescription" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/main_summary_content_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="20dp"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/main_rating_title_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginBottom="2dp"
+                            android:text="@string/main_rating_title"
+                            android:textAppearance="@style/TextAppearance.Perfect.HomepageTitle" />
+
+                        <ImageView
+                            android:id="@+id/main_thumb_up_iv1"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_below="@id/main_rating_title_tv"
+                            android:layout_alignParentStart="true"
+                            android:src="@drawable/ic_baseline_thumb_up_24"
+                            tools:ignore="ContentDescription" />
+
+                        <ImageView
+                            android:id="@+id/main_thumb_up_iv2"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignBottom="@id/main_thumb_up_iv1"
+                            android:layout_marginStart="1dp"
+                            android:layout_toEndOf="@id/main_thumb_up_iv1"
+                            android:src="@drawable/ic_baseline_thumb_up_24"
+                            tools:ignore="ContentDescription" />
+
+                        <ImageView
+                            android:id="@+id/main_thumb_up_iv3"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignBottom="@id/main_thumb_up_iv1"
+                            android:layout_marginStart="1dp"
+                            android:layout_toEndOf="@id/main_thumb_up_iv2"
+                            android:src="@drawable/ic_baseline_thumb_up_24"
+                            tools:ignore="ContentDescription" />
+
+                        <ImageView
+                            android:id="@+id/main_thumb_up_iv4"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignBottom="@id/main_thumb_up_iv1"
+                            android:layout_marginStart="1dp"
+                            android:layout_toEndOf="@id/main_thumb_up_iv3"
+                            android:src="@drawable/ic_baseline_thumb_up_24"
+                            tools:ignore="ContentDescription" />
+
+                        <ImageView
+                            android:id="@+id/main_thumb_up_iv5"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignBottom="@id/main_thumb_up_iv1"
+                            android:layout_marginStart="1dp"
+                            android:layout_toEndOf="@id/main_thumb_up_iv4"
+                            android:src="@drawable/ic_baseline_thumb_up_24"
+                            tools:ignore="ContentDescription" />
+
+                        <View
+                            android:id="@+id/main_rating_review_divider"
+                            android:layout_width="match_parent"
+                            android:layout_height="1px"
+                            android:layout_below="@id/main_thumb_up_iv1"
+                            android:layout_marginVertical="8dp"
+                            android:background="@color/gray_a50"
+                            tools:ignore="ContentDescription" />
+
+                        <TextView
+                            android:id="@+id/main_review_title_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/main_rating_review_divider"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginBottom="2dp"
+                            android:text="@string/main_review_title"
+                            android:textAppearance="@style/TextAppearance.Perfect.HomepageTitle" />
+
+                        <TextView
+                            android:id="@+id/main_review_tv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/main_review_title_tv"
+                            android:textAppearance="@style/TextAppearance.Perfect.HomepageBody" />
+
+                        <View
+                            android:id="@+id/main_comment_memo_divider"
+                            android:layout_width="match_parent"
+                            android:layout_height="1px"
+                            android:layout_below="@id/main_review_tv"
+                            android:layout_marginVertical="8dp"
+                            android:background="@color/gray_a50" />
+
+                        <TextView
+                            android:id="@+id/main_memo_title_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/main_comment_memo_divider"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginBottom="2dp"
+                            android:text="@string/main_memo_title"
+                            android:textAppearance="@style/TextAppearance.Perfect.HomepageTitle" />
+
+                        <TextView
+                            android:id="@+id/main_memo_tv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/main_memo_title_tv"
+                            android:textAppearance="@style/TextAppearance.Perfect.HomepageBody" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/main_no_summary_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="30dp"
+                        android:gravity="center"
+                        android:text="@string/main_no_summary"
+                        android:textAppearance="@style/TextAppearance.Perfect.HomepageBody"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+    </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/main_today_fab"

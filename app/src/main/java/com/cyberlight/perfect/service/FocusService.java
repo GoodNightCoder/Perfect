@@ -20,8 +20,9 @@ import android.os.Vibrator;
 import android.widget.Toast;
 
 import com.cyberlight.perfect.R;
-import com.cyberlight.perfect.ui.FocusActivity;
-import com.cyberlight.perfect.util.DbUtil;
+import com.cyberlight.perfect.FocusActivity;
+import com.cyberlight.perfect.data.FocusRecord;
+import com.cyberlight.perfect.data.FocusRecordRepository;
 import com.cyberlight.perfect.util.FlashlightUtil;
 import com.cyberlight.perfect.util.NotificationUtil;
 import com.cyberlight.perfect.util.SettingManager;
@@ -184,9 +185,9 @@ public class FocusService extends Service {
         mStrictTime = settingManager.getStrictTime();
 
         // Test:用于快速测试专注任务
-//        mStrictTime = false;
-//        mFocusDuration = 10000;
-//        mRelaxDuration = 6000;
+        mStrictTime = false;
+        mFocusDuration = 10000;
+        mRelaxDuration = 6000;
     }
 
     /**
@@ -309,7 +310,9 @@ public class FocusService extends Service {
                 if (mFocusing) {
                     // 专注结束，切换到休息
                     // 保存专注记录到数据库
-                    DbUtil.addFocusRecord(context, mNextStart, mNextStart - mCurStart);
+                    // TODO:可能要注意广播接收器的生命周期
+                    FocusRecordRepository repository = new FocusRecordRepository(context);
+                    repository.insertFocusRecords(new FocusRecord(mNextStart, mNextStart - mCurStart));
                     // 计算下一次提醒任务的信息
                     mCurStart = mNextStart;
                     mRemainMillis = mRelaxDuration;

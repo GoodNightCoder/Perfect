@@ -63,8 +63,6 @@
     <string name="event_start">Start</string>
     <string name="event_duration">Duration</string>
     <string name="event_repeat">Repeat</string>
-    <string name="event_fail_toast">Add event failed</string>
-    <string name="event_success_toast">Add event succeeded</string>
     <string name="event_incomplete_toast">Incomplete info</string>
     <string name="event_duration_invalid_toast">Duration cannot be less than 5 minutes</string>
     <string name="event_start_time_invalid_toast">Invalid start time</string>
@@ -84,16 +82,12 @@
     <string name="plan_incomplete_toast">Incomplete info</string>
     <string name="plan_content_hint">Content</string>
     <string name="plan_target">Target</string>
-    <string name="plan_success_toast">Add plan succeeded</string>
-    <string name="plan_fail_toast">Add plan failed</string>
 
     <!--  SummaryDialogFragment  -->
     <string name="summary_dialog_title">Summary</string>
     <string name="summary_memo_hint">Tomorrow\'s memo</string>
     <string name="summary_rating_tip">Click the thumbs to rate</string>
     <string name="summary_review_hint">Review today\'s life</string>
-    <string name="summary_success_toast">Add summary succeeded</string>
-    <string name="summary_fail_toast">Add summary failed</string>
     <string name="summary_no_review_toast">You haven\'t written review text yet</string>
     <string name="summary_no_rating_toast">You haven\'t rated yet</string>
 
@@ -134,6 +128,9 @@
     <string name="dialog_btn_cancel">Cancel</string>
     <string name="dialog_btn_yes">Yes</string>
     <string name="dialog_btn_no">No</string>
+
+    <string name="plan_widget_item_count">[%1$s]</string>
+    <string name="plan_widget_title">Today\'s plan</string>
 
     <!--  UnitWheelPicker  -->
     <plurals name="unit_day">

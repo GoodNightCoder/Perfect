@@ -24,6 +24,10 @@ import com.cyberlight.perfect.R;
 import java.text.Format;
 import java.util.List;
 
+/**
+ * 滚轮选择器
+ * @param <T> 选项的数据类型
+ */
 public class WheelPicker<T> extends View {
 
     // Fling最大初始速度

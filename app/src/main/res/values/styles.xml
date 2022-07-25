@@ -143,6 +143,16 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <!-- 桌面小部件内的标题 -->
+    <style name="TextAppearance.Perfect.WidgetTitle" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <!-- 桌面小部件内的普通文本 -->
+    <style name="TextAppearance.Perfect.WidgetBody" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">15sp</item>
+    </style>
+
     <!-- 专注倒计时 -->
     <style name="TextAppearance.Perfect.FocusTime" parent="TextAppearance.MaterialComponents.Headline6">
         <item name="android:textColor">@color/focus_time_text_color</item>

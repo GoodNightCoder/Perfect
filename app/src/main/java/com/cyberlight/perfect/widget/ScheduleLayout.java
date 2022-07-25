@@ -19,15 +19,17 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 
 import com.cyberlight.perfect.R;
-import com.cyberlight.perfect.model.Event;
-import com.cyberlight.perfect.model.SpecEvent;
-import com.cyberlight.perfect.util.DbUtil;
+import com.cyberlight.perfect.data.Event;
+import com.cyberlight.perfect.data.SpecificEvent;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
 
+/**
+ * 显示指定日期发生的事件的视图
+ */
 public class ScheduleLayout extends ViewGroup {
     // 整个layout的默认宽度
     private static final int DEFAULT_WIDTH = 1000;
@@ -122,19 +124,12 @@ public class ScheduleLayout extends ViewGroup {
             long endTime = startTime + 86399999;// 86399999 = 24*60*60*1000-1
             for (int i = 0; i < mEvents.size(); i++) {
                 Event event = mEvents.get(i);
-                List<SpecEvent> specEvents = event.getSpecEventsDuring(startTime, endTime);
+                List<SpecificEvent> specificEvents = event.getSpecEventsDuring(startTime, endTime);
                 // 为每个事件创建一个按钮，并为各个按钮设置长按监听
-                for (SpecEvent specEvent : specEvents) {
-                    SpecEventButton specEventButton = new SpecEventButton(mContext, specEvent);
+                for (SpecificEvent specificEvent : specificEvents) {
+                    SpecEventButton specEventButton = new SpecEventButton(mContext, specificEvent);
                     Runnable r = () -> {
-                        // 切换事件的完成状态
-                        if (DbUtil.specEventIsFinished(mContext, specEvent)) {
-                            if (DbUtil.deleteEventRecord(mContext, specEvent))
-                                specEventButton.toggleFinishState();
-                        } else {
-                            if (DbUtil.addEventRecord(mContext, specEvent))
-                                specEventButton.toggleFinishState();
-                        }
+                        // TODO:打开事件详情窗口，允许用户进行事件修改
                     };
                     specEventButton.setOnTouchListener(new OnTouchListener() {
                         int downX;
@@ -254,9 +249,9 @@ public class ScheduleLayout extends ViewGroup {
             View childView = getChildAt(i);
             if (childView instanceof SpecEventButton) {// 根据eventButton的event摆放按钮
                 SpecEventButton specEventButton = (SpecEventButton) childView;
-                final SpecEvent specEvent = specEventButton.getSpecEvent();
-                final long eventStart = specEvent.specStart;
-                final long eventEnd = specEvent.specStart + specEvent.duration - 1;
+                final SpecificEvent specificEvent = specEventButton.getSpecEvent();
+                final long eventStart = specificEvent.specStart;
+                final long eventEnd = specificEvent.specStart + specificEvent.event.duration - 1;
                 int startMinOfDay;// 事件开始于一天的第几分钟
                 int endMinOfDay;// 事件结束于一天的第几分钟
                 if (eventStart >= dayStart) {

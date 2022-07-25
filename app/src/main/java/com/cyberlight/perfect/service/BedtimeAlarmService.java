@@ -18,10 +18,8 @@ import android.widget.Toast;
 import androidx.annotation.IntDef;
 
 import com.cyberlight.perfect.R;
-import com.cyberlight.perfect.model.Summary;
-import com.cyberlight.perfect.ui.MainActivity;
-import com.cyberlight.perfect.util.DateTimeFormatUtil;
-import com.cyberlight.perfect.util.DbUtil;
+import com.cyberlight.perfect.data.Summary;
+import com.cyberlight.perfect.MainActivity;
 import com.cyberlight.perfect.util.NotificationUtil;
 import com.cyberlight.perfect.util.SettingManager;
 import com.cyberlight.perfect.util.SharedPrefSettingManager;
@@ -124,8 +122,10 @@ public class BedtimeAlarmService extends Service {
         switch (mAlarmType) {
             case TYPE_WAKE_UP:
                 LocalDate date = LocalDate.now();
-                Summary yesterdaySummary = DbUtil.getSummary(this,
-                        DateTimeFormatUtil.getNeatDate(date.minusDays(1)));
+                Summary yesterdaySummary = null;
+                // fixme
+//                yesterdaySummary= DbUtil.getSummary(this,
+//                        DateTimeFormatUtil.getNeatDate(date.minusDays(1)));
                 if (yesterdaySummary == null) return;// 昨日无备忘录
                 title = getString(R.string.bedtime_notification_memo_title);
                 text = yesterdaySummary.memo;

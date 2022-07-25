@@ -10,36 +10,21 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import com.cyberlight.perfect.R;
-import com.cyberlight.perfect.model.SpecEvent;
-import com.cyberlight.perfect.util.DbUtil;
+import com.cyberlight.perfect.data.SpecificEvent;
 
 /**
- * SpecEventButton保存一个事件
+ * 携带一个具体事件的按钮，摆放在时刻表布局中
  */
 @SuppressLint("ViewConstructor")
 public class SpecEventButton extends androidx.appcompat.widget.AppCompatButton {
 
-    private final Context mContext;
-    private final SpecEvent mSpecEvent;
-    private boolean mIsFinished;
+    private final SpecificEvent mSpecificEvent;
 
-    public void toggleFinishState() {
-        if (mIsFinished) {
-            setBackground(AppCompatResources.getDrawable(mContext,
-                    R.drawable.bg_unfinished_event_btn));
-        } else {
-            setBackground(AppCompatResources.getDrawable(mContext,
-                    R.drawable.bg_finished_event_btn));
-        }
-        mIsFinished = !mIsFinished;
-    }
-
-    public SpecEventButton(@NonNull Context context, SpecEvent specEvent) {
+    public SpecEventButton(@NonNull Context context, SpecificEvent specificEvent) {
         super(context);
-        mContext = context;
-        mSpecEvent = specEvent;
-        setText(mSpecEvent.title);
-        TypedArray a = mContext.obtainStyledAttributes(new int[]{android.R.attr.textColorPrimary});
+        mSpecificEvent = specificEvent;
+        setText(mSpecificEvent.event.title);
+        TypedArray a = context.obtainStyledAttributes(new int[]{android.R.attr.textColorPrimary});
         try {
             setTextColor(a.getColor(0, Color.RED));
         } finally {
@@ -48,18 +33,11 @@ public class SpecEventButton extends androidx.appcompat.widget.AppCompatButton {
         setAllCaps(false);
         setPadding(10, 4, 0, 0);
         setGravity(Gravity.NO_GRAVITY);//文字左上角显示
-        if (DbUtil.specEventIsFinished(mContext, mSpecEvent)) {
-            mIsFinished = true;
-            setBackground(AppCompatResources.getDrawable(mContext,
-                    R.drawable.bg_finished_event_btn));//设置按钮自定义样式
-        } else {
-            mIsFinished = false;
-            setBackground(AppCompatResources.getDrawable(mContext,
-                    R.drawable.bg_unfinished_event_btn));//设置按钮自定义样式
-        }
+        setBackground(AppCompatResources.getDrawable(context,
+                R.drawable.bg_unfinished_event_btn));//设置按钮自定义样式
     }
 
-    public SpecEvent getSpecEvent() {
-        return mSpecEvent;
+    public SpecificEvent getSpecEvent() {
+        return mSpecificEvent;
     }
 }

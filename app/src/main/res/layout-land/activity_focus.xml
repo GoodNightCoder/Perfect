@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/focus_bg_color"
     android:clickable="true"
-    tools:context=".ui.FocusActivity">
+    tools:context=".FocusActivity">
 
     <TextView
         android:id="@+id/focus_state_tv"

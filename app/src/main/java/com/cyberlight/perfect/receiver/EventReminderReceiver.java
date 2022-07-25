@@ -10,12 +10,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import com.cyberlight.perfect.R;
-import com.cyberlight.perfect.model.Event;
-import com.cyberlight.perfect.model.SpecEvent;
-import com.cyberlight.perfect.ui.MainActivity;
-import com.cyberlight.perfect.util.DbUtil;
+import com.cyberlight.perfect.MainActivity;
+import com.cyberlight.perfect.data.Event;
+import com.cyberlight.perfect.data.EventRepository;
+import com.cyberlight.perfect.data.SpecificEvent;
 import com.cyberlight.perfect.util.NotificationUtil;
+import com.google.common.util.concurrent.FutureCallback;
 
 import java.util.List;
 
@@ -75,23 +78,42 @@ public class EventReminderReceiver extends BroadcastReceiver {
                 PendingIntent.FLAG_NO_CREATE);
         if (pendingIntent == null) {
             // 启动事件提醒
-            boolean firstSet = setNextReminder(context);
-            if (firstSet) {
-                // 发通知提醒用户事件提醒已启动
-                Intent ni = new Intent(context, MainActivity.class);
-                PendingIntent npi = PendingIntent.getActivity(context,
-                        EVENT_NOTIFICATION_REQUEST_CODE,
-                        ni,
-                        PendingIntent.FLAG_IMMUTABLE);
-                Notification notification = NotificationUtil.buildNotification(context,
-                        EVENT_CHANNEL_ID,
-                        context.getText(R.string.event_notification_reminder_activated_title),
-                        context.getText(R.string.event_notification_reminder_activated_text),
-                        npi,
-                        true,
-                        false);
-                NotificationUtil.showNotification(context, EVENT_NOTIFICATION_ID, notification);
-            }
+            EventRepository eventRepository = new EventRepository(context);
+            eventRepository.loadAllEvents(new FutureCallback<List<Event>>() {
+                @Override
+                public void onSuccess(List<Event> result) {
+                    if (result.size() > 0) {
+                        long curTimeMillis = System.currentTimeMillis();
+                        SpecificEvent next = result.get(0).getNextSpecEvent(curTimeMillis);
+                        for (int i = 1; i < result.size(); i++) {
+                            SpecificEvent tmp = result.get(i).getNextSpecEvent(curTimeMillis);
+                            if (tmp.specStart < next.specStart) {
+                                next = tmp;
+                            }
+                        }
+                        setReminder(context, next.event.title, next.toTimeString(context), next.specStart);
+                        // 发通知提醒用户事件提醒已启动
+                        Intent ni = new Intent(context, MainActivity.class);
+                        PendingIntent npi = PendingIntent.getActivity(context,
+                                EVENT_NOTIFICATION_REQUEST_CODE,
+                                ni,
+                                PendingIntent.FLAG_IMMUTABLE);
+                        Notification notification = NotificationUtil.buildNotification(context,
+                                EVENT_CHANNEL_ID,
+                                context.getText(R.string.event_notification_reminder_activated_title),
+                                context.getText(R.string.event_notification_reminder_activated_text),
+                                npi,
+                                true,
+                                false);
+                        NotificationUtil.showNotification(context, EVENT_NOTIFICATION_ID, notification);
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Throwable t) {
+
+                }
+            }, context);
         } else if (update) {
             // 更新事件提醒
             setNextReminder(context);
@@ -121,23 +143,30 @@ public class EventReminderReceiver extends BroadcastReceiver {
      * 判断下次事件并为其添加事件提醒定时任务
      *
      * @param context 可用Context对象
-     * @return 是否存在下次事件
      */
-    private static boolean setNextReminder(Context context) {
-        List<Event> events = DbUtil.getEvents(context);
-        if (events.size() > 0) {
-            long curTimeMillis = System.currentTimeMillis();
-            SpecEvent next = events.get(0).getNextSpecEvent(curTimeMillis);
-            for (int i = 1; i < events.size(); i++) {
-                SpecEvent tmp = events.get(i).getNextSpecEvent(curTimeMillis);
-                if (tmp.specStart < next.specStart) {
-                    next = tmp;
+    private static void setNextReminder(Context context) {
+        EventRepository eventRepository = new EventRepository(context);
+        eventRepository.loadAllEvents(new FutureCallback<List<Event>>() {
+            @Override
+            public void onSuccess(List<Event> result) {
+                if (result.size() > 0) {
+                    long curTimeMillis = System.currentTimeMillis();
+                    SpecificEvent next = result.get(0).getNextSpecEvent(curTimeMillis);
+                    for (int i = 1; i < result.size(); i++) {
+                        SpecificEvent tmp = result.get(i).getNextSpecEvent(curTimeMillis);
+                        if (tmp.specStart < next.specStart) {
+                            next = tmp;
+                        }
+                    }
+                    setReminder(context, next.event.title, next.toTimeString(context), next.specStart);
                 }
             }
-            setReminder(context, next.title, next.toTimeString(context), next.specStart);
-            return true;
-        }
-        return false;
+
+            @Override
+            public void onFailure(@NonNull Throwable t) {
+
+            }
+        }, context);
     }
 
     /**
